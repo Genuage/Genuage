@@ -1,2 +1,2 @@
 # Genuage 
-coming soon
+Source code will be uploaded shortly
