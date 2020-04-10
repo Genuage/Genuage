@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3281253224730637551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3281253224730637550}
+  - component: {fileID: 3281253224730637549}
+  - component: {fileID: 3281253224730637548}
+  m_Layer: 0
+  m_Name: VRUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3281253224730637550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3281253224730637551}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3281253224730637549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3281253224730637551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5d6cb4e369b8c4aa88261e263f31cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VRHistogramCanvasPrefab: {fileID: 8234522759787042204, guid: 5928732200b581247991b54dba62edbf,
+    type: 3}
+  VRTextWindowPrefab: {fileID: 5038082980058257011, guid: 121760da10a98814c87704c2175e8b0f,
+    type: 3}
+  VRToolsMenuPrefab: {fileID: 7463146549182055915, guid: 09ef35e2e3686e541880351b7f7b9da2,
+    type: 3}
+--- !u!114 &3281253224730637548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3281253224730637551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5c6f232e6f4d5419771758dc7a2326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

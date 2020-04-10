@@ -1,0 +1,9 @@
+﻿  Infer3D.cpp
+C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\Infer3D.cpp(559,9): warning C4101: 'a': unreferenced local variable
+C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\Infer3D.cpp(975,9): warning C4101: 'a': unreferenced local variable
+     Creating library C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\x64\Release\Infer3DPlugin.lib and object C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\x64\Release\Infer3DPlugin.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 24 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Infer3DPlugin.vcxproj -> C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\x64\Release\Infer3DPlugin.dll

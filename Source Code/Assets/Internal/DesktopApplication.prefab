@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6958089484525291084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6958089484525291082}
+  - component: {fileID: 6958089484525291085}
+  - component: {fileID: 1932354835552704066}
+  - component: {fileID: 2565642898299274619}
+  m_Layer: 0
+  m_Name: DesktopApplication
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6958089484525291082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6958089484525291084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.14, y: 1, z: -1.52}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6958089484525291085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6958089484525291084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c09fa64192bfb094e90f980fc5745290, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraManagerPrefab: {fileID: 1249922692416848203, guid: e0b08aaef6766ae479355b2bba5edf12,
+    type: 3}
+  CanvasPrefab: {fileID: 6113921263162520268, guid: 4f34cf63f27ebac4f8a97173102ddafc,
+    type: 3}
+  CloudLoaderPrefab: {fileID: 1975889528307398786, guid: 405573758962ae542a764bd1c4742463,
+    type: 3}
+  MainCameraPrefab: {fileID: 3201942227726651707, guid: a2556c70e6f55bd41a526aee19f2cbfa,
+    type: 3}
+  CloudStoragePrefab: {fileID: 5677615279496205874, guid: c7ba86da206ad7048b1e5317ffb6da42,
+    type: 3}
+  CloudSelectorPrefab: {fileID: 5775457720538417337, guid: e45792c3993645b488570b9abc1c528a,
+    type: 3}
+  CloudUpdaterPrefab: {fileID: 834578432383319096, guid: 3ded9866f439695428ae64e539bcd524,
+    type: 3}
+  CloudSaverPrefab: {fileID: 8131056979929939727, guid: 267052f1c99d1774a866f2a5e0defbb1,
+    type: 3}
+  ColorMapManagerPrefab: {fileID: 469480715569440647, guid: 462083d867c5a4144b2cd66a59315397,
+    type: 3}
+  VRUIManagerPrefab: {fileID: 0}
+  EventSystemPrefab: {fileID: 3851307434936472477, guid: d6ad956dde776a345bb90c50ea8dcd08,
+    type: 3}
+  ModalWindowManagerPrefab: {fileID: 9022112630626831254, guid: 8b1f5a2c5df31194d9c621a431abae3a,
+    type: 3}
+  VRTKPrefab: {fileID: 5725870093624447468, guid: c2d0818e4505cde40959c9112cd06204,
+    type: 3}
+  GroundPrefab: {fileID: 3373863852148004446, guid: 25a1a0b6346999846ab980d9d4870e8f,
+    type: 3}
+  CameraManager: {fileID: 0}
+  Canvas: {fileID: 0}
+  CloudLoaderGO: {fileID: 0}
+  MainCamera: {fileID: 0}
+  CloudStorageGO: {fileID: 0}
+  CloudSelectorGO: {fileID: 0}
+  CloudUpdaterGO: {fileID: 0}
+  CloudSaverGO: {fileID: 0}
+  ColorMapManagerGO: {fileID: 0}
+  VRUIManagerGO: {fileID: 0}
+  EventSystem: {fileID: 0}
+  ModalWindowManager: {fileID: 0}
+  VRTK: {fileID: 0}
+  Ground: {fileID: 0}
+  VR_Enabled: 0
+  cameraInitialPosition: {x: 0, y: 0, z: 0}
+  cameraInitialRotation: {x: 0, y: 0, z: 0, w: 0}
+  timesinceClick: 0
+  catchtime: 0.25
+  defaultFont: {fileID: 0}
+--- !u!114 &1932354835552704066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6958089484525291084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a196f72cf2f5d4d8f7d94796f3f837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _default: {fileID: 0}
+  _selected_red: {fileID: 0}
+--- !u!114 &2565642898299274619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6958089484525291084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2967c88cb178ba46894111c5ea2c9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
