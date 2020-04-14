@@ -1,5 +1,4 @@
 # Genuage 
-Source code will be uploaded shortly
 
 SYSTEM REQUIREMENTS
 CPU : Quad Core or better
