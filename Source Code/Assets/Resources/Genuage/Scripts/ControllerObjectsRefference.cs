@@ -44,6 +44,7 @@ namespace VR_Interaction
         public GameObject CanvasObjectPlacement;
         public GameObject CanvasSetSelection;
         public GameObject CanvasBlinSelection;
+        public GameObject CanvasFreeSelection;
 
         public void UpdateUpperTextDisplay(string text)
         {

@@ -31,6 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -92,6 +93,13 @@ namespace Data
                 return null;
             }
         }
+
+        
+        public List<int> GetAllIDs()
+        {
+            return table.Keys.ToList<int>();
+        }
+        
 
         public delegate void OnStorageEmptyEvent();
         public event OnStorageEmptyEvent OnStorageEmpty;

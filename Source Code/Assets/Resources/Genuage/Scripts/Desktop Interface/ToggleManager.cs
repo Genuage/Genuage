@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Data;
+using System.ComponentModel;
 
 namespace DesktopInterface
 {
@@ -51,6 +52,10 @@ namespace DesktopInterface
         public List<GameObject> headerList;
         public Button applyButton;
         public List<int> selectionList;
+
+        public Dropdown ThresholdDropdown;
+
+        public int VARIABLENUMBER = 9;
 
         void Delete(int id =0)
         {
@@ -93,7 +98,7 @@ namespace DesktopInterface
                 headerList = new List<GameObject>();
                 selectionList = new List<int>();
                 collumnnbr = selectedCloud.columnData.Count;
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < VARIABLENUMBER; i++)
                 {
                     toggleList.Add(new List<GameObject>());
                     selectionList.Add(selectedCloud.globalMetaData.displayCollumnsConfiguration[i]);
@@ -110,6 +115,7 @@ namespace DesktopInterface
         public void CreateToggles(CloudData data)
         {
             int i = 0;
+            List<string> OptionList = new List<string>();
             foreach (Transform child in this.transform)
             {
                 Transform layout = child.GetChild(0);
@@ -119,22 +125,29 @@ namespace DesktopInterface
                     {
                         GameObject go = Instantiate(textPrefab) as GameObject;
                         go.transform.SetParent(layout);
+                        go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, 0f);
                         go.transform.localScale = Vector3.one;
+                        go.transform.rotation = this.transform.rotation;
                         Text newtext = go.GetComponent<Text>();
                         newtext.text = k.ToString();
 
-                        GameObject button = Instantiate(buttonPrefab) as GameObject;
-                        button.transform.SetParent(go.transform);
+                        //GameObject button = Instantiate(buttonPrefab) as GameObject;
+                        //button.transform.SetParent(go.transform,true);
                         //button.transform.localPosition = Vector3.zero;
                         
                         headerList.Add(go);
+                        OptionList.Add(k.ToString());
                         //newtext.font = (Font)Resources.Load("Menlo-Regular");
                     }
                     if (data.globalMetaData.densityCalculated)
                     {
                         headerList[headerList.Count-1].GetComponent<Text>().text = "d";
+                        OptionList[OptionList.Count - 1] = "d";
 
                     }
+
+                    ThresholdDropdown.AddOptions(OptionList);
+
                     /**
                     if (data.globalMetaData.densityCalculated)
                     {
@@ -148,12 +161,15 @@ namespace DesktopInterface
                     }
                     **/
                 }
-                else if (i < 8)
+                else if (i < VARIABLENUMBER)
                 {
                     for (int j = 0; j < collumnnbr; j++)
                     {
                         GameObject newtoggle = Instantiate(togglePrefab) as GameObject;
                         newtoggle.transform.SetParent(layout);
+                        newtoggle.transform.localPosition = new Vector3(newtoggle.transform.localPosition.x, newtoggle.transform.localPosition.y, 0f);
+                        newtoggle.transform.localScale = Vector3.one;
+                        newtoggle.transform.rotation = this.transform.rotation;
                         newtoggle.gameObject.GetComponent<Toggle>().group = layout.GetComponent<ToggleGroup>();
                         newtoggle.gameObject.GetComponent<Toggle>().isOn = false;
                         newtoggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { CheckCollumnOnValueChanged(newtoggle.GetComponent<Toggle>()); });

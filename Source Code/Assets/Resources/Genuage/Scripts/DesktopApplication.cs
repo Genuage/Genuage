@@ -33,8 +33,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.XR;
 using Display;
 using Data;
+using VRTK;
+using Valve.VR;
 
 public class DesktopApplication : MonoBehaviour
 {
@@ -100,7 +103,9 @@ public class DesktopApplication : MonoBehaviour
 
     private void InstantiateApplication()
     {
+        //XRSettings.enabled = false;
         GameObject target = new GameObject("target");
+        EventSystem = Instantiate(EventSystemPrefab) as GameObject;
         MainCamera = Instantiate(MainCameraPrefab) as GameObject;
         cameraInitialPosition = MainCamera.transform.position;
         cameraInitialRotation = MainCamera.transform.rotation;
@@ -116,11 +121,10 @@ public class DesktopApplication : MonoBehaviour
         CloudSaverGO = Instantiate(CloudSaverPrefab) as GameObject;
         ColorMapManagerGO = Instantiate(ColorMapManagerPrefab) as GameObject;
         VRUIManagerGO = Instantiate(VRUIManagerPrefab) as GameObject;
-        EventSystem = Instantiate(EventSystemPrefab) as GameObject;
         ModalWindowManager = Instantiate(ModalWindowManagerPrefab) as GameObject;
         Ground = Instantiate(GroundPrefab) as GameObject;
         Canvas = Instantiate(CanvasPrefab) as GameObject;
-
+        VRTK_SDKManager.instance.UnloadSDKSetup(true);
         //OnAllCloudsDeleted();
         //CloudSelector.instance.OnFirstSelection += OnFirstCloudLoad;
         //CloudSelector.instance.OnNoSelection += OnAllCloudsDeleted;

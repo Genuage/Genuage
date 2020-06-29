@@ -54,7 +54,7 @@ namespace DesktopInterface
         //public CloudStatus _cloud_status;
 
 
-        public void Start()
+        public void Awake()
         {
             button = gameObject.GetComponent<Button>();
             initializeClickEvent();
@@ -63,6 +63,7 @@ namespace DesktopInterface
             CloudSelector.instance.OnSelectionChange += ChangeColorMap;
             CloudUpdater.instance.OnColorMapSaturationChange += GenerateNewTexture;
             CloudUpdater.instance.OnColorMapReversed += ReverseColorMap;
+            CloudUpdater.instance.OnColorMapChange += ChangeColorMap;
 
             ChangeColorMap("autumn");
         }
@@ -191,6 +192,14 @@ namespace DesktopInterface
                 GetComponent<RawImage>().texture = oldtexture;
 
             }
+        }
+
+        private void OnDestroy()
+        {
+            CloudSelector.instance.OnSelectionChange -= ChangeColorMap;
+            CloudUpdater.instance.OnColorMapSaturationChange -= GenerateNewTexture;
+            CloudUpdater.instance.OnColorMapReversed -= ReverseColorMap;
+
         }
     }
 }

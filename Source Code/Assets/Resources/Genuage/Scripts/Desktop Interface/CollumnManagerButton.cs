@@ -42,6 +42,8 @@ namespace DesktopInterface
     public class CollumnManagerButton : IButtonScript
     {
         public GameObject CollumnWindowPrefab;
+
+        public Vector3 localpos;
         // Start is called before the first frame update
         void Start()
         {
@@ -55,7 +57,7 @@ namespace DesktopInterface
             {
                 GameObject window = Instantiate(CollumnWindowPrefab) as GameObject;
                 window.transform.SetParent(DesktopApplication.instance.Canvas.transform);
-                window.transform.localPosition = new Vector3(-700.4f, 0f, 0f);
+                window.transform.localPosition = localpos;
                 window.transform.localScale = Vector3.one;
                 window.transform.GetChild(0).gameObject.GetComponent<ToggleManager>().Create();
                 UIManager.instance.DeactivateUI();

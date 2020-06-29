@@ -45,8 +45,9 @@ namespace DesktopInterface
         public GameObject _selectionButtonContainerPrefab;
         public Transform _selftransform;
         public Dictionary<int, GameObject> _selectionButtonList;
+        public bool VR = false;
 
-        void Start()
+        void Awake()
         {
             _selectionButtonList = new Dictionary<int, GameObject>();
             _selftransform = GetComponent<Transform>();
@@ -55,6 +56,16 @@ namespace DesktopInterface
             CloudSelector.instance.OnSelectionChange += ChangeButtonColors;
             CloudUpdater.instance.OnCloudLinked += LockButtons;
             CloudUpdater.instance.OnCloudUnlinked += UnlockButtons;
+            if (VR && !CloudSelector.instance.noSelection)
+            {
+                List<int> idlist = CloudSelector.instance.GetAllIDs();
+
+                foreach (int i in idlist)
+                {
+                    CreateNewButton(i);
+
+                }
+            }
         }
 
         public void CreateNewButton(int id)
@@ -72,8 +83,18 @@ namespace DesktopInterface
             closebutton.GetComponent<CloseCloudByIDButton>().id = id;
 
             _selectionButtonList.Add(id, son);
-            UIManager.instance.selectionButtonsDict.Add(id, filenamebutton.GetComponent<Button>());
-            UIManager.instance.closeButtonsDict.Add(id, closebutton.GetComponent<Button>());
+            if (VR)
+            {
+                UIManager.instance.VRselectionButtonsDict.Add(id, filenamebutton.GetComponent<Button>());
+                UIManager.instance.VRcloseButtonsDict.Add(id, closebutton.GetComponent<Button>());
+
+            }
+            else
+            {
+                UIManager.instance.selectionButtonsDict.Add(id, filenamebutton.GetComponent<Button>());
+                UIManager.instance.closeButtonsDict.Add(id, closebutton.GetComponent<Button>());
+
+            }
         }
 
         public void DestroyButton(int id)
@@ -160,6 +181,22 @@ namespace DesktopInterface
                 item.Value.GetComponent<SelectionButtonContainerRefference>().filenamebutton.GetComponent<Button>().interactable = true;
                 item.Value.GetComponent<SelectionButtonContainerRefference>().closebutton.GetComponent<Button>().interactable = true;
                 item.Value.GetComponent<SelectionButtonContainerRefference>().toggle.GetComponent<Toggle>().interactable = true;
+
+            }
+        }
+
+        public void OnDestroy()
+        {
+            CloudStorage.instance.OnCloudCreated -= CreateNewButton;
+            CloudStorage.instance.OnCloudDeleted -= DestroyButton;
+            CloudSelector.instance.OnSelectionChange -= ChangeButtonColors;
+            CloudUpdater.instance.OnCloudLinked -= LockButtons;
+            CloudUpdater.instance.OnCloudUnlinked -= UnlockButtons;
+
+            if (VR)
+            {
+                UIManager.instance.VRselectionButtonsDict.Clear();
+                UIManager.instance.VRcloseButtonsDict.Clear();
 
             }
         }

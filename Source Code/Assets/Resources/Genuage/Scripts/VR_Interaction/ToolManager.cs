@@ -64,9 +64,11 @@ namespace VR_Interaction
         public IControllerTool selectionPointer;
         public IControllerTool selectionSphere;
         public IControllerTool selectionConvexHull;
+        public IControllerTool freeselection;
         public IControllerTool counter;
         public IControllerTool measureDistance;
         public IControllerTool clippingPlane;
+        public IControllerTool multiclippingPlane;
         public IControllerTool anglemeasure;
         public IControllerTool histogram;
 
@@ -112,39 +114,49 @@ namespace VR_Interaction
 
             toolsDict.Add("Selection Sphere", new ToolState("Selection Sphere",
                                                                 selectionSphere,
-                                                                new List<string>() { "Selection Convex Hull", "Counter", "Measure Distance", "Angle Measure", "Histogram" },
+                                                                new List<string>() { "Selection Convex Hull", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
                                                                 false));
             toolsDict.Add("Selection Convex Hull", new ToolState("Selection Convex Hull",
                                                                 selectionConvexHull,
-                                                                new List<string>() { "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram" },
+                                                                new List<string>() { "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
                                                                 false));
+
+            toolsDict.Add("Free Selection", new ToolState("Free Selection",
+                                                    freeselection,
+                                                    new List<string>() { "Selection Convex Hull", "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane" },
+                                                    false));
+
             toolsDict.Add("Counter", new ToolState("Counter",
                                                      counter,
-                                                     new List<string>() { "Selection Convex Hull", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram" },
+                                                     new List<string>() { "Selection Convex Hull", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
                                                      false));
 
             toolsDict.Add("Measure Distance", new ToolState("Measure Distance",
                                                      measureDistance,
-                                                     new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Angle Measure", "Histogram" },
+                                                     new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
                                                      false));
 
             toolsDict.Add("Angle Measure", new ToolState("Angle Measure",
                                          anglemeasure,
-                                         new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Histogram" },
+                                         new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Histogram", "MultiClipping Plane", "Free Selection" },
                                          false));
 
             toolsDict.Add("Histogram", new ToolState("Histogram",
                              histogram,
-                             new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure" },
+                             new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "MultiClipping Plane", "Free Selection" },
                              false));
 
 
 
             toolsDict.Add("Clipping Plane", new ToolState("Clipping Plane",
                                          clippingPlane,
-                                         new List<string>() ,
+                                         new List<string>() { "MultiClipping Plane" } ,
                                          false));
 
+            toolsDict.Add("MultiClipping Plane", new ToolState("MultiClipping Plane",
+                             multiclippingPlane,
+                             new List<string>() { "Clipping Plane", "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "Free Selection" },
+                             false));
 
 
 
@@ -152,11 +164,6 @@ namespace VR_Interaction
             VRTK_EventSystem.current.sendNavigationEvents = false;
         }
 
-        private void ActivateMatrix(object sender, ControllerInteractionEventArgs e)
-        {
-            GetComponent<SendMatrixController>().enabled = !GetComponent<SendMatrixController>().enabled;
-            Debug.Log("matrix script state has been set to " + GetComponent<SendMatrixController>().isActiveAndEnabled);
-        }
 
         private void ActivatePointer(ControllerInteractionEventArgs e)
         {
@@ -177,12 +184,12 @@ namespace VR_Interaction
             {
                 menu = Instantiate(toolMenuPrefab) as GameObject;
                 menu.GetComponentInChildren<VRToolMenu>().manager = this;
-                menu.transform.position = CameraManager.instance.vr_camera.transform.forward + (CameraManager.instance.vr_camera.transform.up/2);
+                menu.transform.position = ((CameraManager.instance.vr_camera.transform.forward * 2) + (CameraManager.instance.vr_camera.transform.up/2));
             }
             else
             {
-                //SwitchTool(sender,e);
-                Destroy(menu);
+                menu.SetActive(!menu.activeInHierarchy);
+                //Destroy(menu);
             }
             
         }

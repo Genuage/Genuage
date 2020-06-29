@@ -39,8 +39,10 @@ namespace DesktopInterface
 {
     public class ZThresholdSlider : ThresholdSlider
     {
-        protected override void AssignValues(CloudData data)
+        protected override void AssignValues(int i)
         {
+            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+
             maxValue = data.globalMetaData.zMax;
             minValue = data.globalMetaData.zMin;
             defaultminSliderValue = data.globalMetaData.zMinThreshold;

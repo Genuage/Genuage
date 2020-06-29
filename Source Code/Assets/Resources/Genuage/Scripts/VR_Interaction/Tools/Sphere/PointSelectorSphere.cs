@@ -38,6 +38,7 @@ using UnityEngine.Animations;
 using VRTK;
 using VRTK.GrabAttachMechanics;
 using Data;
+using UnityEngine.Experimental.PlayerLoop;
 
 namespace VR_Interaction
 {
@@ -106,7 +107,7 @@ namespace VR_Interaction
                 data = cloud_box.transform.parent.GetComponentInChildren<CloudData>();
             }
         }
-            private void OnTriggerStay(Collider cloud_box)
+        private void OnTriggerStay(Collider cloud_box)
         {
             if (taskOn)
             {
@@ -215,6 +216,7 @@ namespace VR_Interaction
     //This thread class is used to find all the points located inside the sphere and assign a new color to them. 
     {
         public float radius;
+        
         public CloudData data;
         public Vector3 selflocalpos;
         public bool isFinished = false;
@@ -237,7 +239,7 @@ namespace VR_Interaction
             foreach (KeyValuePair<int, PointData> item in data.pointDataTable)
             {
                 float distance = Vector3.Distance(selflocalpos, item.Value.normed_position);
-                if (distance <= radius)
+                if (distance <= radius / data.globalMetaData.scale.x && distance <= radius / data.globalMetaData.scale.y && distance <= radius / data.globalMetaData.scale.z)
                 {
                     //colors[item.Key] = Color.green;
                     //item.Value.color = Color.green;
@@ -253,3 +255,4 @@ namespace VR_Interaction
         }
     }
 }
+

@@ -57,15 +57,18 @@ namespace DesktopInterface
         public Vector2 Threshold;
 
 
-        private void Awake()
+        protected virtual void Awake()
         {
-            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
-            AssignValues(data);
+            AssignValues(0);
+        }
+
+        protected void InitializeSliders()
+        {
             minSlider.minValue = minValue;
             minSlider.maxValue = maxValue;
             maxSlider.minValue = minValue;
             maxSlider.maxValue = maxValue;
-            
+
 
             maxSlider.value = defaultmaxSliderValue;
             minSlider.value = defaultminSliderValue;
@@ -75,13 +78,14 @@ namespace DesktopInterface
 
 
 
-            
+
 
             maxSlider.onValueChanged.AddListener(ChangeMaxThresholds);
             minSlider.onValueChanged.AddListener(ChangeMinThresholds);
+
         }
 
-        protected virtual void AssignValues(CloudData data)
+        protected virtual void AssignValues(int i)
         {
 
         } 

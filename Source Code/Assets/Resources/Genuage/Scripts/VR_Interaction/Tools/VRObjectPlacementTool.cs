@@ -85,6 +85,7 @@ namespace VR_Interaction
             colliderproxy.OnCollisionEnd += OnSphereCollisionStop;
             objectplacementCanvas.SetActive(true);
             containerselectionCanvas.SetActive(false);
+            sectionselectionCanvas.SetActive(false);
 
             _controller = GetComponent<VRTK_ControllerEvents>();
             _controller.TouchpadPressed += OnTriggerClicked;
@@ -425,6 +426,7 @@ namespace VR_Interaction
         {
             objectplacementCanvas.SetActive(false);
             containerselectionCanvas.SetActive(false);
+            sectionselectionCanvas.SetActive(false);
 
             CloudSelector.instance.OnSelectionChange -= ReloadContainers;
             CloudStorage.instance.OnCloudCreated -= ReloadContainers;
@@ -468,6 +470,10 @@ namespace VR_Interaction
 
         public override void OnDisabled()
         {
+            objectplacementCanvas.SetActive(false);
+            containerselectionCanvas.SetActive(false);
+            sectionselectionCanvas.SetActive(false);
+
             this.enabled = false;
         }
     }

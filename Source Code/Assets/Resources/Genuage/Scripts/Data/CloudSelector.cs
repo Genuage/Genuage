@@ -98,10 +98,12 @@ namespace Data
             return _selectedID;
         }
 
-        public void SelectPoints(List<int> selectionlist)
+        
+        public List<int> GetAllIDs()
         {
-
+            return CloudStorage.instance.GetAllIDs();
         }
+        
 
     }
 }

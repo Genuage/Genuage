@@ -1,1 +1,1 @@
-C:\Users\Thomas\Documents\Genuage\genuage\Assets\Resources\Plugins\inference\Infer3D-Mo\x64\Release\Infer3DPlugin.dll
+D:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\inference\Infer3D\x64\Release\Infer3DPlugin.dll
