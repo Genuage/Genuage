@@ -44,12 +44,16 @@ namespace DesktopInterface
         public Transform _text_description;
         
 
-        private void Start()
+        private void Awake()
         {
             slider = GetComponent<Slider>();
             InitializeSliderEvent();
             
             CloudSelector.instance.OnSelectionChange += AdjustValue;
+            if (!CloudSelector.instance.noSelection)
+            {
+                AdjustValue(CloudSelector.instance._selectedID);
+            }
         }
 
         public override void Execute(float value)

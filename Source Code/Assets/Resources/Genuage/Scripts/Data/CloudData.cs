@@ -51,6 +51,7 @@ namespace Data
         public float _time;
         public int _frame;
         public float _trajectory;
+        public float _size;
         public float _color_index;
         public float _depth;
         public float _phi_angle;
@@ -107,7 +108,13 @@ namespace Data
             set { _trajectory = value; }
         }
 
-       
+        public float size
+        {
+            get { return _size; }
+
+            set { _size = value; }
+        }
+
 
         public float depth
         {
@@ -208,6 +215,24 @@ namespace Data
         }
     }
 
+
+    /// <summary>
+    /// Class used to hold metadata specific to one column of the raw data.
+    /// </summary>
+    /// 
+    public class ColumnMetadata
+    {
+        public int ColumnID;
+
+        public float MinValue;
+        public float MaxValue;
+        public float Range;
+        public float MinThreshold;
+        public float MaxThreshold;
+
+
+    }
+
     /// <summary>
     /// Class to hold all the Metadata relevant for the whole cloud.
     /// </summary>
@@ -224,6 +249,8 @@ namespace Data
         private float _iMax, _iMin; // intensity
         private float _tMax, _tMin; // frame
         private float _dMax, _dMin; // density
+        private float _sMax, _sMin; // size
+
 
         public float xMinThreshold;
         public float xMaxThreshold;
@@ -233,6 +260,8 @@ namespace Data
         public float zMaxThreshold;
         public float tMinThreshold;
         public float tMaxThreshold;
+
+        public List<ColumnMetadata> columnMetaDataList;
 
         private Vector3 _box_scale;
 
@@ -306,6 +335,10 @@ namespace Data
         public Dictionary<int, GameObject> angleMeasurementsList;
         public Dictionary<int, GameObject> histogramList;
 
+        public HashSet<int> FreeSelectionIDList;
+
+
+        public GameObject[] ClippingPlanesList;
 
         #endregion
 
@@ -397,6 +430,19 @@ namespace Data
             get { return _tMin; }
             set { _tMin = value; }
         }
+
+        public float sMax
+        {
+            get { return _sMax; }
+            set { _sMax = value; }
+        }
+
+        public float sMin
+        {
+            get { return _sMin; }
+            set { _sMin = value; }
+        }
+
 
         public float dMax
         {
@@ -576,7 +622,7 @@ namespace Data
 
             globalMetaData.SelectedPointsList = new HashSet<int>();
             globalMetaData.SelectedTRajectories = new HashSet<float>();
-
+            globalMetaData.columnMetaDataList = new List<ColumnMetadata>();
             globalMetaData.counterPointsList = new Dictionary<int, GameObject>();
             globalMetaData.convexHullsList = new Dictionary<int, GameObject>();
             globalMetaData.sphereList = new Dictionary<int, GameObject>();
@@ -584,6 +630,7 @@ namespace Data
             globalMetaData.rulerPointsDistanceList = new Dictionary<int, List<float>>();
             globalMetaData.angleMeasurementsList = new Dictionary<int, GameObject>();
             globalMetaData.histogramList = new Dictionary<int, GameObject>();
+            globalMetaData.FreeSelectionIDList = new HashSet<int>();
         }
 
         public void CreatePointData(int id, Vector3 position, Vector3 normedposition, float intensity,

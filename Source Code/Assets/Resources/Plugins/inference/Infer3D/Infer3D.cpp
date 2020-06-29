@@ -87,6 +87,25 @@ double Sigma_z   = 0.0;// mirons assymetric noise in z
 int    DIM;
 static FILE *debugFile;
 
+
+enum HeaderID {
+	DIFFUSION = 0,
+	DIFFUSION_VELOCITY = 1,
+};
+
+enum ParamID {
+	LIKELYHOOD_NO_NOISE = 0,
+	LIKELYHOOD_UNIFORM_NOISE = 1,
+	LIKELYHOOD_ASYMETRIC_NOISE = 2,
+	LIKELYHOOD_APPROX_NOISE_ONLY_Z = 3,
+	POSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR = 4,
+	POSTERIOR_NO_NOISE_CONGUGATEPRIOR = 5,
+	POSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR = 6,
+	POSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE = 7,
+	POSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE = 8,
+};
+
+/*
 enum FunctionID {
 	DFXFYFZPosterior = 0,
 	D_LIKELYHOOD_NO_NOISE = 1,
@@ -109,6 +128,8 @@ enum FunctionID {
 	DVPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INfORMATIVE = 18,
 
 };
+*/
+
 /* Optimization Functions */
 
 void lnsrch(int ndim, double xold[], double fold, double g[], double p[], double xx[], double f[], double stpmax, int check[], double (func)(double[])) {
@@ -1406,7 +1427,7 @@ double Dvposterior_approx_noise_only_z_non_informative(double *Dv) {
 /************************************************************************************/
 
 
-extern "C" DllExport void Infer3D(int functionID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ) {
+extern "C" DllExport void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ) {
 	Tr = (double*)TrajectoryNumber;
 	X = (double*)xCoordinates;
 	Y = (double*)yCoordinates;
@@ -1459,64 +1480,93 @@ extern "C" DllExport void Infer3D(int functionID, double sigma, double sigmaxy, 
 	optimizationArray[0] = (effectiveDx + effectiveDy + effectiveDz)/2.0;
 	optimizationArray[1] = optimizationArray[2] = optimizationArray[3] = 0.0;
 
-	switch (functionID) {
-	case DFXFYFZPosterior:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, DFxFyFzPosterior, (dfunc));
+	switch (headerID) {
+	case DIFFUSION:
+		switch (paramID) {
+
+		case LIKELYHOOD_NO_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_no_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_UNIFORM_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_uniform_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_ASYMETRIC_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_asymetric_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_APPROX_NOISE_ONLY_Z:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_approx_noise_only_z, (dfunc));
+			break;
+
+		case POSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_no_noise_non_informative_prior, (dfunc));
+			break;
+
+		case POSTERIOR_NO_NOISE_CONGUGATEPRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_no_noise_conjugate_prior, (dfunc));
+			break;
+
+		case POSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_uniform_noise_non_informative_prior, (dfunc));
+			break;
+
+		case POSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_asymetric_noise_non_informative, (dfunc));
+			break;
+
+		case POSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_approx_noise_only_z_non_informative, (dfunc));
+			break;
+
+		default:
+			break;
+		}
 		break;
-	case D_LIKELYHOOD_NO_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_no_noise, (dfunc));
-		break;
-	case DPOSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_no_noise_non_informative_prior, (dfunc));
-		break;
-	case D_POSTERIOR_NO_NOISE_CONGUGATEPRIOR:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_no_noise_conjugate_prior, (dfunc));
-		break;
-	case DLIKELYHOOD_UNIFORM_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_uniform_noise, (dfunc));
-		break;
-	case DPOSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_uniform_noise_non_informative_prior, (dfunc));
-		break;
-	case DLIKELYHOOD_ASYMETRIC_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_asymetric_noise, (dfunc));
-		break;
-	case DPOSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_asymetric_noise_non_informative, (dfunc));
-		break;
-	case DLIKELYHOOD_APPROX_NOISE_ONLY_Z:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dlikelihood_approx_noise_only_z, (dfunc));
-		break;
-	case DPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dposterior_approx_noise_only_z_non_informative, (dfunc));
-		break;
-	case DVLIKELYHOOD_NO_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_no_noise, (dfunc));
-		break;
-	case DVPOSTERIOR_NO_NOISE_NON_INFORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_no_noise_non_informative, (dfunc));
-		break;
-	case DVPOSTERIOR_NO_NOISE_CONJUGATE_PRIOR:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_no_noise_conjugate_prior, (dfunc));
-		break;
-	case DVLIKELYHOOD_UNIFORM_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_uniform_noise, (dfunc));
-		break;
-	case DVPOSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_uniform_noise_non_informative, (dfunc));
-		break;
-	case DVLIKELYHOOD_ASYMETRIC_NOISE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_asymetric_noise, (dfunc));
-		break;
-	case DVPOSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_asymetric_noise_non_informative, (dfunc));
-		break;
-	case DVLIKELYHOOD_APPROX_NOISE_ONLY_Z:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_approx_noise_only_z, (dfunc));
-		break;
-	case DVPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INfORMATIVE:
-		dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_approx_noise_only_z_non_informative, (dfunc));
-		break;
+	case DIFFUSION_VELOCITY:
+		switch (paramID) {
+
+		case LIKELYHOOD_NO_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_no_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_UNIFORM_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_uniform_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_ASYMETRIC_NOISE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_asymetric_noise, (dfunc));
+			break;
+
+		case LIKELYHOOD_APPROX_NOISE_ONLY_Z:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvlikelihood_approx_noise_only_z, (dfunc));
+			break;
+
+		case POSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_no_noise_non_informative, (dfunc));
+			break;
+
+		case POSTERIOR_NO_NOISE_CONGUGATEPRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_no_noise_conjugate_prior, (dfunc));
+			break;
+
+		case POSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_uniform_noise_non_informative, (dfunc));
+			break;
+
+		case POSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_asymetric_noise_non_informative, (dfunc));
+			break;
+
+		case POSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE:
+			dfpmin(optimizationArray, DIM, GTOL, iterations, fret, Dvposterior_approx_noise_only_z_non_informative, (dfunc));
+			break;
+
+		default:
+			break;
+		}
+		break;	
 	default:
 		break;
 		

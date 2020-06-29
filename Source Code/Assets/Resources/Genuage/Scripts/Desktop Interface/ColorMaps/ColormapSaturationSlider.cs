@@ -77,15 +77,19 @@ namespace DesktopInterface
             if(map.colorArray.Length > 2)
             {
                 slider.interactable = false;
-                Debug.Log("falsecheck");
+                //Debug.Log("falsecheck");
             }
             else
             {
-                Debug.Log("truecheck");
+                //Debug.Log("truecheck");
                 slider.interactable = true;
             }
         }
 
+        private void OnDestroy()
+        {
+            CloudUpdater.instance.OnColorMapChange -= ResetSlider;
 
+        }
     }
 }

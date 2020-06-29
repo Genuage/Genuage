@@ -39,6 +39,7 @@ using UnityEngine.UI;
 
 public unsafe class NativePluginInfer3D : NativePlugin
 {
+    /**
     public enum FunctionID
     {
         DFXFYFZPosterior = 0,
@@ -62,13 +63,36 @@ public unsafe class NativePluginInfer3D : NativePlugin
         DVPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INfORMATIVE = 18,
 
     };
+        **/
 
-    public Dropdown dropdown;
+    private enum HeaderID
+    {
+        Diffusion = 0,
+        Diffusion_Velocity = 1,
+    };
+
+    private enum ParamID
+    {
+        LIKELYHOOD_NO_NOISE = 0,
+        LIKELYHOOD_UNIFORM_NOISE = 1,
+        LIKELYHOOD_ASYMETRIC_NOISE = 2,
+        LIKELYHOOD_APPROX_NOISE_ONLY_Z = 3,
+        POSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR = 4,
+        POSTERIOR_NO_NOISE_CONGUGATEPRIOR = 5,
+        POSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR = 6,
+        POSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE = 7,
+        POSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE = 8,
+    };
+
+    public Dropdown headerDropdown;
+    public Dropdown paramDropdown;
     public InputField SigmaInput;
     public InputField SigmaxyInput;
     public InputField SigmazInput;
 
-    FunctionID functionID;
+    HeaderID headerID;
+    ParamID paramID;
+
     public double Sigma = 0.0;
     public double SigmaXY = 0.0;
     public double SigmaZ = 0.0;
@@ -90,7 +114,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
     double* ForceZ;
 
     [DllImport("Infer3DPlugin")]
-    private static extern void Infer3D(int functionID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
+    private static extern void Infer3D(int headerID,int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
 
     private void Awake()
     {
@@ -204,19 +228,22 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             ForceY = &forceY;
                             ForceZ = &forceZ;
 
-                            functionID = (FunctionID)dropdown.value;
-                            Debug.Log("FunctionID - "+(int)functionID);
+                            //functionID = (FunctionID)dropdown.value;
+
+                            headerID = (HeaderID)headerDropdown.value;
+                            paramID = (ParamID)paramDropdown.value;
+                           // Debug.Log("FunctionID - "+(int)functionID);
                             double.TryParse(SigmaInput.text, out Sigma);
                             double.TryParse(SigmaxyInput.text, out SigmaXY);
                             double.TryParse(SigmazInput.text, out SigmaZ);
 
-                            Debug.Log("fid " + functionID);
+                            //Debug.Log("fid " + functionID);
                             Debug.Log("Sigma " + Sigma);
                             Debug.Log("Sigmaxy " + SigmaXY);
                             Debug.Log("Sigmaz " + SigmaZ);
 
                             
-                            Infer3D((int)functionID, Sigma,SigmaXY,SigmaZ,N, trajectories, xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
+                            Infer3D((int)headerID, (int)paramID, Sigma,SigmaXY,SigmaZ,N, trajectories, xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
                             double diffusionres = *Diffusion;
                             double forceXres = *ForceX;
                             double forceYres = *ForceY;
@@ -233,6 +260,12 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             Debug.Log("forceX : " + *ForceX);
                             Debug.Log("forceY : " + *ForceY);
                             Debug.Log("forceZ : " + *ForceZ);
+
+                            GameObject go = new GameObject("ARROW");
+                            go.transform.SetParent(data.transform);
+                            go.AddComponent<GenerateArrow>();
+                            go.GetComponent<GenerateArrow>().GenerateTriangularArrowMesh(new Vector3((float)*ForceX, (float)*ForceY, (float)*ForceZ).normalized);
+                            go.transform.SetParent(data.transform);
 
                         }
                     }

@@ -33,6 +33,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Data;
+using System.Collections.Specialized;
+
 namespace DesktopInterface
 {
 
@@ -56,6 +58,7 @@ namespace DesktopInterface
                 GameObject newbutton = Instantiate(colormapButtonPrefab) as GameObject;
                 newbutton.gameObject.name = currentMap.name;
                 newbutton.transform.SetParent(transform);
+                newbutton.transform.localScale = Vector3.one;
                 newbutton.GetComponent<ColorMapButton>().Initialize();
             }
 

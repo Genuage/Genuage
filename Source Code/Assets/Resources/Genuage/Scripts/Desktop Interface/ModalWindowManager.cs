@@ -64,7 +64,11 @@ public class ModalWindowManager : MonoBehaviour
         window.GetComponent<ModalWindow>().text.text = text_to_display;
         window.GetComponent<RectTransform>().localPosition = Vector3.zero;
         window.GetComponent<RectTransform>().localScale = Vector3.one;
-        UIManager.instance.DeactivateUI();
+        if (hasButton)
+        {
+            UIManager.instance.DeactivateUI();
+
+        }
         return window;
     }
 

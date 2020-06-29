@@ -145,6 +145,9 @@ namespace DesktopInterface
                         orientationChild.AddComponent<MeshRenderer>();
                         orientationChild.GetComponent<MeshFilter>().mesh = mesh;
                         Material material = new Material(Shader.Find("Genuage/UnlitLineShader"));
+                        material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
+                        material.SetFloat("_LowerTimeLimit", 0f);
+
                         orientationChild.GetComponent<MeshRenderer>().material = material;
 
                         data.orientationObject = orientationChild;

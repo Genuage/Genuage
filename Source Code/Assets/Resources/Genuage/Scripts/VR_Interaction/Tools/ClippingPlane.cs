@@ -40,6 +40,8 @@ namespace VR_Interaction
 {
     public class ClippingPlane : IControllerTool
     {
+        protected VRTK_ControllerEvents _controller;
+
         GameObject square;
 
         public ClippingPlane(VRTK_ControllerEvents controller)
@@ -48,17 +50,22 @@ namespace VR_Interaction
 
         public override void OnToolActivated()
         {
+            _controller = GetComponent<VRTK_ControllerEvents>();
+
+
             Debug.Log("clipping plane activated");
             Shader.EnableKeyword("CLIPPING_PLANE");
-            GetComponent<SendMatrixController>().enabled = true;
             CloudSelector.instance.OnSelectionChange += ReloadBox;
             //Debug.Log("check");
             if (!CloudSelector.instance.noSelection)
             {
                 //Debug.Log("check");
                 GetComponent<SendMatrixController>().box = CloudUpdater.instance.LoadCurrentStatus().transform.parent.GetComponent<CloudObjectRefference>().box.transform;
+
+                GetComponent<SendMatrixController>().cloud = CloudUpdater.instance.LoadCurrentStatus().transform.parent.GetComponent<CloudObjectRefference>().cloud.transform;
                 CreateWireSquare();
                 GetComponent<SendMatrixController>().square = square.transform;
+                GetComponent<SendMatrixController>().ActivateClippingPlane();
 
             }
             else
@@ -111,6 +118,7 @@ namespace VR_Interaction
 
         }
 
+
         private void DestroyWireSquare()
         {
             if (square)
@@ -121,15 +129,20 @@ namespace VR_Interaction
 
         public void ReloadBox(int id)
         {
-            GetComponent<SendMatrixController>().box = CloudUpdater.instance.LoadStatus(id).transform.parent.GetComponent<CloudObjectRefference>().box.transform;
+            GetComponent<SendMatrixController>().box = CloudUpdater.instance.LoadCurrentStatus().transform.parent.GetComponent<CloudObjectRefference>().box.transform;
+
+            GetComponent<SendMatrixController>().cloud = CloudUpdater.instance.LoadCurrentStatus().transform.parent.GetComponent<CloudObjectRefference>().cloud.transform;
         }
 
         public override void OnToolDeactivated()
         {
             Shader.DisableKeyword("CLIPPING_PLANE");
+
+
             DestroyWireSquare();
-            GetComponent<SendMatrixController>().enabled = false;
+            GetComponent<SendMatrixController>().DeactivateClippingPlane();
             CloudSelector.instance.OnSelectionChange -= ReloadBox;
+
 
         }
 
@@ -137,7 +150,7 @@ namespace VR_Interaction
         {
             CloudSelector.instance.OnSelectionChange -= ReloadBox;
 
-            GetComponent<ClippingPlane>().enabled = false;
+            GetComponent<SendMatrixController>().DeactivateClippingPlane();
 
         }
     }

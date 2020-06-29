@@ -58,8 +58,21 @@ namespace DesktopInterface
         public override void Execute()
         {
             Shader.DisableKeyword("CLIPPING_PLANE");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_1");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_2");
 
-            #if UNITY_EDITOR
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_3");
+
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_4");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_5");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_6");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_7");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_8");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_9");
+            Shader.DisableKeyword("FIXED_CLIPPING_PLANE_10");
+            Shader.DisableKeyword("POINTSIZE");
+
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #elif UNITY_WEBPLAYER
             Application.OpenURL(webplayerQuitURL);

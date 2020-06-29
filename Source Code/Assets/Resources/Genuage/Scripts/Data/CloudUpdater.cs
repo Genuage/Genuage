@@ -1,4 +1,4 @@
-﻿/*/**
+﻿/**
 Copyright (c) 2020, 	Institut Curie, Institut Pasteur and CNRS
 			Thomas BLanc, Mohamed El Beheiry, Jean Baptiste Masson, Bassam Hajj and Clement caporal
 All rights reserved.
@@ -564,9 +564,13 @@ namespace Data
 
 
         }
-        
 
 
+        public void UpdateFreezableClippingPlanes(GameObject[] goArray)
+        {
+            CloudData currcloud = LoadCurrentStatus();
+            currcloud.globalMetaData.ClippingPlanesList = goArray;
+        }
 
 
         public override void ChangePointSize(float value)
@@ -603,6 +607,7 @@ namespace Data
                     {
                         Lists.Add(kvp.Value.GetComponent<PointSelectorConvexHull>().selectedPoints);
                     }
+                    Lists.Add(currcloud.globalMetaData.FreeSelectionIDList);
 
                     if (currcloud.trajectoryObject)
                     {
@@ -622,6 +627,37 @@ namespace Data
             }
         }
 
+
+        public void ResetPointSelection()
+        {
+            CloudData currcloud = LoadCurrentStatus();
+            currcloud.globalMetaData.SelectedPointsList.Clear();
+            
+            foreach (var go in currcloud.globalMetaData.sphereList)
+            {
+                GameObject g = go.Value;
+                Destroy(g);
+            }
+            currcloud.globalMetaData.sphereList.Clear();
+            foreach (var go in currcloud.globalMetaData.convexHullsList)
+            {
+                GameObject g = go.Value;
+                Destroy(g);
+            }
+            currcloud.globalMetaData.convexHullsList.Clear();
+            currcloud.globalMetaData.FreeSelectionIDList.Clear();
+            UpdatePointSelection();
+            //TODO : Iterate over convex hull and sphere lists and delete them.
+        }
+
+        public void ResetFreeSelection()
+        {
+            //TODO : Tidy up and make a global function
+            CloudData currcloud = LoadCurrentStatus();
+            currcloud.globalMetaData.FreeSelectionIDList.Clear();
+            UpdatePointSelection();
+
+        }
         #endregion
 
         #region Link Clouds
@@ -825,19 +861,22 @@ namespace Data
 
         public void ChangeCollumnSelection(List<int> collumnList)
         {
-            
-            float xMax = Mathf.NegativeInfinity;
-            float xMin = Mathf.Infinity;
-            float yMax = Mathf.NegativeInfinity;
-            float yMin = Mathf.Infinity;
-            float zMax = Mathf.NegativeInfinity;
-            float zMin = Mathf.Infinity;
-            float iMax = Mathf.NegativeInfinity;
-            float iMin = Mathf.Infinity;
-            float tMax = Mathf.NegativeInfinity;
-            float tMin = Mathf.Infinity;
-
             CloudData currcloud = LoadCurrentStatus();
+
+            float xMax = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MaxValue;
+            float xMin = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MinValue;
+            float yMax = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MaxValue;
+            float yMin = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MinValue;
+            float zMax = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MaxValue;
+            float zMin = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MinValue;
+            float iMax = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MaxValue;
+            float iMin = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MinValue;
+            float tMax = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MaxValue;
+            float tMin = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MinValue;
+            float sMax = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MaxValue;
+            float sMin = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MinValue;
+
+
 
             GameObject trajobj = currcloud.trajectoryObject;
             currcloud.trajectoryObject = null;
@@ -847,6 +886,8 @@ namespace Data
             GameObject oriobj = currcloud.orientationObject;
             currcloud.orientationObject = null;
             Destroy(oriobj);
+
+
             List<float> TimeList = new List<float>();
             HashSet<float> TimeHash = new HashSet<float>();
             foreach (int key in currcloud.pointDataTable.Keys)
@@ -862,6 +903,7 @@ namespace Data
                 currcloud.pointDataTable[key].trajectory = currcloud.columnData[collumnList[5]][key];
                 currcloud.pointDataTable[key].intensity = currcloud.columnData[collumnList[3]][key];
 
+                /**
                 if (xMax < currcloud.pointDataTable[key].position.x) { xMax = currcloud.pointDataTable[key].position.x; }
                 if (xMin > currcloud.pointDataTable[key].position.x) { xMin = currcloud.pointDataTable[key].position.x; }
                 if (yMax < currcloud.pointDataTable[key].position.y) { yMax = currcloud.pointDataTable[key].position.y; }
@@ -872,7 +914,7 @@ namespace Data
                 if (iMin > currcloud.pointDataTable[key].intensity) { iMin = currcloud.pointDataTable[key].intensity; }
                 if (tMax < currcloud.pointDataTable[key].time) { tMax = currcloud.pointDataTable[key].time; }
                 if (tMin > currcloud.pointDataTable[key].time) { tMin = currcloud.pointDataTable[key].time; }
-
+            **/
                 TimeHash.Add(currcloud.pointDataTable[key].time);
 
             }
@@ -908,6 +950,7 @@ namespace Data
 
             int[] indices = new int[currcloud.pointDataTable.Count];
             Vector3[] verts = new Vector3[currcloud.pointDataTable.Count];
+            Vector2[] uv = new Vector2[currcloud.pointDataTable.Count];
             Vector2[] coloruv = new Vector2[currcloud.pointDataTable.Count];
             Vector2[] hiddenselecteduv = new Vector2[currcloud.pointDataTable.Count];
             Vector2[] trajectoryuv = new Vector2[currcloud.pointDataTable.Count]; 
@@ -917,6 +960,8 @@ namespace Data
                 currcloud.pointDataTable[key].normed_position = normedposition;
                 currcloud.pointDataTable[key]._color_index = (currcloud.pointDataTable[key].intensity - iMin) / (iMax - iMin);
                 currcloud.pointDataTable[key].frame = FrameDict[currcloud.pointDataTable[key].time];
+                
+                currcloud.pointDataTable[key].size = (currcloud.columnData[collumnList[8]][key] - sMin) / (sMax - sMin);
 
                 indices[key] = key;
                 verts[key] = normedposition;
@@ -935,6 +980,7 @@ namespace Data
                     selected = 1f;
                 }
 
+                uv[key] = new Vector2(currcloud.pointDataTable[key].size, 0f);
                 coloruv[key] = new Vector2(currcloud.pointDataTable[key]._color_index,key);
                 hiddenselecteduv[key] = new Vector2(selected,hidden);
                 trajectoryuv[key] = new Vector2(currcloud.pointDataTable[key].trajectory, currcloud.pointDataTable[key].frame);
@@ -995,6 +1041,7 @@ namespace Data
             Mesh mesh = currcloud.gameObject.GetComponent<MeshFilter>().mesh;
             mesh.vertices = verts;
             mesh.SetIndices(indices, MeshTopology.Points, 0);
+            mesh.uv = uv;
             mesh.uv2 = coloruv;     // colorID, pointID
             mesh.uv3 = hiddenselecteduv;    // isSelected, isHidden
             //mesh.uv4 = trajectoryuv;
@@ -1002,6 +1049,7 @@ namespace Data
 
             ChangeCurrentColorMap(currcloud.globalMetaData.colormapName,currcloud.globalMetaData.colormapReversed);
             currcloud.globalMetaData.displayCollumnsConfiguration = collumnList.ToArray();
+            ChangeThreshold();
         }
         #region Thresholding
         public void ChangeThreshold()
@@ -1352,8 +1400,6 @@ namespace Data
                     {
                         thread = PointSelectionThreadList.Dequeue();
                         Debug.Log("thread dequeued");
-                        //ChangeColorMap(thread.data.globalMetaData.cloud_id, thread.data.globalMetaData.colormapName, thread.data.globalMetaData.colormapReversed);
-                        Debug.Log("Colormap Changed");
                         thread.PointCloudMesh.uv3 = thread.PCuv3Array;
                         thread.data.GetComponent<MeshFilter>().mesh = thread.PointCloudMesh;
                         if (thread.data.trajectoryObject)
@@ -1426,8 +1472,6 @@ namespace Data
         protected override void Run()
         {
             //mesh = new Mesh();
-            vertices = new List<Vector3>();
-            indices = new List<int>();
 
             /**
             Debug.Log("xmin thresh"+currcloud.globalMetaData.xMinThreshold);
@@ -1440,29 +1484,37 @@ namespace Data
             Debug.Log("tmax thresh" + currcloud.globalMetaData.tMaxThreshold);
             **/
 
-            int counter = 0;
             foreach (KeyValuePair<int, PointData> kvp in currcloud.pointDataTable)
             {
                 //Debug.Log(kvp.Value.time);
-                vertices.Add(kvp.Value.normed_position);
-                indices.Add(counter);
+                currcloud.pointMetaDataTable[kvp.Key].isHidden = false;
+                uv2List[kvp.Key].y = 0f;
+
+                foreach (int i in currcloud.globalMetaData.displayCollumnsConfiguration)
+                {
+                    if(currcloud.columnData[i][kvp.Key] < currcloud.globalMetaData.columnMetaDataList[i].MinThreshold || currcloud.columnData[i][kvp.Key] > currcloud.globalMetaData.columnMetaDataList[i].MaxThreshold)
+                    {
+                        currcloud.pointMetaDataTable[kvp.Key].isHidden = true;
+                        uv2List[kvp.Key].y = 1f;
 
 
+                    }
+                }
+                /**
                 if (kvp.Value.position.x > currcloud.globalMetaData.xMinThreshold && kvp.Value.position.y > currcloud.globalMetaData.yMinThreshold && kvp.Value.position.z > currcloud.globalMetaData.zMinThreshold &&
                    kvp.Value.position.x < currcloud.globalMetaData.xMaxThreshold && kvp.Value.position.y < currcloud.globalMetaData.yMaxThreshold && kvp.Value.position.z < currcloud.globalMetaData.zMaxThreshold &&
                    kvp.Value.time > currcloud.globalMetaData.tMinThreshold && kvp.Value.time < currcloud.globalMetaData.tMaxThreshold)
                 {
                     currcloud.pointMetaDataTable[kvp.Key].isHidden = false;
                     uv2List[kvp.Key].y = 0f;
-                    counter++;
 
                 }
                 else
                 {
                     currcloud.pointMetaDataTable[kvp.Key].isHidden = true;
                     uv2List[kvp.Key].y = 1f;
-
                 }
+                **/
             }
 
             //Debug.Log(counter);
@@ -1561,12 +1613,19 @@ namespace Data
             {
                 currentCloud.globalMetaData.densityCalculated = true;
                 currentCloud.columnData.Add(densityArray);
+                currentCloud.globalMetaData.columnMetaDataList.Add(new ColumnMetadata());
             }
             else
             {
                 currentCloud.columnData[currentCloud.columnData.Count-1] = densityArray;
 
             }
+            currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].ColumnID = currentCloud.globalMetaData.columnMetaDataList.Count-1;
+            currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MaxValue = currentCloud.globalMetaData.dMax;
+            currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinValue = currentCloud.globalMetaData.dMin;
+            currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MaxThreshold = currentCloud.globalMetaData.dMax;
+            currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinThreshold = currentCloud.globalMetaData.dMin;
+
             isRunning = false;
         }
 

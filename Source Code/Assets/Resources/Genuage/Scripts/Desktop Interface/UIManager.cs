@@ -46,7 +46,11 @@ namespace DesktopInterface
         public List<Slider> slidersList;
         public List<InputField> inputfieldList;
         public Dictionary<int,Button> selectionButtonsDict;
+        public Dictionary<int, Button> VRselectionButtonsDict;
+
         public Dictionary<int, Button> closeButtonsDict;
+        public Dictionary<int, Button> VRcloseButtonsDict;
+
         // Start is called before the first frame update
 
         private void Awake()
@@ -56,7 +60,10 @@ namespace DesktopInterface
                 instance = this;
                 //DontDestroyOnLoad(gameObject);
                 selectionButtonsDict = new Dictionary<int, Button>();
+                VRselectionButtonsDict = new Dictionary<int, Button>();
                 closeButtonsDict = new Dictionary<int, Button>();
+                VRcloseButtonsDict = new Dictionary<int, Button>();
+
             }
             else
             {
@@ -81,6 +88,12 @@ namespace DesktopInterface
                 i.interactable = false;
             }
 
+            foreach (KeyValuePair<int, Button> item in VRselectionButtonsDict)
+            {
+                item.Value.interactable = false;
+            }
+
+
             foreach (KeyValuePair<int,Button> item in selectionButtonsDict)
             {
                 item.Value.interactable = false;
@@ -90,6 +103,12 @@ namespace DesktopInterface
             {
                 item.Value.interactable = false;
             }
+
+            foreach (KeyValuePair<int, Button> item in VRcloseButtonsDict)
+            {
+                item.Value.interactable = false;
+            }
+
         }
 
         public void ActivateUI()
@@ -119,6 +138,16 @@ namespace DesktopInterface
                 item.Value.interactable = true;
             }
 
+            foreach (KeyValuePair<int, Button> item in VRselectionButtonsDict)
+            {
+                item.Value.interactable = true;
+            }
+
+            foreach (KeyValuePair<int, Button> item in VRcloseButtonsDict)
+            {
+                item.Value.interactable = true;
+            }
+
         }
 
         public void DeactivateSelectionButtons()
@@ -132,16 +161,26 @@ namespace DesktopInterface
             {
                 item.Value.interactable = false;
             }
+
+            foreach (KeyValuePair<int, Button> item in VRselectionButtonsDict)
+            {
+                item.Value.interactable = false;
+            }
+
+            foreach (KeyValuePair<int, Button> item in VRcloseButtonsDict)
+            {
+                item.Value.interactable = false;
+            }
         }
 
         public void ActivateSelectionButtons()
         {
-            foreach (KeyValuePair<int, Button> item in selectionButtonsDict)
+            foreach (KeyValuePair<int, Button> item in VRselectionButtonsDict)
             {
                 item.Value.interactable = true;
             }
 
-            foreach (KeyValuePair<int, Button> item in closeButtonsDict)
+            foreach (KeyValuePair<int, Button> item in VRcloseButtonsDict)
             {
                 item.Value.interactable = true;
             }
