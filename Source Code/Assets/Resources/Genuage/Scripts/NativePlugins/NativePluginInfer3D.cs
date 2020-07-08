@@ -100,6 +100,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
     public GameObject resultwindow;
 
+    public Vector3 ArrowLocalPosition;
 
     int N;
     double* trajectories;
@@ -114,7 +115,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
     double* ForceZ;
 
     [DllImport("Infer3DPlugin")]
-    private static extern void Infer3D(int headerID,int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
+    private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
 
     private void Awake()
     {
@@ -137,10 +138,14 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
         Debug.Log("uptime " + data.globalMetaData.uppertimeLimit);
 
-
+        float xaverage, yaverage, zaverage;
+        float xsum = 0;
+        float ysum = 0;
+        float zsum = 0;
+        int pointnumber = 0;
         foreach (float i in selectedtrajectorySet)
         {
-            foreach(int j in data.pointTrajectoriesTable[i].metadata.selectedpointsIDList)
+            foreach (int j in data.pointTrajectoriesTable[i].metadata.selectedpointsIDList)
             {
                 if (data.pointMetaDataTable[j].isHidden == false)
                 {
@@ -155,11 +160,21 @@ public unsafe class NativePluginInfer3D : NativePlugin
                         Yvalues.Add((double)data.pointDataTable[j].position.y);
                         Zvalues.Add((double)data.pointDataTable[j].position.z);
                         Tvalues.Add((double)data.pointDataTable[j].time);
+
+                        xsum += data.pointDataTable[j].normed_position.x;
+                        ysum += data.pointDataTable[j].normed_position.y;
+                        zsum += data.pointDataTable[j].normed_position.z;
+                        pointnumber++;
                     }
                 }
             }
         }
-    
+
+        xaverage = xsum / pointnumber;
+        yaverage = ysum / pointnumber;
+        zaverage = zsum / pointnumber;
+
+        ArrowLocalPosition = new Vector3(xaverage, yaverage, zaverage);
 
         //DEBUG
         /**
@@ -194,7 +209,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
         }
     
         Debug.Log(TrajectoriesList.Count);
-    **/
+        **/
         //END DEBUG
         double[] TrajectoriesArray = TrajectoriesList.ToArray();
         double[] XvaluesArray = Xvalues.ToArray();
@@ -204,7 +219,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
         fixed (double* Trajectoriespointer = TrajectoriesArray)
         {
-            fixed(double* xvalues = XvaluesArray)
+            fixed (double* xvalues = XvaluesArray)
             {
                 fixed (double* yvalues = YvaluesArray)
                 {
@@ -232,7 +247,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
                             headerID = (HeaderID)headerDropdown.value;
                             paramID = (ParamID)paramDropdown.value;
-                           // Debug.Log("FunctionID - "+(int)functionID);
+                            // Debug.Log("FunctionID - "+(int)functionID);
                             double.TryParse(SigmaInput.text, out Sigma);
                             double.TryParse(SigmaxyInput.text, out SigmaXY);
                             double.TryParse(SigmazInput.text, out SigmaZ);
@@ -242,8 +257,8 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             Debug.Log("Sigmaxy " + SigmaXY);
                             Debug.Log("Sigmaz " + SigmaZ);
 
-                            
-                            Infer3D((int)headerID, (int)paramID, Sigma,SigmaXY,SigmaZ,N, trajectories, xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
+
+                            Infer3D((int)headerID, (int)paramID, Sigma, SigmaXY, SigmaZ, N, trajectories, xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
                             double diffusionres = *Diffusion;
                             double forceXres = *ForceX;
                             double forceYres = *ForceY;
@@ -255,28 +270,30 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
                             ResultsString = "diffusion : " + diffusionres + "\n" + "forceX : " + forceXres + "\n"
                                             + "forceY : " + forceYres + "\n" + "forceZ : " + forceZres + "\n";
-                            Debug.Log("N : "+N);
+                            Debug.Log("N : " + N);
                             Debug.Log("diffusion : " + *Diffusion);
                             Debug.Log("forceX : " + *ForceX);
                             Debug.Log("forceY : " + *ForceY);
                             Debug.Log("forceZ : " + *ForceZ);
 
                             GameObject go = new GameObject("ARROW");
-                            go.transform.SetParent(data.transform);
+                            go.transform.position = Vector3.zero;
+                            go.transform.SetParent(data.transform, true);
+
+                            //go.transform.SetParent(data.transform);
                             go.AddComponent<GenerateArrow>();
                             go.GetComponent<GenerateArrow>().GenerateTriangularArrowMesh(new Vector3((float)*ForceX, (float)*ForceY, (float)*ForceZ).normalized);
-                            go.transform.SetParent(data.transform);
+                            go.transform.localPosition = ArrowLocalPosition;
+                            Debug.Log("ArrowCalculatedpos : " + ArrowLocalPosition);
+                            Debug.Log("ArrowWorldPos : " + go.transform.position);
+                            Debug.Log("ArrowLocalPos : " + go.transform.localPosition);
+
 
                         }
                     }
                 }
             }
         }
-        
-
-        
-
-
     }
 
 

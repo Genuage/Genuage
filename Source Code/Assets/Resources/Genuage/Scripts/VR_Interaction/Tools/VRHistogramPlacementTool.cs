@@ -75,6 +75,8 @@ namespace VR_Interaction
                     containersList = new Dictionary<int, VRContainer>();
                     foreach (var obj in CloudUpdater.instance.LoadStatus(id).globalMetaData.histogramList)
                     {
+                        obj.Value.SetActive(true);
+
                         VRContainerHistogram containerscript = obj.Value.GetComponent<VRContainerHistogram>();
 
                         containersList.Add(containerscript.id, containerscript);

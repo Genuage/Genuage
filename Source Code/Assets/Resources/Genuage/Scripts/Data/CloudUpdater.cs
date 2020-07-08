@@ -295,7 +295,7 @@ namespace Data
             
             
             OnColorMapChange(newMapName);
-            Debug.Log("eventcheck");
+            //Debug.Log("eventcheck");
             currentCloud.globalMetaData.colormapName = newMapName;
             
             /**
@@ -417,8 +417,8 @@ namespace Data
 
         public delegate void OnColorMapSaturationChangeEvent(float value1, float value2);
         public event OnColorMapSaturationChangeEvent OnColorMapSaturationChange;
-        
-        /**
+
+        //New Version
         public override void ChangeColorMapSaturation(float value1, float value2, string id)
         {
 
@@ -426,7 +426,6 @@ namespace Data
             ColorMap ColorMap = ColorMapManager.instance.GetColorMap(currentCloud.globalMetaData.colormapName);
             Texture2D texture = ColorMap.texture;
             //Color[] colormapArray = texture.GetPixels();
-            Mesh mesh = currentCloud.gameObject.GetComponent<MeshFilter>().mesh;
 
             float delta = 1.0f;
 
@@ -435,8 +434,6 @@ namespace Data
             Texture2D newtexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
             newtexture.wrapMode = TextureWrapMode.Clamp;
             Color[] colormapArray = newtexture.GetPixels();
-
-
 
             float cmin = 0.0f;
             float cmax = 1.0f;
@@ -453,40 +450,40 @@ namespace Data
                     cmax = value1;
                     break;
                 default:
-                    Debug.Log("colormap error");
+                    Debug.Log("colormap saturation error");
                     break;
             }
-
-            int spacing = (int)(256 / (ColorMap.colorArray.Length - 1)) ;
-
-            float spaceleft = (cmax * 255f) - (cmin * 255f);
-            int spacingspaceleft = (int)(spaceleft / (ColorMap.colorArray.Length - 1));
-
-            for (int i = 0; i < texture.width; i++)
+            delta = Mathf.Abs(cmax - cmin);
+            if(delta == 0)
             {
-                int j = Mathf.Min(i / spacingspaceleft, ColorMap.colorArray.Length - 2);
+                delta = 0.00000000001f;
+            }
+            int spacing = (int)(256/ (ColorMap.colorArray.Length));
+            int deltaspacing = (int)(delta*256 / (ColorMap.colorArray.Length));
 
-                if (i < (int)(cmin * 255f))
-                {
-                    newtexture.SetPixel(i, 0, ColorMap.colorArray[0]);
-                }
-                else
-                {
-                    newtexture.SetPixel(i, 0, Color.Lerp(ColorMap.colorArray[j], ColorMap.colorArray[j + 1], i - j/ spacingspaceleft));
-                    
-                    //colormap_texture.SetPixel(i, 0, Color.Lerp(colors[j], colors[j + 1], (float)(i - j * spacing) / (float)spacing));
+            for (int i = 0; i < colormapArray.Length; i++)
+            {
 
-                    //colormapArray[i] = Color.Lerp(ColorMap.colorArray[0], ColorMap.colorArray[1], (float)(i - cmin * 255f) / (255f) / delta);
-                }
-                
-                if (i > (int)(cmax * 255f))
+                if (i <= (int)(cmin * 255f))
                 {
-                    newtexture.SetPixel(i, 0, ColorMap.colorArray[ColorMap.colorArray.Length-1]);
+                    colormapArray[i] = ColorMap.colorArray[0];
+                }
+                else if (i >= (int)(cmax * 255f))
+                {
+                    colormapArray[i] = ColorMap.colorArray[ColorMap.colorArray.Length-1];//Color.Lerp(ColorMap.colorArray[0], ColorMap.colorArray[1], (float)(i - cmin * 255f) / (255f) / delta);
                 }
                 
             }
 
-            //newtexture.SetPixels(colormapArray);
+            for (int i = (int)(cmin * 255f); i < (int)(cmax * 255f); i++)
+            {
+                int j = Mathf.Min((int)(i - cmin*255f) / deltaspacing, ColorMap.colorArray.Length - 2);
+
+                colormapArray[i] = Color.Lerp(ColorMap.colorArray[j], ColorMap.colorArray[j + 1], (float)((i - (cmin * 255f) - (j * deltaspacing)) /deltaspacing / delta)); //Color.Lerp(ColorMap.colorArray[0], ColorMap.colorArray[1], (float)(i - cmin * 255f) / (255f) / delta);
+
+            }
+
+            newtexture.SetPixels(colormapArray);
             newtexture.Apply();
             ColorMap.texture = newtexture;
             OnColorMapSaturationChange(value1, value2);
@@ -498,9 +495,10 @@ namespace Data
 
 
         }
-        **/
 
-        
+        //OLD VERSION, IN CASE OF PROBLEMS
+
+        /**
         public override void ChangeColorMapSaturation(float value1, float value2, string id)
         {
 
@@ -534,7 +532,7 @@ namespace Data
                     cmax = value1;
                     break;
                 default:
-                    Debug.Log("colormap error");
+                    Debug.Log("colormap saturation error");
                     break;
             }
 
@@ -564,7 +562,7 @@ namespace Data
 
 
         }
-
+        **/
 
         public void UpdateFreezableClippingPlanes(GameObject[] goArray)
         {
@@ -579,6 +577,7 @@ namespace Data
             Material material = currentCloud.gameObject.GetComponent<MeshRenderer>().material;
             material.SetFloat("_Size", value / 50);
             currentCloud.globalMetaData.point_size = value;
+            Debug.Log("PointSize Changed");
         }
 
         #endregion
@@ -600,14 +599,25 @@ namespace Data
                     Debug.Log(currcloud.globalMetaData.upperframeLimit);
                     foreach (var kvp in currcloud.globalMetaData.sphereList)
                     {
+                        if (kvp.Value.activeInHierarchy)
+                        {
+                            Lists.Add(kvp.Value.transform.GetChild(0).GetComponent<PointSelectorSphere>().selectedPoints);
 
-                        Lists.Add(kvp.Value.transform.GetChild(0).GetComponent<PointSelectorSphere>().selectedPoints);
+                        }
                     }
                     foreach (var kvp in currcloud.globalMetaData.convexHullsList)
                     {
-                        Lists.Add(kvp.Value.GetComponent<PointSelectorConvexHull>().selectedPoints);
+                        if (kvp.Value.activeInHierarchy)
+                        {
+                            Lists.Add(kvp.Value.GetComponent<PointSelectorConvexHull>().selectedPoints);
+                        }
                     }
-                    Lists.Add(currcloud.globalMetaData.FreeSelectionIDList);
+
+                    if (currcloud.globalMetaData.FreeSelectionON)
+                    {
+                        Lists.Add(currcloud.globalMetaData.FreeSelectionIDList);
+
+                    }
 
                     if (currcloud.trajectoryObject)
                     {
@@ -658,6 +668,20 @@ namespace Data
             UpdatePointSelection();
 
         }
+
+        public void SwitchFreeSelectionActivation()
+        {
+            CloudData currcloud = LoadCurrentStatus();
+            currcloud.globalMetaData.FreeSelectionON = !currcloud.globalMetaData.FreeSelectionON;
+            UpdatePointSelection();
+        }
+        public void ChangeFreeSelectionActivation(bool status)
+        {
+            CloudData currcloud = LoadCurrentStatus();
+            currcloud.globalMetaData.FreeSelectionON = status;
+            UpdatePointSelection();
+        }
+        
         #endregion
 
         #region Link Clouds
@@ -1341,21 +1365,21 @@ namespace Data
             CloudData currcloud = LoadCurrentStatus();
             float phisum = 0f;
             float thetasum = 0f;
-            foreach(KeyValuePair<int, PointData> item in currcloud.pointDataTable)
+            foreach(int i in currcloud.globalMetaData.SelectedPointsList)
             {
-                phisum += item.Value.phi_angle;
-                thetasum += item.Value.theta_angle;
+                phisum += currcloud.pointDataTable[i].phi_angle;
+                thetasum += currcloud.pointDataTable[i].theta_angle;
             }
 
-            thetasum = thetasum / currcloud.pointDataTable.Count;
-            phisum = phisum / currcloud.pointDataTable.Count;
+            thetasum = thetasum / currcloud.globalMetaData.SelectedPointsList.Count;
+            phisum = phisum / currcloud.globalMetaData.SelectedPointsList.Count;
             string str = "Mean Orientation value :\n" +
                 "Theta : " + Math.Round(thetasum,3).ToString() + "\n" +
                 "Phi : " + Math.Round(phisum, 3).ToString();
 
-            currcloud.globalMetaData.meanPhiAngle = phisum;
-            currcloud.globalMetaData.meanThetaAngle = thetasum;
-
+            //currcloud.globalMetaData.meanPhiAngle = phisum;
+            //currcloud.globalMetaData.meanThetaAngle = thetasum;
+            //TODO : Inplement saving function into metadata
             ModalWindowManager.instance.CreateModalWindow(str);
         }
         #endregion

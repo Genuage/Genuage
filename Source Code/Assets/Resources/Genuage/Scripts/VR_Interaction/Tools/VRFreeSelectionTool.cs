@@ -93,7 +93,7 @@ namespace VR_Interaction
             diameter = 0.07f;
             FreeSelectionUICanvas = GetComponent<ControllerObjectsRefference>().CanvasFreeSelection;
             FreeSelectionUICanvas.SetActive(true);
-
+            CloudUpdater.instance.ChangeFreeSelectionActivation(true);
             jobON = true;
             Shader.EnableKeyword("FREE_SELECTION");
 

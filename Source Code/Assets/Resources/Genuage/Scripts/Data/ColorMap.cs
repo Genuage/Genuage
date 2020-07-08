@@ -64,8 +64,9 @@ namespace Data
 
         private Texture2D CreateColormap(Color[] colors)
         {
+            //Debug.Log(colors.Length);
             int width = 256;
-            int spacing = width / (colors.Length - 1);
+            int spacing = width / (colors.Length);
 
             Texture2D colormap_texture = new Texture2D(width, 1, TextureFormat.RGBA32, true);
             colormap_texture.filterMode = FilterMode.Bilinear;

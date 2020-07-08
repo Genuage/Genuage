@@ -143,7 +143,13 @@ namespace VR_Interaction
 
         private void OnDisable()
         {
-            //CloudUpdater.OverrideColor(point)
+            CloudUpdater.instance.UpdatePointSelection();
+        }
+
+        private void OnEnable()
+        {
+            CloudUpdater.instance.UpdatePointSelection();
+
         }
 
         protected override void OnDestroy()

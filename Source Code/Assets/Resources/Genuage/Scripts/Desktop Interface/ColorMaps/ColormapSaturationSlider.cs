@@ -76,7 +76,7 @@ namespace DesktopInterface
             }
             if(map.colorArray.Length > 2)
             {
-                slider.interactable = false;
+                //slider.interactable = false;
                 //Debug.Log("falsecheck");
             }
             else
