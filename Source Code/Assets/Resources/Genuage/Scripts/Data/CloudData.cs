@@ -290,8 +290,8 @@ namespace Data
         private Vector2 _normed_d;
 
 
-        public float meanPhiAngle;
-        public float meanThetaAngle;
+        //public float meanPhiAngle;
+        //public float meanThetaAngle;
 
 
         private Dictionary<int, List<int>> _pointbyLocationList;
@@ -336,7 +336,7 @@ namespace Data
         public Dictionary<int, GameObject> histogramList;
 
         public HashSet<int> FreeSelectionIDList;
-
+        public bool FreeSelectionON = true;
 
         public GameObject[] ClippingPlanesList;
 

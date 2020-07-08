@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Data;
 
 namespace VR_Interaction
 {
@@ -44,5 +45,15 @@ namespace VR_Interaction
             VRObjectsManager.instance.ContainerDeleted(id, "Sphere");
         }
 
+        private void OnDisable()
+        {
+            CloudUpdater.instance.UpdatePointSelection();
+        }
+
+        private void OnEnable()
+        {
+            CloudUpdater.instance.UpdatePointSelection();
+
+        }
     }
 }

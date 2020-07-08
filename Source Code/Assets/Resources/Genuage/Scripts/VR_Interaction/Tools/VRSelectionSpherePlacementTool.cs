@@ -63,6 +63,8 @@ namespace VR_Interaction
                     containersList = new Dictionary<int, VRContainer>();
                     foreach (var obj in CloudUpdater.instance.LoadStatus(id).globalMetaData.sphereList)
                     {
+                        obj.Value.SetActive(true);
+
                         VRContainerSelectionSphere containerscript = obj.Value.GetComponent<VRContainerSelectionSphere>();
 
                         containersList.Add(containerscript.id, containerscript);

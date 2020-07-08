@@ -58,6 +58,8 @@ namespace VR_Interaction
                     containersList = new Dictionary<int, VRContainer>();
                     foreach (var obj in CloudUpdater.instance.LoadStatus(id).globalMetaData.rulerPointsList)
                     {
+                        obj.Value.SetActive(true);
+
                         VRContainerRuler containerscript = obj.Value.GetComponent<VRContainerRuler>();
 
                         containersList.Add(containerscript.id, containerscript);

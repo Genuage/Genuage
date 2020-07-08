@@ -60,6 +60,8 @@ namespace VR_Interaction
                     containersList = new Dictionary<int, VRContainer>();
                     foreach (var obj in CloudUpdater.instance.LoadStatus(id).globalMetaData.convexHullsList)
                     {
+                        obj.Value.SetActive(true);
+
                         VRContainerConvexHull containerscript = obj.Value.GetComponent<VRContainerConvexHull>();
 
                         containersList.Add(containerscript.id, containerscript);

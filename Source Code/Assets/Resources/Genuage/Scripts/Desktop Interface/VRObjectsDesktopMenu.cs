@@ -130,41 +130,35 @@ namespace DesktopInterface
         public void ContainerCreated(int id, GameObject container, string type)
         {
             GameObject newbutton = CreateButton(id, container);
-
-            if (type == "Counter")
+            switch (type)
             {
-                newbutton.transform.SetParent(CounterViewPort.transform);
-                CounterButtonsDict.Add(id, newbutton);
-
-            }
-            if (type == "Ruler")
-            {
-                newbutton.transform.SetParent(RulerViewPort.transform);
-                RulerButtonsDict.Add(id, newbutton);
-            }
-            if (type == "AngleMeasure")
-            {
-                newbutton.transform.SetParent(AngleMeasureViewPort.transform);
-                AngleMeasureButtonsDict.Add(id, newbutton);
-
-            }
-            if (type == "Histogram")
-            {
-                newbutton.transform.SetParent(HistogramViewPort.transform);
-                HistogramButtonsDict.Add(id, newbutton);
-
-            }
-            if (type == "Sphere")
-            {
-                newbutton.transform.SetParent(SphereViewPort.transform);
-                SphereButtonsDict.Add(id, newbutton);
-
-            }
-            if (type == "ConvexHull")
-            {
-                newbutton.transform.SetParent(ConvexHullViewPort.transform);
-                ConvexHullButtonsDict.Add(id, newbutton);
-
+                case "Counter":
+                    newbutton.transform.SetParent(CounterViewPort.transform);
+                    CounterButtonsDict.Add(id, newbutton);
+                    break;
+                case "Ruler":
+                    newbutton.transform.SetParent(RulerViewPort.transform);
+                    RulerButtonsDict.Add(id, newbutton);
+                    break;
+                case "AngleMeasure":
+                    newbutton.transform.SetParent(AngleMeasureViewPort.transform);
+                    AngleMeasureButtonsDict.Add(id, newbutton);
+                    break;
+                case "Histogram":
+                    newbutton.transform.SetParent(HistogramViewPort.transform);
+                    HistogramButtonsDict.Add(id, newbutton);
+                    break;
+                case "Sphere":
+                    newbutton.transform.SetParent(SphereViewPort.transform);
+                    SphereButtonsDict.Add(id, newbutton);
+                    break;
+                case "ConvexHull":
+                    newbutton.transform.SetParent(ConvexHullViewPort.transform);
+                    ConvexHullButtonsDict.Add(id, newbutton);
+                    break;
+                default:
+                    Debug.Log("VRO Menu Button Creation Error");
+                    break;
             }
         }
 
@@ -179,9 +173,9 @@ namespace DesktopInterface
 
         public void ContainerDeleted(int id, string type)
         {
-            
-                if (type == "Counter")
-                {
+            switch (type)
+            {
+                case "Counter":
                     if (CounterButtonsDict.ContainsKey(id))
                     {
                         Debug.Log("check");
@@ -189,11 +183,8 @@ namespace DesktopInterface
                         CounterButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
-
-                if (type == "Ruler")
-                {
-
+                    break;
+                case "Ruler":
                     if (RulerButtonsDict.ContainsKey(id))
                     {
                         Debug.Log("check");
@@ -201,48 +192,46 @@ namespace DesktopInterface
                         RulerButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
-
-                if (type == "AngleMeasure")
-                {
+                    break;
+                case "AngleMeasure":
                     if (AngleMeasureButtonsDict.ContainsKey(id))
                     {
                         GameObject go = AngleMeasureButtonsDict[id];
                         AngleMeasureButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
+                    break;
 
-                if (type == "Histogram")
-                {
+                case "Histogram":
                     if (HistogramButtonsDict.ContainsKey(id))
                     {
                         GameObject go = HistogramButtonsDict[id];
                         HistogramButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
+                    break;
 
-                if (type == "Sphere")
-                {
+                case "Sphere":
                     if (SphereButtonsDict.ContainsKey(id))
                     {
                         GameObject go = SphereButtonsDict[id];
                         SphereButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
-
-                if (type == "ConvexHull")
-                {
+                    break;
+                case "ConvexHull":
                     if (ConvexHullButtonsDict.ContainsKey(id))
                     {
                         GameObject go = ConvexHullButtonsDict[id];
                         ConvexHullButtonsDict.Remove(id);
                         Destroy(go);
                     }
-                }
+                    break;
+                default:
+                    Debug.Log("VRO Menu Button Deletion Error");
+                    break;
 
+            }
             
         }
 
