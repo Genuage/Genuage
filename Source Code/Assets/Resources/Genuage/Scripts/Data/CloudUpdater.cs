@@ -40,7 +40,8 @@ using VRTK;
 using Unity.Jobs;
 using Unity.Collections;
 using VR_Interaction;
-
+using IO;
+using DesktopInterface;
 
 /// <summary>
 /// CloudUpdater performs operations to change the data or metadata of a cloud, its functions can be called from the UI elements.
@@ -251,7 +252,11 @@ namespace Data
         {
             CloudData currentCloud = LoadCurrentStatus();
             currentCloud.globalMetaData.scale = new_scale;
-            currentCloud.transform.parent.localScale = new_scale;
+            currentCloud.transform.localScale = new_scale;
+            GameObject box = currentCloud.transform.parent.GetComponent<CloudObjectRefference>().box;
+            box.transform.localScale = new Vector3(currentCloud.globalMetaData.box_scale.x * new_scale.x,
+                                                   currentCloud.globalMetaData.box_scale.y * new_scale.y,
+                                                   currentCloud.globalMetaData.box_scale.z * new_scale.z);
         }
 
         public delegate void OnColorMapChangeEvent(string name);
@@ -577,6 +582,7 @@ namespace Data
             Material material = currentCloud.gameObject.GetComponent<MeshRenderer>().material;
             material.SetFloat("_Size", value / 50);
             currentCloud.globalMetaData.point_size = value;
+
             Debug.Log("PointSize Changed");
         }
 
@@ -681,7 +687,41 @@ namespace Data
             currcloud.globalMetaData.FreeSelectionON = status;
             UpdatePointSelection();
         }
-        
+
+        public void CreateCloudFromSelection()
+        {
+            //PROTOTYPE
+            if (!CloudSelector.instance.noSelection)
+            {
+                CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+                if (data.globalMetaData.SelectedPointsList.Count > 0)
+                {
+                    List<float[]> RawDataList = new List<float[]>();
+
+                    for (int i = 0; i < data.columnData.Count; i++)
+                    {
+                        float[] dataArray = new float[data.globalMetaData.SelectedPointsList.Count];
+                        RawDataList.Add(dataArray);
+                    }
+
+                    int k = 0;
+                    foreach (int id in data.globalMetaData.SelectedPointsList)
+                    {
+                        for (int j = 0; j < data.columnData.Count; j++)
+                        {
+                            RawDataList[j][k] = data.columnData[j][id];
+                        }
+                        k++;
+                    }
+
+                    ResetPointSelection();
+                    CloudLoader.instance.LoadFromRawData(RawDataList);
+
+                }
+            }
+
+        }
+
         #endregion
 
         #region Link Clouds
@@ -877,6 +917,7 @@ namespace Data
 
 
             }
+            CloudSelector.instance.UpdateSelection(CloudSelector.instance._selectedID);
             OnCloudUnlinked();
         }
         #endregion
@@ -1120,23 +1161,27 @@ namespace Data
         public void HideTrajectories()
         {
             CloudData data = LoadCurrentStatus();
-            MeshRenderer TrajectoriesRenderer = data.trajectoryObject.GetComponent<MeshRenderer>();
-            MeshRenderer PointsRenderer = data.GetComponent<MeshRenderer>();
-
-            TrajectoriesRenderer.enabled = false;
-            PointsRenderer.enabled = true;
-            PointsRenderer.material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count -1);
-            PointsRenderer.material.SetFloat("_LowerTimeLimit", 0);
-            if (data.orientationObject)
+            if (data.trajectoryObject)
             {
-                data.orientationObject.GetComponent<MeshRenderer>().material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
-                data.orientationObject.GetComponent<MeshRenderer>().material.SetFloat("_LowerTimeLimit", 0);
 
+
+                MeshRenderer TrajectoriesRenderer = data.trajectoryObject.GetComponent<MeshRenderer>();
+                MeshRenderer PointsRenderer = data.GetComponent<MeshRenderer>();
+
+                TrajectoriesRenderer.enabled = false;
+                PointsRenderer.enabled = true;
+                PointsRenderer.material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
+                PointsRenderer.material.SetFloat("_LowerTimeLimit", 0);
+                if (data.orientationObject)
+                {
+                    data.orientationObject.GetComponent<MeshRenderer>().material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
+                    data.orientationObject.GetComponent<MeshRenderer>().material.SetFloat("_LowerTimeLimit", 0);
+
+                }
+
+                data.globalMetaData.lowerframeLimit = 0;
+                data.globalMetaData.upperframeLimit = data.globalMetaData.timeList.Count - 1;
             }
-
-            data.globalMetaData.lowerframeLimit = 0;
-            data.globalMetaData.upperframeLimit = data.globalMetaData.timeList.Count-1;
-
         }
 
         private void CreateTrajectoryData(CloudData data)
@@ -1412,7 +1457,11 @@ namespace Data
                     densityJobON = false;
                     ChangeColorMap(idThreaded, cloud.globalMetaData.colormapName);
                     densityThreadHandle.StopThread();
-
+                    UIManager.instance.ChangeStatusText("Thread Status : " + densityThreadHandle.StatusMessage);
+                }
+                else
+                {
+                    UIManager.instance.ChangeStatusText("Thread Status : "+densityThreadHandle.StatusMessage);
                 }
             }
             if (selectionJobON)
@@ -1572,13 +1621,17 @@ namespace Data
             {
                 densityArray[e] = 0f;
             }
+            StatusMessage = "Looking for point locations";
             FindAllLocations(currentCloud, radius);
-
             Dictionary<int, List<int>> locations = currentCloud.globalMetaData.pointbyLocationList;
+            int index = 0;
+            int totalindex = locations.Count;
             foreach (KeyValuePair<int, List<int>> item in locations)
             {
                 Vector3Int index_3D = To3D(item.Key, Mathf.RoundToInt(defaultlocationsNumber), Mathf.RoundToInt(defaultlocationsNumber));
                 //Color color = new Color()
+                index++;
+                StatusMessage = "Calculating density in points at location " + index+"/"+totalindex;
                 foreach (int point in item.Value)
                 {
                     
@@ -1631,9 +1684,10 @@ namespace Data
 
                 }
             }
+            StatusMessage = "Saving density data";
 
             //currentCloud.globalMetaData.current_normed_variable = new Vector2(currentCloud.globalMetaData.dMin, currentCloud.globalMetaData.dMax);
-            if(currentCloud.globalMetaData.densityCalculated == false)
+            if (currentCloud.globalMetaData.densityCalculated == false)
             {
                 currentCloud.globalMetaData.densityCalculated = true;
                 currentCloud.columnData.Add(densityArray);
@@ -1649,7 +1703,8 @@ namespace Data
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinValue = currentCloud.globalMetaData.dMin;
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MaxThreshold = currentCloud.globalMetaData.dMax;
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinThreshold = currentCloud.globalMetaData.dMin;
-
+            
+            
             isRunning = false;
         }
 

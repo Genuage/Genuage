@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2887520844563940610}
-  - component: {fileID: 7796961227040406396}
   - component: {fileID: 6827595888624083325}
   m_Layer: 0
   m_Name: CloudPointContainer
@@ -33,19 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7796961227040406396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2463286304192725846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9235fd730a509334b8a633858d3cd23d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _state_to_change: {fileID: 0}
 --- !u!114 &6827595888624083325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b52a6856efc844783f1e62cecdc9df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cloud: {fileID: 0}
+  box: {fileID: 0}
 --- !u!1 &6177789406996050554
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,6 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83a9f33a12109647a916ae731296243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trajectoryObject: {fileID: 0}
+  orientationObject: {fileID: 0}
 --- !u!23 &1295486899877164006
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -54,7 +54,24 @@ namespace DesktopInterface
         {
             button = GetComponent<Button>();
             initializeClickEvent();
+            CloudSelector.instance.OnSelectionChange += onSelectionChange;
+
         }
+
+        public void onSelectionChange(int id)
+        {
+            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+            if (data.orientationObject)
+            {
+                orientationModeON = true;
+                Execute();
+            }
+            else
+            {
+                orientationModeON = false;
+            }
+        }
+
         public override void Execute()
         {
             int thetaindex;
@@ -85,7 +102,7 @@ namespace DesktopInterface
                         List<float> zvalues = new List<float>();
 
                         List<Color> color = new List<Color>();
-
+                        List<float> coloruv = new List<float>();
 
                         float[] xvalue = data.columnData[data.columnData.Count - 3];
                         float[] yvalue = data.columnData[data.columnData.Count - 2];
@@ -102,29 +119,49 @@ namespace DesktopInterface
 
                             color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
                             color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
-                         }
+                            float mean = Mathf.Rad2Deg * ((phi + theta) / 2f);
+                            coloruv.Add(mean / 360f);
+                            //coloruv.Add(phi / 360f);
+                        }
 
-                        
+
 
                         Mesh mesh = new Mesh();
                         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                         List<Vector3> vertices = new List<Vector3>();
                         List<int> indices = new List<int>();
+                        List<Vector2> UV1List = new List<Vector2>();
+                        List<Vector2> UV2List = new List<Vector2>();
+
                         List<Vector2> UV3List = new List<Vector2>();
                         int index = 0;
-                        /**
-                        vertices.Add(new Vector3(xvalue[0], yvalue[0], zvalue[0]));
-                        color.Add(Color.blue);
-                **/
-                        for (int i = 0; i < xvalues.Count; i++)
-                        {
+                /**
+                vertices.Add(new Vector3(xvalue[0], yvalue[0], zvalue[0]));
+                color.Add(Color.blue);
+        **/
+                        float hidden = 0f;
+                        float selected = 0f;
+
+                for (int i = 0; i < xvalues.Count; i++)
+                {
                             //vertices.Add(data.pointDataTable[i].normed_position - (new Vector3(xvalue[i], yvalue[i], zvalue[i]).normalized * 0.001f));
+                            hidden = 0f;
+                            selected = 0f;
+                            if (data.pointMetaDataTable[i].isHidden)
+                            {
+                                 hidden = 1f;
+                            }
+                            if (data.pointMetaDataTable[i].isSelected)
+                            {
+                                selected = 1f;
+                            }
 
                             vertices.Add(data.pointDataTable[i].normed_position - (new Vector3(xvalues[i], yvalues[i], zvalues[i])));
                             indices.Add(index);
                             UV3List.Add(new Vector2(data.pointDataTable[i].trajectory, data.pointDataTable[i].frame));
-
+                            UV1List.Add(new Vector2(coloruv[i], data.pointDataTable[i].pointID));
+                            UV2List.Add(new Vector2(selected, hidden));
                             index++;
 
                             //vertices.Add(data.pointDataTable[i].normed_position + (new Vector3(xvalue[i], yvalue[i], zvalue[i]).normalized * 0.001f));
@@ -132,12 +169,16 @@ namespace DesktopInterface
                             vertices.Add(data.pointDataTable[i].normed_position + (new Vector3(xvalues[i], yvalues[i], zvalues[i])));
                             indices.Add(index);
                             UV3List.Add(new Vector2(data.pointDataTable[i].trajectory, data.pointDataTable[i].frame));
+                            UV1List.Add(new Vector2(coloruv[i], data.pointDataTable[i].pointID));
+                            UV2List.Add(new Vector2(selected, hidden));
 
                             index++;
-                        }
+                }
                         mesh.vertices = vertices.ToArray();
                         mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
-                        mesh.colors = color.ToArray();
+                        //mesh.colors = color.ToArray();
+                        mesh.uv2 = UV1List.ToArray();
+                        mesh.uv3 = UV2List.ToArray();
                         mesh.uv4 = UV3List.ToArray();
                         GameObject orientationChild = new GameObject();
                         orientationChild.transform.SetParent(data.transform, false);
@@ -145,6 +186,9 @@ namespace DesktopInterface
                         orientationChild.AddComponent<MeshRenderer>();
                         orientationChild.GetComponent<MeshFilter>().mesh = mesh;
                         Material material = new Material(Shader.Find("Genuage/UnlitLineShader"));
+                        
+                        material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("jet").texture);
+
                         material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
                         material.SetFloat("_LowerTimeLimit", 0f);
 

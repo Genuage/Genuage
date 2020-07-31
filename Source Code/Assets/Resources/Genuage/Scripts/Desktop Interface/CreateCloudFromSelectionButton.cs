@@ -31,7 +31,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using Data;
 using IO;
-using Microsoft.SqlServer.Server;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,35 +51,7 @@ namespace DesktopInterface
 
         public override void Execute()
         {
-            //PROTOTYPE
-            if (!CloudSelector.instance.noSelection)
-            {
-                CloudData data = CloudUpdater.instance.LoadCurrentStatus();
-                if (data.globalMetaData.SelectedPointsList.Count > 0)
-                {
-                    List<float[]> RawDataList = new List<float[]>();
-
-                    for (int i = 0; i < data.columnData.Count; i++)
-                    {
-                        float[] dataArray = new float[data.globalMetaData.SelectedPointsList.Count];
-                        RawDataList.Add(dataArray);
-                    }
-
-                    int  k = 0;
-                    foreach (int id in data.globalMetaData.SelectedPointsList)
-                    {
-                        for(int j = 0;j < data.columnData.Count; j++)
-                        {
-                            RawDataList[j][k] = data.columnData[j][id];
-                        }
-                        k++;
-                    }
-
-                    CloudUpdater.instance.ResetPointSelection();
-                    CloudLoader.instance.LoadFromRawData(RawDataList);
-                    
-                }
-            }
+            CloudUpdater.instance.CreateCloudFromSelection();
         }
     }
 }

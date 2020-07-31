@@ -51,6 +51,7 @@ namespace DesktopInterface
         public Dictionary<int, Button> closeButtonsDict;
         public Dictionary<int, Button> VRcloseButtonsDict;
 
+        public Text StatusText;
         // Start is called before the first frame update
 
         private void Awake()
@@ -108,6 +109,7 @@ namespace DesktopInterface
             {
                 item.Value.interactable = false;
             }
+
 
         }
 
@@ -175,6 +177,15 @@ namespace DesktopInterface
 
         public void ActivateSelectionButtons()
         {
+            foreach (KeyValuePair<int, Button> item in selectionButtonsDict)
+            {
+                item.Value.interactable = true;
+            }
+
+            foreach (KeyValuePair<int, Button> item in closeButtonsDict)
+            {
+                item.Value.interactable = true;
+            }
             foreach (KeyValuePair<int, Button> item in VRselectionButtonsDict)
             {
                 item.Value.interactable = true;
@@ -185,6 +196,16 @@ namespace DesktopInterface
                 item.Value.interactable = true;
             }
 
+        }
+
+        public void ChangeStatusText(string newtext)
+        {
+            StatusText.text = newtext;
+        }
+
+        public void ResetStatusText()
+        {
+            StatusText.text = "Idle";
         }
     }
 }

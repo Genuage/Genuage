@@ -79,53 +79,87 @@ namespace DesktopInterface
 
                     List<Color> color = new List<Color>();
 
+                List<Vector2> UV1List = new List<Vector2>();
+                List<Vector2> UV2List = new List<Vector2>();
 
-                    foreach(var kvp in data.pointDataTable)
+                List<Vector2> UV3List = new List<Vector2>();
+                List<float> coloruv = new List<float>();
+
+                foreach (var kvp in data.pointDataTable)
                     {
                     float theta = kvp.Value.theta_angle;
-                        xvalues.Add(0.0035f * Mathf.Cos(Mathf.Deg2Rad * theta));
-                        yvalues.Add(0.0035f * Mathf.Sin(Mathf.Deg2Rad * theta));
+                        xvalues.Add(0.0035f * Mathf.Cos(  theta));
+                        yvalues.Add(0.0035f * Mathf.Sin( theta));
                         zvalues.Add(0f);
                         color.Add(Color.HSVToRGB( theta / 360f, 0.75f, 0.55f));
                         color.Add(Color.HSVToRGB(theta / 360f, 0.75f, 0.55f));
+                    coloruv.Add((Mathf.Rad2Deg * theta) / 360f);
 
-                    }
-                
+                }
 
-                    Mesh mesh = new Mesh();
+
+                Mesh mesh = new Mesh();
                     mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                     List<Vector3> vertices = new List<Vector3>();
                     List<int> indices = new List<int>();
 
                     int index = 0;
+                float hidden = 0f;
+                float selected = 0f;
 
-                    for (int i = 0; i < xvalues.Count; i++)
+                for (int i = 0; i < xvalues.Count; i++)
                     {
                         if (!data.pointMetaDataTable[i].isHidden)
                         {
+                        hidden = 0f;
+                        selected = 0f;
+                        if (data.pointMetaDataTable[i].isHidden)
+                        {
+                            hidden = 1f;
+                        }
+                        if (data.pointMetaDataTable[i].isSelected)
+                        {
+                            selected = 1f;
+                        }
 
-                            vertices.Add(data.pointDataTable[i].normed_position - (new Vector3(xvalues[i], yvalues[i], zvalues[i])));
+                        vertices.Add(data.pointDataTable[i].normed_position - (new Vector3(xvalues[i], yvalues[i], zvalues[i])));
                                 //color.Add(Color.blue);
                             indices.Add(index);
-                            index++;
+                        UV3List.Add(new Vector2(data.pointDataTable[i].trajectory, data.pointDataTable[i].frame));
+                        UV1List.Add(new Vector2(coloruv[i], data.pointDataTable[i].pointID));
+                        UV2List.Add(new Vector2(selected, hidden));
+
+                        index++;
                             vertices.Add(data.pointDataTable[i].normed_position + (new Vector3(xvalues[i], yvalues[i], zvalues[i])));
                             //color.Add(Color.blue);
                             indices.Add(index);
-                            index++;
+                        UV3List.Add(new Vector2(data.pointDataTable[i].trajectory, data.pointDataTable[i].frame));
+                        UV1List.Add(new Vector2(coloruv[i], data.pointDataTable[i].pointID));
+                        UV2List.Add(new Vector2(selected, hidden));
+
+                        index++;
                         }
                     }
                     mesh.vertices = vertices.ToArray();
                     mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
-                    mesh.colors = color.ToArray();
+                mesh.uv2 = UV1List.ToArray();
+                mesh.uv3 = UV2List.ToArray();
+                mesh.uv4 = UV3List.ToArray();
 
-                    GameObject child = new GameObject();
+                GameObject child = new GameObject();
                     child.transform.SetParent(data.transform, false);
                     child.AddComponent<MeshFilter>();
                     child.AddComponent<MeshRenderer>();
                     child.GetComponent<MeshFilter>().mesh = mesh;
                     Material material = new Material(Shader.Find("Genuage/UnlitLineShader"));
-                    child.GetComponent<MeshRenderer>().material = material;
+                material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("jet").texture);
+
+                material.SetFloat("_UpperTimeLimit", data.globalMetaData.timeList.Count - 1);
+                material.SetFloat("_LowerTimeLimit", 0f);
+
+
+                child.GetComponent<MeshRenderer>().material = material;
                     data.orientationObject = child;
                     orientation2DmodeOn = true;
                 }

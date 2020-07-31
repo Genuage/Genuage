@@ -305,6 +305,8 @@ namespace Data
         public List<float> timeList; //Sorted list of the timepoints in the file 
         public HashSet<float> SelectedTRajectories;
 
+        //Trajectories info
+        //public bool trajectoriesDisplayed;
         public float upperframeLimit;
         public float lowerframeLimit;
 

@@ -85,6 +85,10 @@ namespace DesktopInterface
         public float currentTimeIndex = 0f;
         public float incrementSpeed = 1f;
 
+
+        //UI to control animation
+        public GameObject TrajectoryUIContainer;
+
         private void Awake()
         {
             button = GetComponent<Button>();
@@ -132,7 +136,8 @@ namespace DesktopInterface
             if (trajectorymodeON == false)
             {
                 
-                UIManager.instance.DeactivateSelectionButtons();
+                //UIManager.instance.DeactivateSelectionButtons();
+                TrajectoryUIContainer.SetActive(true);
 
                 CloudUpdater.instance.DisplayTrajectories();                 
 
@@ -152,7 +157,9 @@ namespace DesktopInterface
             }
             else
             {
-                UIManager.instance.ActivateSelectionButtons();
+                TrajectoryUIContainer.SetActive(false);
+
+                //UIManager.instance.ActivateSelectionButtons();
 
                 CloudUpdater.instance.HideTrajectories();
                 playAnimation = false;

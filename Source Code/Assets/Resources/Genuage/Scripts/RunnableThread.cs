@@ -40,6 +40,8 @@ public abstract class RunnableThread
     private Thread thread;
     public bool isRunning { get; set; }
 
+    public string StatusMessage = "";
+
     protected RunnableThread()
     {
         thread = new Thread(Run);
@@ -57,6 +59,7 @@ public abstract class RunnableThread
     public void StopThread()
     {
         isRunning = false;
+        StatusMessage = "Thread finished job";
         thread.Join();
         Debug.Log("Thread Finished");
     }
@@ -64,6 +67,7 @@ public abstract class RunnableThread
     public void AbortThread()
     {
         isRunning = false;
+        StatusMessage = "Thread aborted";
         thread.Interrupt();
         Debug.Log("Thread Aborted");
     }
