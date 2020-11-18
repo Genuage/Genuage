@@ -45,7 +45,9 @@ namespace DesktopInterface
         public GameObject abortButton;
 
         protected abstract void CreateThread();
-
+        //What does the program do when the thread returns success
+        protected abstract void ThreadSuccess();
+        
         protected GameObject window;
 
         protected string defaultText;
@@ -101,7 +103,8 @@ namespace DesktopInterface
 
                     if (thread.receive_status == ThreadCommunicator.ReceiveStatus.SUCCESS)
                     {
-                        CloudLoader.instance.LoadFromConnection(thread.dataList);
+                        //CloudLoader.instance.LoadFromConnection(thread.dataList);
+                        ThreadSuccess();
                     }
 
                     if (thread.receive_status == ThreadCommunicator.ReceiveStatus.TIMEOUT)

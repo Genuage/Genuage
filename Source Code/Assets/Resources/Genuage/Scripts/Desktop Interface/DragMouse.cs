@@ -107,11 +107,11 @@ namespace DesktopInterface
                 deltaMousePosition = Input.mousePosition - previousMousePosition;
                 if (Vector3.Dot(transform.up,Vector3.up) >= 0)
                 {
-                    transform.Rotate(transform.up, -Vector3.Dot(deltaMousePosition,camera.transform.right)*rotationSpeed, Space.World);
+                    transform.Rotate(camera.transform.up, -Vector3.Dot(deltaMousePosition,camera.transform.right)*rotationSpeed, Space.World);
                 }
                 else
                 {
-                    transform.Rotate(transform.up, Vector3.Dot(deltaMousePosition, camera.transform.right) * rotationSpeed, Space.World);
+                    transform.Rotate(camera.transform.up, -Vector3.Dot(deltaMousePosition, camera.transform.right) * rotationSpeed, Space.World);
                 }
 
                 transform.Rotate(camera.transform.right, Vector3.Dot(deltaMousePosition, camera.transform.up) * rotationSpeed, Space.World);

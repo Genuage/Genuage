@@ -22,18 +22,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 import random
 import zmq
 import time
@@ -43,12 +42,23 @@ import sys
 class Socket:
 
 	def __init__(self,address = "tcp://*:5555", data = []):
+		self.address = address
 		self.data = data
 		self.context = zmq.Context()
+		#self.socket = null
+		#self.socket = self.context.socket(zmq.REP)
+		#self.socket.bind(address)
+
+	def createREPSocket(self):
 		self.socket = self.context.socket(zmq.REP)
-		self.socket.bind(address)
+		self.socket.bind(self.address)
+
+	def createREQSocket(self):
+		self.socket = self.context.socket(zmq.REQ)
+		self.socket.bind(self.address)
 
 	def sendData(self,collumnData):
+		self.createREPSocket()
 		print ("starting communication")
 		index = 0
 		while True:
@@ -57,13 +67,30 @@ class Socket:
 				print ("transfer finished")
 				self.socket.send(b"PointData Finished")
 				break
-
-			if (message == b"PointCollumn Echo") : 
+			if (message == b"PointCollumn Echo") :
 				print("message recognized")
 				self.socket.send(collumnData[index])
 				index+=1
-		
+
 		self.closeConnection()
+
+	def receiveData(self):
+		self.createREQSocket()
+		print ("starting communication")
+		resultByteArray = []
+		while True:
+			self.socket.send(b"PointCollumn Echo")
+			time.sleep(0.01)
+			#while True:
+			message = self.socket.recv()
+			#print(len(message))
+			if (message == b"PointData Finished"):
+				print ("Transfer finished")
+				self.closeConnection()
+				return resultByteArray
+			elif (len(message)> 0):
+				print ("Column Received")
+				resultByteArray.append(message)
 
 
 	def closeConnection(self):
@@ -102,18 +129,28 @@ def convertDataToBytes(data_array):
 	newarray = np.array(data_array)
 	for i in range(len(data_array)):
 		byte_array.append([])
-	
+
 	for j in range(len(data_array)):
-		
+
 		byte_array[j] = np.float32(newarray[j]).tobytes()
-	
+
 	return byte_array
 
-def transmitData(data_array):
-	#Function you should call from another script
-	socket = Socket()
-	byte_array = convertDataToBytes(data_array)
-	socket.sendData(byte_array)
+def convertBytesToFloats(byte_array):
+	from sys import byteorder
+	print(byteorder)
+	# will print 'little' if little endian
+	float_array = []
+	newarray = np.array(byte_array)
+	for i in range(len(byte_array)):
+		float_array.append([])
+
+	for j in range(len(byte_array)):
+
+		float_array[j] = np.frombuffer(byte_array[j], dtype=np.float32)
+		#assert np.array_equal(byte_array[j], float_array[j]), "Deserialization failed..."
+
+	return float_array
 
 def transmitDatafrom1DArray(array1d,rownbr,collumnnbr):
     newarray = []
@@ -125,10 +162,37 @@ def transmitDatafrom1DArray(array1d,rownbr,collumnnbr):
             index+=1
     transmitData(newarray)
 
+
+def transmitData(data_array):
+	#Function you should call from another script
+	socket = Socket()
+	byte_array = convertDataToBytes(data_array)
+	socket.sendData(byte_array)
+
+def ReceiveData():
+	#Function you should call from another script
+
+	socket = Socket()
+	array = socket.receiveData()
+	return array
+
 if __name__ == "__main__" :
 
-    print ("Point Size set to 20 000 by default")
-    pointnb = 20000
-    
-    array = RandomGeneratorGaussian(pointnb)
-    transmitData(array)
+    #print ("Point Size set to 20 000 by default")
+    #pointnb = 200000
+
+	#SEND DATA
+    #array = RandomGeneratorGaussian(pointnb)
+    #transmitData(array)
+	
+	#RECEIVE DATA
+	array = ReceiveData()
+	#floatarray = convertBytesToFloats(array)
+
+	transmitData(floatarray)
+	print(floatarray)
+	#print(len(array[0]))
+	#print(array[0])
+	#print(len(floatarray))
+	#print(len(floatarray[0]))
+

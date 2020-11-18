@@ -55,11 +55,12 @@ namespace DesktopInterface
         public override void Execute()
         {
             // Open file with filter
-            var extensions = new[] {
-            new ExtensionFilter("3D format", "3d"),
-            new ExtensionFilter("text format", "txt"),
-            new ExtensionFilter("All Files", "*" ),
-        };
+            var extensions = new[] 
+            {
+                new ExtensionFilter("3D format", "3d"),
+                new ExtensionFilter("text format", "txt"),
+                new ExtensionFilter("All Files", "*" )
+            };
             StandaloneFileBrowser.OpenFilePanelAsync("Open File", "", extensions, true, (string[] paths) => { LaunchCloudLoader(paths); });
         }
 

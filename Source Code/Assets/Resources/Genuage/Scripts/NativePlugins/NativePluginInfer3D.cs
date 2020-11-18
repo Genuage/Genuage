@@ -114,18 +114,20 @@ public unsafe class NativePluginInfer3D : NativePlugin
     double* ForceY;
     double* ForceZ;
 
-    [DllImport("Infer3DPlugin")]
+    const string DLLName = "Infer3DPlugin";
+
+    [DllImport(DLLName)]
     private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
 
     private void Awake()
     {
-        //ExecutePlugin();
+
     }
 
     protected override void LaunchPluginFunction(CloudData data)
     {
         HashSet<int> selectedpointsSet = data.globalMetaData.SelectedPointsList;
-        HashSet<float> selectedtrajectorySet = data.globalMetaData.SelectedTRajectories;
+        HashSet<float> selectedtrajectorySet = data.globalMetaData.SelectedTrajectories;
         N = 0;
 
         List<double> TrajectoriesList = new List<double>();
@@ -149,7 +151,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
             {
                 if (data.pointMetaDataTable[j].isHidden == false)
                 {
-                    Debug.Log("time " + data.pointDataTable[j].time);
+                    //Debug.Log("time " + data.pointDataTable[j].time);
 
                     if (data.pointDataTable[j].time >= data.globalMetaData.lowertimeLimit && data.pointDataTable[j].time <= data.globalMetaData.uppertimeLimit)
                     {
@@ -210,7 +212,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
     
         Debug.Log(TrajectoriesList.Count);
         **/
-        //END DEBUG
+        //END_DEBUG
         double[] TrajectoriesArray = TrajectoriesList.ToArray();
         double[] XvaluesArray = Xvalues.ToArray();
         double[] YvaluesArray = Yvalues.ToArray();

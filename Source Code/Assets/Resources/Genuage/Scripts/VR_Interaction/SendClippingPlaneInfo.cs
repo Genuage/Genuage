@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SendClippingPlaneInfo : MonoBehaviour
 {
-    public string Keyword1;
-    public string Keyword2;
-    public string Keyword3;
+    public string PositionKeyword;
+    public string PlaneNormalKeyword;
+    public string ClipPlaneEnableKeyword;
 
     public bool jobON = false;
     // Update is called once per frame
@@ -14,8 +14,8 @@ public class SendClippingPlaneInfo : MonoBehaviour
     {
         if (jobON)
         {
-            Shader.SetGlobalVector(Keyword1, this.transform.position);
-            Shader.SetGlobalVector(Keyword2, this.transform.forward);
+            Shader.SetGlobalVector(PositionKeyword, this.transform.position);
+            Shader.SetGlobalVector(PlaneNormalKeyword, this.transform.forward);
             //Shader.EnableKeyword(Keyword3);
 
         }
@@ -23,7 +23,7 @@ public class SendClippingPlaneInfo : MonoBehaviour
 
     public void enableClippingPlane()
     {
-        Shader.EnableKeyword(Keyword3);
+        Shader.EnableKeyword(ClipPlaneEnableKeyword);
         jobON = true;
 
     }
@@ -32,7 +32,7 @@ public class SendClippingPlaneInfo : MonoBehaviour
     {
         if (gameObject.activeInHierarchy == false)
         {
-            Shader.DisableKeyword(Keyword3);
+            Shader.DisableKeyword(ClipPlaneEnableKeyword);
             jobON = false;
         }
     }
@@ -41,7 +41,7 @@ public class SendClippingPlaneInfo : MonoBehaviour
     {
         if (gameObject.activeInHierarchy == true)
         {
-            Shader.EnableKeyword(Keyword3);
+            Shader.EnableKeyword(ClipPlaneEnableKeyword);
             jobON = true;
         }
     }

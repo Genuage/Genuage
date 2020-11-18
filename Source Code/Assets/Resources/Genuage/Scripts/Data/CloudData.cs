@@ -233,6 +233,13 @@ namespace Data
 
     }
 
+
+    public enum AngleUnit
+    {
+        DEGREES,
+        RADIANS
+    }
+
     /// <summary>
     /// Class to hold all the Metadata relevant for the whole cloud.
     /// </summary>
@@ -292,7 +299,7 @@ namespace Data
 
         //public float meanPhiAngle;
         //public float meanThetaAngle;
-
+        public AngleUnit angleUnit;
 
         private Dictionary<int, List<int>> _pointbyLocationList;
 
@@ -303,7 +310,7 @@ namespace Data
         public HashSet<int> SelectedPointsList;
 
         public List<float> timeList; //Sorted list of the timepoints in the file 
-        public HashSet<float> SelectedTRajectories;
+        public HashSet<float> SelectedTrajectories;
 
         //Trajectories info
         //public bool trajectoriesDisplayed;
@@ -344,7 +351,10 @@ namespace Data
 
         #endregion
 
-
+        #region Python Inference
+        public bool alphacolumnExists = false;
+        public int alphacolumnIndex = -1;
+        #endregion
 
 
         #region Get/Setters
@@ -623,7 +633,7 @@ namespace Data
             globalMetaData.pointbyLocationList = new Dictionary<int, List<int>>();
 
             globalMetaData.SelectedPointsList = new HashSet<int>();
-            globalMetaData.SelectedTRajectories = new HashSet<float>();
+            globalMetaData.SelectedTrajectories = new HashSet<float>();
             globalMetaData.columnMetaDataList = new List<ColumnMetadata>();
             globalMetaData.counterPointsList = new Dictionary<int, GameObject>();
             globalMetaData.convexHullsList = new Dictionary<int, GameObject>();
@@ -728,6 +738,7 @@ namespace Data
             globalMetaData.current_normed_variable = globalMetaData.normed_i;
             globalMetaData.current_colormap_variable = colorDict;
 
+            globalMetaData.angleUnit = AngleUnit.DEGREES;
         }
 
         

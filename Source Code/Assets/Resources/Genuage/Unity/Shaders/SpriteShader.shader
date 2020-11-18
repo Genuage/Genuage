@@ -60,27 +60,29 @@ Shader "ViSP/Sprite Shader"
 			#pragma geometry geometry_shader
 			#pragma multi_compile _ CLIPPING_PLANE
 			#pragma multi_compile _ FIXED_CLIPPING_PLANE_1
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_2
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_2
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_3
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_3
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_4
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_4
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_5
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_5
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_6
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_6
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_7
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_7
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_8
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_8
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_9
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_9
 
-						#pragma multi_compile _ FIXED_CLIPPING_PLANE_10
+			#pragma multi_compile _ FIXED_CLIPPING_PLANE_10
 
 			#pragma multi_compile _ COLORMAP_REVERSED
 			#pragma multi_compile _ FREE_SELECTION
 			#pragma multi_compile _ POINTSIZE
+
+			#pragma multi_compile _ COLOR_OVERRIDE
 
 			#include "UnityCG.cginc" 
 
@@ -358,6 +360,11 @@ Shader "ViSP/Sprite Shader"
 				if (input.uv2.x > 0) {
 					color = float4(0, 0.5, 0, 1);
 				}
+				#if defined(COLOR_OVERRIDE)
+				color = tex2Dlod(_ColorTex, float4(index, 0.5, 0, 0));
+
+				#endif
+
 
 				#if defined(FREE_SELECTION)
 				float dist = distance(mul(unity_ObjectToWorld, input.normal).xyz, _SpherePosition.xyz);

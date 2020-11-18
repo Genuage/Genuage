@@ -52,5 +52,11 @@ namespace DesktopInterface
         {
             thread = new TCPIPCommunicator();
         }
+
+        protected override void ThreadSuccess()
+        {
+            CloudLoader.instance.LoadFromConnection(thread.dataList);
+
+        }
     }
 }

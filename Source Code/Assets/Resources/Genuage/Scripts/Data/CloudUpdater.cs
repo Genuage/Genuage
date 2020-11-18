@@ -42,6 +42,8 @@ using Unity.Collections;
 using VR_Interaction;
 using IO;
 using DesktopInterface;
+using SFB;
+
 
 /// <summary>
 /// CloudUpdater performs operations to change the data or metadata of a cloud, its functions can be called from the UI elements.
@@ -71,7 +73,7 @@ namespace Data
         public int maxThresholdThreads = 10;
         public bool thresholdJobON = false;
 
-
+        private ZMQSynchronizedCommunicator ZMQSyncCom = null;
         private void Start()
         {
             PointSelectionThreadList = new Queue<SelectPointsThreadHandler>();
@@ -120,6 +122,12 @@ namespace Data
         {
             CloudData cloud = CloudStorage.instance.GetStatus(id);
             return cloud;
+        }
+
+        public List<int> LoadAllIDs()
+        {
+            List<int> IDList = CloudStorage.instance.GetAllIDs();
+            return IDList;
         }
         #endregion
 
@@ -248,6 +256,23 @@ namespace Data
         #endregion
 
         #region Visualization Parameters
+
+        #region Cloud Box Parameters
+        public void ReloadAllBoxes()
+        {
+            List<int> IDlist = LoadAllIDs();
+            foreach(int id in IDlist)
+            {
+                ReloadBox(id);
+            }
+        }
+
+        public void ReloadBox(int id)
+        {
+            CloudData currcloud = LoadStatus(id);
+            currcloud.gameObject.GetComponent<CloudBox>().CreateBox();
+        }
+        #endregion
         public override void ChangeCloudScale(Vector3 new_scale)
         {
             CloudData currentCloud = LoadCurrentStatus();
@@ -583,7 +608,7 @@ namespace Data
             material.SetFloat("_Size", value / 50);
             currentCloud.globalMetaData.point_size = value;
 
-            Debug.Log("PointSize Changed");
+            //Debug.Log("PointSize Changed");
         }
 
         #endregion
@@ -962,8 +987,8 @@ namespace Data
                                                                      currcloud.columnData[collumnList[2]][key]);
 
                 currcloud.pointDataTable[key].time = currcloud.columnData[collumnList[4]][key];
-                currcloud.pointDataTable[key].phi_angle = currcloud.columnData[currcloud.globalMetaData.displayCollumnsConfiguration[6]][key];
-                currcloud.pointDataTable[key].theta_angle = currcloud.columnData[currcloud.globalMetaData.displayCollumnsConfiguration[7]][key];
+                currcloud.pointDataTable[key].phi_angle = currcloud.columnData[collumnList[6]][key];
+                currcloud.pointDataTable[key].theta_angle = currcloud.columnData[collumnList[7]][key];
 
                 currcloud.pointDataTable[key].trajectory = currcloud.columnData[collumnList[5]][key];
                 currcloud.pointDataTable[key].intensity = currcloud.columnData[collumnList[3]][key];
@@ -1099,6 +1124,9 @@ namespace Data
             currcloud.globalMetaData.upperframeLimit = TimeList.Count - 1;
 
             currcloud.globalMetaData.box_scale = new Vector3(xRange, yRange, zRange) / MaxRange;
+
+            currcloud.globalMetaData.lowertimeLimit = currcloud.globalMetaData.timeList[(int)currcloud.globalMetaData.lowerframeLimit];
+            currcloud.globalMetaData.uppertimeLimit = currcloud.globalMetaData.timeList[(int)currcloud.globalMetaData.upperframeLimit];
 
             Transform box = currcloud.transform.parent.GetChild(1);
             box.localScale = currcloud.globalMetaData.box_scale;
@@ -1399,31 +1427,80 @@ namespace Data
 
                 data.globalMetaData.lowertimeLimit = data.globalMetaData.timeList[(int)minframe];
                 data.globalMetaData.uppertimeLimit = data.globalMetaData.timeList[(int)maxframe];
-
+                
             }
         }
         #endregion
 
         #region Orientation
+
+        public void ChangeAngleUnit(AngleUnit new_unit)
+        {
+            if (!CloudSelector.instance.noSelection)
+            {
+                CloudData data = LoadCurrentStatus();
+                data.globalMetaData.angleUnit = new_unit;
+
+            }
+        }
+
         public void CalculateMeanOrientation()
         {
             CloudData currcloud = LoadCurrentStatus();
             float phisum = 0f;
             float thetasum = 0f;
-            foreach(int i in currcloud.globalMetaData.SelectedPointsList)
+            float xsum = 0;
+            float ysum = 0;
+            float zsum = 0;
+            int pointnumber = 0;
+            /**
+            foreach (var i in currcloud.pointDataTable)
+            {
+                phisum += currcloud.pointDataTable[i.Key].phi_angle;
+                thetasum += currcloud.pointDataTable[i.Key].theta_angle;
+                xsum += currcloud.pointDataTable[i.Key].normed_position.x;
+                ysum += currcloud.pointDataTable[i.Key].normed_position.y;
+                zsum += currcloud.pointDataTable[i.Key].normed_position.z;
+                pointnumber++;
+
+            }
+            **/
+            
+            foreach (int i in currcloud.globalMetaData.SelectedPointsList)
             {
                 phisum += currcloud.pointDataTable[i].phi_angle;
                 thetasum += currcloud.pointDataTable[i].theta_angle;
+                xsum += currcloud.pointDataTable[i].normed_position.x;
+                ysum += currcloud.pointDataTable[i].normed_position.y;
+                zsum += currcloud.pointDataTable[i].normed_position.z;
+                pointnumber++;
             }
+            
+            float xaverage = xsum / pointnumber;
+            float yaverage = ysum / pointnumber;
+            float zaverage = zsum / pointnumber;
 
-            thetasum = thetasum / currcloud.globalMetaData.SelectedPointsList.Count;
-            phisum = phisum / currcloud.globalMetaData.SelectedPointsList.Count;
+            thetasum = thetasum / pointnumber;
+            phisum = phisum / pointnumber;
             string str = "Mean Orientation value :\n" +
                 "Theta : " + Math.Round(thetasum,3).ToString() + "\n" +
                 "Phi : " + Math.Round(phisum, 3).ToString();
+            GameObject container = new GameObject("CylinderContainer");
 
-            //currcloud.globalMetaData.meanPhiAngle = phisum;
-            //currcloud.globalMetaData.meanThetaAngle = thetasum;
+            GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            obj.transform.SetParent(container.transform,true);
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localScale = new Vector3(0.01f, 0.05f, 0.01f);
+            obj.transform.Rotate(new Vector3(90, 0, 0), Space.World);
+            container.transform.SetParent(currcloud.transform, true);
+            container.transform.localPosition = new Vector3(xaverage, yaverage, zaverage);
+            float xvalue = (Mathf.Sin(Mathf.Deg2Rad * thetasum) * Mathf.Cos(Mathf.Deg2Rad * phisum));
+            float yvalue = (Mathf.Sin(Mathf.Deg2Rad * thetasum) * Mathf.Sin(Mathf.Deg2Rad * phisum));
+            float zvalue = (Mathf.Cos(Mathf.Deg2Rad * thetasum));
+            //Debug.Log(xvalue + " / " + yvalue + " / " + zvalue + " / ");
+            Vector3 anglevector = currcloud.transform.localToWorldMatrix.MultiplyPoint3x4(new Vector3(xaverage + xvalue, yaverage + yvalue, zaverage + zvalue));
+            container.transform.LookAt(anglevector);
+            
             //TODO : Inplement saving function into metadata
             ModalWindowManager.instance.CreateModalWindow(str);
         }
@@ -1446,9 +1523,91 @@ namespace Data
 
         #endregion
 
+        #region Clipping Plane
+        public void SavePointsFromMultiClippingPlane()
+        {
+            //TODO Implement UI and Test / Implement thread
+            CloudData currcloud = LoadCurrentStatus();
+            if (currcloud.globalMetaData.ClippingPlanesList.Length != 0)
+            {
+                List<int> pointIDList = new List<int>();
+                foreach (KeyValuePair<int, PointData> item in currcloud.pointDataTable)
+                {
+                    bool selected = true;
+
+                    if (currcloud.pointMetaDataTable[item.Key].isHidden)
+                    { 
+                        selected = false;
+                    }
+                    foreach (GameObject go in currcloud.globalMetaData.ClippingPlanesList)
+                    {
+                        if (go != null)
+                        {
+                            float d = Vector3.Dot(go.transform.forward, item.Value.normed_position - currcloud.transform.worldToLocalMatrix.MultiplyPoint3x4(go.transform.position));
+                            if (d <= 0)
+                            {
+                                selected = false;
+                            }
+                        }
+                    }
+
+                    if(selected == true)
+                    {
+                        pointIDList.Add(item.Key);
+                    }
+                    
+                }
+                Debug.Log(pointIDList.Count);
+                var extensions = new[] {
+                new ExtensionFilter("3D Format", "3d")};
+                StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "", extensions, (string path) => { CloudSaver.instance.savePoints(pointIDList,path); });
+
+            }
+        }
+        #endregion
+
+        #region ZMQSyncCommunicator
+        public void CreateZMQSyncCommunicator()
+        {
+            ZMQSyncCom = gameObject.AddComponent<ZMQSynchronizedCommunicator>();
+
+        }
+
+        public void SwitchZMQSyncCommunicator()
+        {
+            if(ZMQSyncCom == null)
+            {
+                CreateZMQSyncCommunicator();
+            }
+
+            if (ZMQSyncCom.InferenceModeActive)
+            {
+                ZMQSyncCom.Deactivate();
+            }
+            else
+            {
+                ZMQSyncCom.Activate();
+            }
+        }
+
+        public void SetZMQSyncComDefaultValue(int value)
+        {
+            ZMQSyncCom.ChangeDefaultAlphaValue(value);
+        }
+
+        public void SwitchZMQSyncComDefaultMode(bool value)
+        {
+            ZMQSyncCom.SwitchTrajectoryParameter(value);
+        }
+
+        #endregion
+        public delegate void OnSelectionUpdateEvent();
+        public event OnSelectionUpdateEvent OnSelectionUpdate;
+
         #region Update
         private void LateUpdate()
         {
+            #region Density Calculation
             if (densityJobON)
             {
                 if (!densityThreadHandle.isRunning)
@@ -1464,6 +1623,8 @@ namespace Data
                     UIManager.instance.ChangeStatusText("Thread Status : "+densityThreadHandle.StatusMessage);
                 }
             }
+            #endregion
+            #region Point Selection
             if (selectionJobON)
             {
                 if(PointSelectionThreadList.Count != 0)
@@ -1481,7 +1642,11 @@ namespace Data
                             thread.data.trajectoryObject.GetComponent<MeshFilter>().mesh = thread.TrajectoryMesh;
                         }
                         thread.StopThread();
-
+                        Debug.Log(thread.data.globalMetaData.SelectedTrajectories.Count);
+                        if(OnSelectionUpdate != null)
+                        {
+                            OnSelectionUpdate();
+                        }
                         //selectionJobON = false;
 
                     }
@@ -1501,8 +1666,9 @@ namespace Data
                 }
                 **/
             }
-
-            if(thresholdJobON == true)
+            #endregion
+            #region Thresholding
+            if (thresholdJobON == true)
             {
                 if(ThresholdThreadQueue.Count != 0)
                 {
@@ -1523,6 +1689,7 @@ namespace Data
                     thresholdJobON = false;
                 }
             }
+            #endregion
         }
         #endregion
     }
@@ -1876,33 +2043,35 @@ namespace Data
 
             if (data.pointTrajectoriesTable.Count > 0)
             {
-                foreach(float id in data.pointTrajectoriesTable.Keys)
+                foreach (float id in data.pointTrajectoriesTable.Keys)
                 {
                     data.pointTrajectoriesTable[id].metadata.isSelected = false;
                     data.pointTrajectoriesTable[id].metadata.selectedpointsIDList.Clear();
 
                 }
-                data.globalMetaData.SelectedTRajectories.Clear();
+                data.globalMetaData.SelectedTrajectories.Clear();
             }
-
+            int cpt = 0;
             foreach (int i in FinalList)
             {
-                //if(data.pointMetaDataTable[i].isHidden ==false
-                  //  && data.pointDataTable[i].time <= data.globalMetaData.timeList[Mathf.FloorToInt(data.globalMetaData.upperframeLimit)] 
-                    //&& data.pointDataTable[i].time >= data.globalMetaData.timeList[Mathf.FloorToInt(data.globalMetaData.lowerframeLimit)])
-                //{
+
+                if (data.pointMetaDataTable[i].isHidden == false
+                    && data.pointDataTable[i].time >= data.globalMetaData.lowertimeLimit
+                    && data.pointDataTable[i].time <= data.globalMetaData.uppertimeLimit)
+                {
                     data.pointMetaDataTable[i].isSelected = true;
                     PCuv3Array[i].x = 1f;
+                    cpt++;
                     if (data.pointTrajectoriesTable.Count > 0)
                     {
-                        data.globalMetaData.SelectedTRajectories.Add(data.pointDataTable[i].trajectory);
+                        data.globalMetaData.SelectedTrajectories.Add(data.pointDataTable[i].trajectory);
                         data.pointTrajectoriesTable[data.pointDataTable[i].trajectory].metadata.isSelected = true;
                         data.pointTrajectoriesTable[data.pointDataTable[i].trajectory].metadata.selectedpointsIDList.Add(i);
                     }
 
-                //}
+                }
             }
-
+            Debug.Log(cpt);
             if (TrajectoryMesh)
             {
                 for (int j = 0; j < TRuv3Array.Length; j++)
@@ -1921,11 +2090,10 @@ namespace Data
             //mesh.uv4 = uv4Array;
             data.globalMetaData.SelectedPointsList = FinalList;
             Debug.Log("selection finished");
-
             isRunning = false;
 
         }
-
+        
         private HashSet<int> ConcatenateLists(HashSet<int> MainList, HashSet<int> ListToAdd)
         {
             HashSet<int> list = new HashSet<int>(MainList);

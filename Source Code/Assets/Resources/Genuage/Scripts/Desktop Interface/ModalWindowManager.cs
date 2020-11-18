@@ -53,10 +53,10 @@ public class ModalWindowManager : MonoBehaviour
         }
     }
 
-    public GameObject CreateModalWindow(string text_to_display, bool hasButton = true)
+    public GameObject CreateModalWindow(string text_to_display, bool hasCloseButton = true)
     {
         GameObject window = Instantiate(modalWindowPrefab) as GameObject;
-        if (!hasButton)
+        if (!hasCloseButton)
         {
             window.GetComponent<ModalWindow>().button.gameObject.SetActive(false);
         }
@@ -64,7 +64,7 @@ public class ModalWindowManager : MonoBehaviour
         window.GetComponent<ModalWindow>().text.text = text_to_display;
         window.GetComponent<RectTransform>().localPosition = Vector3.zero;
         window.GetComponent<RectTransform>().localScale = Vector3.one;
-        if (hasButton)
+        if (hasCloseButton)
         {
             UIManager.instance.DeactivateUI();
 

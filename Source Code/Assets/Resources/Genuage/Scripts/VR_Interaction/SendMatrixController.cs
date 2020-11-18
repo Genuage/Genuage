@@ -172,89 +172,89 @@ public class SendMatrixController : MonoBehaviour
         {
             case 1:
                 //IDEA : USE GAMEOBJECT AS PROXY, SIMILAR TO VRO Anchors
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition1";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal1";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_1";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition1";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal1";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_1";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_1");
 
                 FixedPlane1Active = true;
                 break;
             case 2:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition2";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal2";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_2";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition2";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal2";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_2";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_2");
 
                 FixedPlane2Active = true;
                 break;
             case 3:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition3";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal3";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_3";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition3";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal3";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_3";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_3");
                 FixedPlane3Active = true;
                 break;
             case 4:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition4";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal4";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_4";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition4";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal4";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_4";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_4");
 
                 FixedPlane4Active = true;
                 break;
             case 5:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition5";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal5";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_5";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition5";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal5";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_5";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_5");
-                FixedPlane1Active = true;
+                FixedPlane5Active = true;
                 break;
             case 6:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition6";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal6";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_6";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition6";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal6";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_6";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_6");
 
-                FixedPlane1Active = true;
+                FixedPlane6Active = true;
                 break;
             case 7:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition7";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal7";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_7";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition7";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal7";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_7";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_7");
-                FixedPlane1Active = true;
+                FixedPlane7Active = true;
                 break;
             case 8:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition8";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal8";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_8";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition8";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal8";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_8";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_8");
-                FixedPlane1Active = true;
+                FixedPlane8Active = true;
                 break;
             case 9:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition9";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal9";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_9";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition9";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal9";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_9";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_9");
 
-                FixedPlane1Active = true;
+                FixedPlane9Active = true;
                 break;
             case 10:
-                go.GetComponent<SendClippingPlaneInfo>().Keyword1 = "_ControllerFixedLocalPosition10";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword2 = "_ControllerFixedPlaneNormal10";
-                go.GetComponent<SendClippingPlaneInfo>().Keyword3 = "FIXED_CLIPPING_PLANE_10";
+                go.GetComponent<SendClippingPlaneInfo>().PositionKeyword = "_ControllerFixedLocalPosition10";
+                go.GetComponent<SendClippingPlaneInfo>().PlaneNormalKeyword = "_ControllerFixedPlaneNormal10";
+                go.GetComponent<SendClippingPlaneInfo>().ClipPlaneEnableKeyword = "FIXED_CLIPPING_PLANE_10";
                 go.GetComponent<SendClippingPlaneInfo>().jobON = true;
                 Shader.EnableKeyword("FIXED_CLIPPING_PLANE_10");
-                FixedPlane1Active = true;
+                FixedPlane10Active = true;
                 break;
         }
 

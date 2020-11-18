@@ -53,6 +53,7 @@ public abstract class RunnableThread
     {
         isRunning = true;
         thread.Start();
+        StatusMessage = "Thread starting";
         Debug.Log("Thread Starting");
     }
 

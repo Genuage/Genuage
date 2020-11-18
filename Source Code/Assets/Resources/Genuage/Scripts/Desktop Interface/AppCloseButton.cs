@@ -71,8 +71,10 @@ namespace DesktopInterface
             Shader.DisableKeyword("FIXED_CLIPPING_PLANE_9");
             Shader.DisableKeyword("FIXED_CLIPPING_PLANE_10");
             Shader.DisableKeyword("POINTSIZE");
+            Shader.DisableKeyword("FREE_SELECTION");
 
-#if UNITY_EDITOR
+
+            #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #elif UNITY_WEBPLAYER
             Application.OpenURL(webplayerQuitURL);

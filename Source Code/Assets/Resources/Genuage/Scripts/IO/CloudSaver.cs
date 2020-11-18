@@ -83,11 +83,16 @@ namespace IO
             {
                 for (int i = 0; i < currcloud.pointDataTable.Count; i++)
                 {
-                    writer.WriteLine(currcloud.pointDataTable[i].position.x.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                     currcloud.pointDataTable[i].position.y.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                     currcloud.pointDataTable[i].position.z.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                     currcloud.pointDataTable[i].intensity.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                     currcloud.pointDataTable[i].trajectory.ToString(CultureInfo.InvariantCulture));
+                    string s = "";
+                    for (int j = 0; j < currcloud.columnData.Count; j++)
+                    {
+                        s = s + currcloud.columnData[j][i].ToString(CultureInfo.InvariantCulture);
+                        if (j < currcloud.columnData.Count - 1)
+                        {
+                            s = s + "\t";
+                        }
+                    }
+                    writer.WriteLine(s);
                 }
             }
 
@@ -107,17 +112,83 @@ namespace IO
                 for (int i = 0; i < selectedPointsList.Length; i++)
                 {
                     if (currcloud.pointMetaDataTable[selectedPointsList[i]].isHidden == false)
-                    { 
-                        writer.WriteLine(currcloud.pointDataTable[selectedPointsList[i]].position.x.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                         currcloud.pointDataTable[selectedPointsList[i]].position.y.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                         currcloud.pointDataTable[selectedPointsList[i]].position.z.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                         currcloud.pointDataTable[selectedPointsList[i]].intensity.ToString(CultureInfo.InvariantCulture) + "\t" +
-                                         currcloud.pointDataTable[selectedPointsList[i]].trajectory.ToString(CultureInfo.InvariantCulture));
+                    {
+                        string s = "";
+                        for (int j = 0; j < currcloud.columnData.Count; j++)
+                        {
+                            s = s + currcloud.columnData[j][selectedPointsList[i]].ToString(CultureInfo.InvariantCulture);
+                            if (j < currcloud.columnData.Count - 1)
+                            {
+                                s = s + "\t";
+                            }
+                        }
+                        writer.WriteLine(s);
+
                     }
                 }
             }
         }
-    
+
+        public void savePoints(List<int> IDList, string path)
+        {
+            CloudData currcloud = CloudUpdater.instance.LoadCurrentStatus();
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(path))
+            {
+                for (int i = 0; i < IDList.Count; i++)
+                {
+                    if (currcloud.pointMetaDataTable[IDList[i]].isHidden == false)
+                    {
+                        string s = "";
+                        for(int j = 0; j < currcloud.columnData.Count; j++)
+                        {
+                            s = s + currcloud.columnData[j][IDList[i]].ToString(CultureInfo.InvariantCulture);
+                            if (j < currcloud.columnData.Count - 1)
+                            {
+                                s = s + "\t";
+                            }
+                        }
+                        writer.WriteLine(s);
+                    }
+                }
+            }
+
+        }
+
+        public void SaveSelectionCSV(string path)
+        {
+            string separator = "; ";
+
+            CloudData currcloud = CloudUpdater.instance.LoadCurrentStatus();
+
+
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(path))
+            {
+                writer.WriteLine("id" + separator + "x"+separator + "y" + separator + "z" + separator + 
+                                 "color" + separator + "time" + separator + "trajectory" + separator + 
+                                 "phi" + separator + "theta" + separator + "size" + "\t");
+                foreach (var i in currcloud.pointDataTable)
+                {
+                    //if (currcloud.pointMetaDataTable[i].isHidden == false)
+                    //{
+                        string s = currcloud.pointDataTable[i.Key].pointID + separator + 
+                                   currcloud.pointDataTable[i.Key].position.x + separator +
+                                   currcloud.pointDataTable[i.Key].position.y + separator +
+                                   currcloud.pointDataTable[i.Key].position.z + separator +
+                                   currcloud.pointDataTable[i.Key].intensity + separator +
+                                   currcloud.pointDataTable[i.Key].time + separator +
+                                   currcloud.pointDataTable[i.Key].trajectory + separator +
+                                   currcloud.pointDataTable[i.Key].phi_angle + separator +
+                                   currcloud.pointDataTable[i.Key].theta_angle + separator +
+                                   currcloud.pointDataTable[i.Key].size + "\t";
+
+                        writer.WriteLine(s);
+
+                    //}
+                }
+            }
+
+        }
+
 
 
     }

@@ -84,4 +84,17 @@ namespace DesktopInterface
 
         }
     }
+
+    public abstract class IDropdownScript : MonoBehaviour
+    {
+        public Dropdown dropdown;
+
+        protected void InitialiseClickEvent()
+        {
+            dropdown.onValueChanged.AddListener(Execute);
+        }
+
+        public abstract void Execute(int value);
+
+    }
 }

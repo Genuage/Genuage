@@ -88,12 +88,12 @@ namespace DesktopInterface
                 foreach (var kvp in data.pointDataTable)
                     {
                     float theta = kvp.Value.theta_angle;
-                        xvalues.Add(0.0035f * Mathf.Cos(  theta));
-                        yvalues.Add(0.0035f * Mathf.Sin( theta));
+                        xvalues.Add(0.0035f * Mathf.Cos(Mathf.Deg2Rad * theta));
+                        yvalues.Add(0.0035f * Mathf.Sin(Mathf.Deg2Rad * theta));
                         zvalues.Add(0f);
-                        color.Add(Color.HSVToRGB( theta / 360f, 0.75f, 0.55f));
-                        color.Add(Color.HSVToRGB(theta / 360f, 0.75f, 0.55f));
-                    coloruv.Add((Mathf.Rad2Deg * theta) / 360f);
+                        //color.Add(Color.HSVToRGB( theta / 360f, 0.75f, 0.55f));
+                        //color.Add(Color.HSVToRGB(theta / 360f, 0.75f, 0.55f));
+                    coloruv.Add(theta / 360f);
 
                 }
 
@@ -143,9 +143,9 @@ namespace DesktopInterface
                     }
                     mesh.vertices = vertices.ToArray();
                     mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
-                mesh.uv2 = UV1List.ToArray();
-                mesh.uv3 = UV2List.ToArray();
-                mesh.uv4 = UV3List.ToArray();
+                    mesh.uv2 = UV1List.ToArray();
+                    mesh.uv3 = UV2List.ToArray();
+                    mesh.uv4 = UV3List.ToArray();
 
                 GameObject child = new GameObject();
                     child.transform.SetParent(data.transform, false);

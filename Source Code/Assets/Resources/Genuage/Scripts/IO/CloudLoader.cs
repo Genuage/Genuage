@@ -128,7 +128,7 @@ namespace IO
         public void LoadFromConnection(List<float[]> columnDataList)
         {
             savedata = null;
-            window = ModalWindowManager.instance.CreateModalWindow("Loading the cloud, please wait...");
+            //window = ModalWindowManager.instance.CreateModalWindow("Loading the cloud, please wait...");
 
             foreach (float[] i in columnDataList)
             {
@@ -137,14 +137,14 @@ namespace IO
                     if (!(pointvalue.GetType() == typeof(float)))
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : Data number format is not float");
-                        Destroy(window);
+                        //Destroy(window);
                         return;
                     }
                 }
             }
             GameObject cloud = CreateCloudPoint(columnDataList);
             PutInMemory(cloud);
-            Destroy(window);
+            //Destroy(window);
             CloudSelector.instance.UpdateSelection(cloud.GetComponent<CloudData>().globalMetaData.cloud_id);
 
             //OnCloudCreated(cloud.GetComponent<CloudData>().globalMetaData.cloud_id);
@@ -802,7 +802,8 @@ namespace IO
                 _positions[i] = new Vector3(cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[0]][i],
                                             cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[1]][i],
                                             cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[2]][i]);
-                //Debug.Log("Position "+i+" : "+_positions[i]);
+
+                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[3]][i];
                 _trajectory[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[5]][i];
 
                 _time[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]][i];
@@ -812,11 +813,7 @@ namespace IO
 
                 _size[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[8]][i];
 
-                //Debug.Log("Frame " + i + " : " + _frame[i]);
-                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[3]][i];
-                //Debug.Log("Intensity " + i + " : " + _intensity[i]);
                 _indices[i] = i;
-                //Debug.Log(_indices[i]);
 
                 // Update min max
                 /**
@@ -942,8 +939,10 @@ namespace IO
             cloud_data.globalMetaData.normed_zMax = normedzMax;
             cloud_data.globalMetaData.normed_zMin = normedzMin;
             cloud_data.globalMetaData.timeList = TimeList;
-            cloud_data.globalMetaData.lowerframeLimit = -1f;
-            cloud_data.globalMetaData.upperframeLimit = TimeList.Count;
+            cloud_data.globalMetaData.lowerframeLimit = 0f;
+            cloud_data.globalMetaData.upperframeLimit = TimeList.Count-1;
+            cloud_data.globalMetaData.lowertimeLimit = cloud_data.globalMetaData.timeList[(int)cloud_data.globalMetaData.lowerframeLimit];
+            cloud_data.globalMetaData.uppertimeLimit = cloud_data.globalMetaData.timeList[(int)cloud_data.globalMetaData.upperframeLimit];
 
             Debug.Log("NormedXMIN" + normedxMin);
             Debug.Log("NormedXMAX" + normedxMax);

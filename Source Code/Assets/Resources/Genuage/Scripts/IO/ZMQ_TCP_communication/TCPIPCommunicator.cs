@@ -62,6 +62,12 @@ namespace IO
 
         }
 
+        protected override ReceiveStatus SendPointValues()
+        {
+            //TODO : Implement like in zmq
+            return ReceiveStatus.TIMEOUT;
+        }
+
         protected override ReceiveStatus ReceivePointValues()
         {
 

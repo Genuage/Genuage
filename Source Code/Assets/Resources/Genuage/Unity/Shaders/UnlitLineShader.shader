@@ -54,6 +54,7 @@ Shader "Genuage/UnlitLineShader"
 			#pragma multi_compile _ CLIPPING_PLANE
 			#pragma multi_compile _ POINT_HIDDEN
 			//#pragma multi_compile _ TRAJECTORYID
+			#pragma multi_compile _ COLOR_OVERRIDE
 
 			//Uses unity specific function(copy paste directly here)
             #include "UnityCG.cginc"
@@ -119,7 +120,7 @@ Shader "Genuage/UnlitLineShader"
 				}		
 				
 				#if defined(CLIPPING_PLANE)
-				float dis = dot(_ControllerPlaneNormal, mul(unity_ObjectToWorld, input.normal) - _ControllerWorldPosition);
+				float dis = dot(_ControllerPlaneNormal, mul(unity_ObjectToWorld, v.normal) - _ControllerWorldPosition);
 				if (dis < 0) {
 					discard;
 				}
@@ -132,12 +133,17 @@ Shader "Genuage/UnlitLineShader"
 				
 				float4 color; 
 
+				color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
+
+
 				if (v.uv2.x > 0) {
 					color = float4(1, 1, 1, 1);
 				}
-				else {
-					color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
-				}
+				
+				#if defined(COLOR_OVERRIDE)
+				color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
+
+				#endif
 
 				return color;
 

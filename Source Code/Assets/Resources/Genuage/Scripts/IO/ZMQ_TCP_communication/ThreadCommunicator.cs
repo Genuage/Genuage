@@ -44,6 +44,21 @@ namespace IO
     {
         public List<float[]> dataList;
         public ReceiveStatus receive_status;
+        public CommunicatorOption option;
+        public string address = "tcp://localhost:5555";
+        public bool AutoStopConnection = true;
+        public int TimeLimit = 120;
+        public enum CommunicatorOption
+        {
+            SEND_DATA,
+            RECEIVE_DATA
+        }
+
+        public enum SendStatus
+        {
+            SUCCESS,
+            TIMEOUT
+        }
 
         public enum ReceiveStatus
         {
@@ -55,6 +70,26 @@ namespace IO
             COLLUMN_SIZE_DISCREPANCY,
             READ_ERROR
         };
+
+        protected void SendOnePointData()
+        {
+            receive_status = SendPointValues();
+
+            if (receive_status == ReceiveStatus.SUCCESS)
+            {
+                Debug.Log("SUCCESS");
+            }
+
+            if (receive_status == ReceiveStatus.TIMEOUT)
+            {
+                Debug.Log("ERROR : Timeout");
+            }
+
+            
+            StopConnection();
+
+            
+        }
 
         protected void ReceiveOnePointData()
         {
@@ -90,11 +125,15 @@ namespace IO
                 Debug.Log("ERROR : All collumns do not have the same size");
             }
 
+            
             StopConnection();
+
+            
         }
 
         protected abstract ReceiveStatus ReceivePointValues();
 
+        protected abstract ReceiveStatus SendPointValues();
         protected abstract void StopConnection();
 
 

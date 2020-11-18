@@ -29,6 +29,18 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
+using Data;
+using IO;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +63,80 @@ namespace DesktopInterface
         protected override void CreateThread()
         {
             thread = new ZMQCommunicatorPython();
+            thread.option = ThreadCommunicator.CommunicatorOption.RECEIVE_DATA;
         }
+
+        protected override void ThreadSuccess()
+        {
+            CloudLoader.instance.LoadFromConnection(thread.dataList);
+            //ProcessReceivedData(thread.dataList);
+        }
+
+        private void ProcessReceivedData(List<float[]> SelectedAlphaList)
+        {
+            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+            float[] alphacolumn = new float[data.pointDataTable.Count];
+            for (int i = 0; i < alphacolumn.Length; i++)
+            {
+                alphacolumn[i] = 0f;
+            }
+
+            if (!data.globalMetaData.alphacolumnExists)
+            {
+                CreateAlphaColumn(data, alphacolumn);
+            }
+
+            //float[]
+            for (int i = 0; i < SelectedAlphaList.Count; i++)
+            {
+                alphacolumn[(int)SelectedAlphaList[0][i]] = SelectedAlphaList[1][i];
+            }
+
+            data.columnData[data.globalMetaData.alphacolumnIndex] = alphacolumn;
+
+            float max = Mathf.NegativeInfinity;
+            float min = Mathf.Infinity;
+
+            for (int i = 0; i < alphacolumn.Length; i++)
+            {
+                if (alphacolumn[i] <= min)
+                {
+                    min = alphacolumn[i];
+                }
+
+                if (alphacolumn[i] >= max)
+                {
+                    max = alphacolumn[i];
+                }
+            }
+            ColumnMetadata metadata = new ColumnMetadata();
+            metadata.ColumnID = data.globalMetaData.alphacolumnIndex;
+            metadata.MaxValue = max;
+            metadata.MinValue = min;
+            metadata.MinThreshold = min;
+            metadata.MaxThreshold = max;
+            metadata.Range = max - min;
+
+            data.globalMetaData.columnMetaDataList[data.globalMetaData.alphacolumnIndex] = metadata;
+
+        }
+
+        private void CreateAlphaColumn(CloudData data, float[] array)
+        {
+            data.columnData.Add(array);
+            ColumnMetadata metadata = new ColumnMetadata();
+            metadata.ColumnID = data.columnData.Count - 1;
+            metadata.MaxValue = 0;
+            metadata.MinValue = 0;
+            metadata.MinThreshold = 0;
+            metadata.MaxThreshold = 0;
+            metadata.Range = 0 - 0;
+            data.globalMetaData.columnMetaDataList.Add(metadata);
+            data.globalMetaData.alphacolumnExists = true;
+            data.globalMetaData.alphacolumnIndex = metadata.ColumnID;
+
+            ModalWindowManager.instance.CreateModalWindow("Column has been added to the data." + "\n");
+        }
+
     }
 }

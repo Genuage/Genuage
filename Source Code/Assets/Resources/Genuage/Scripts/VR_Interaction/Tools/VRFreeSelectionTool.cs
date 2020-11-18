@@ -283,8 +283,11 @@ namespace VR_Interaction
                     selectedPoints.UnionWith(Thread.pointSelectionList);
                     data.globalMetaData.FreeSelectionIDList = selectedPoints;
                     Thread.thread.Join();
-                    UpdateSelection();
-                    Debug.Log(selectedPoints.Count);
+                    if(selectedPoints.Count > 0)
+                    {
+                        UpdateSelection();
+                    }
+                    //Debug.Log(selectedPoints.Count);
                 }
             }
 
@@ -293,11 +296,14 @@ namespace VR_Interaction
                 if (Thread.isFinished == true)
                 {
                     DeletionTaskOn = false;
-
-                    selectedPoints.ExceptWith(Thread.pointSelectionList);
-                    data.globalMetaData.FreeSelectionIDList = selectedPoints;
                     Thread.thread.Join();
-                    UpdateSelection();
+                    if (selectedPoints.Count > 0)
+                    {
+                        selectedPoints.ExceptWith(Thread.pointSelectionList);
+                        data.globalMetaData.FreeSelectionIDList = selectedPoints;
+                        Thread.thread.Join();
+                        UpdateSelection();
+                    }
                     Debug.Log(selectedPoints.Count);
                 }
             }

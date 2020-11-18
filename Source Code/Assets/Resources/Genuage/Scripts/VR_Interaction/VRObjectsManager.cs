@@ -42,7 +42,7 @@ namespace VR_Interaction
         public static VRObjectsManager instance;
         private void Awake()
         {
-            Debug.Log("Awake");
+
             if (instance == null)
             {
                 instance = this;

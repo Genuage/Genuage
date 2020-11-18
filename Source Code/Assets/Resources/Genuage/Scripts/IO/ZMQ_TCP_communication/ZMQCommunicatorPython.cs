@@ -35,48 +35,139 @@ using NetMQ;
 using NetMQ.Sockets;
 using UnityEngine;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Threading;
 using System.Globalization;
 
 namespace IO
 {
+
     public class ZMQCommunicatorPython : ThreadCommunicator
     {
         protected NetMQSocket socket;
-
-        long timeLimit = 5000000;
+        List<byte[]> byte_dataList;
+        //public int timeLimit = 120;     
+        //Add option to modify this in AppOptions
 
         protected override void Run()
         {
             ForceDotNet.Force();
-
-            dataList = new List<float[]>();
-
-            socket = new RequestSocket();
-            socket.Connect("tcp://localhost:5555");
+            //socket = new RequestSocket();
+            //socket.Connect("tcp://localhost:5555");
             Debug.Log("Communication started");
 
-            ReceiveOnePointData();
+            if (option == CommunicatorOption.RECEIVE_DATA)
+            {
+                socket = new RequestSocket();
+                socket.Connect(address);
+                //Debug.Log("Communication started");
+
+                dataList = new List<float[]>();
+
+                ReceiveOnePointData();
+            }
+            else if (option == CommunicatorOption.SEND_DATA)
+            {
+                socket = new ResponseSocket();
+                socket.Bind(address);
+                //Debug.Log("Communication started");
+
+                CreateByteData();
+                SendOnePointData();
+            }
+            //byte_dataList
+
+
         }
 
+        private void CreateByteData()
+        {
+            byte_dataList = new List<byte[]>();
+            foreach( float[] array in dataList)
+            {
+                byte[] byteArray = ConvertFloatArrayToBytes(array);
+                string s = BitConverter.ToString(byteArray);
+                //Debug.Log(s);
+                byte_dataList.Add(byteArray);
+            }
+        }
+
+        private byte[] ConvertFloatArrayToBytes(float[] floatArray)
+        {
+            var byteArray = new byte[floatArray.Length * sizeof(float)];
+            Buffer.BlockCopy(floatArray, 0, byteArray, 0, byteArray.Length);
+            /**
+            foreach(float i in floatArray)
+            {
+                Debug.Log(i);
+                byte[] b = BitConverter.GetBytes(i);
+                string s = BitConverter.ToString(b);
+                Debug.Log(s);
+            }
+            **/
+            return byteArray;
+        }
+
+        protected override ReceiveStatus SendPointValues()
+        {
+            byte[] message = null;
+            bool recievedmessage = false;
+            DateTime lastMessageTime = DateTime.Now;
+            int index = 0;
+            while (true)
+            {
+                recievedmessage = socket.TryReceiveFrameBytes(out message);
+                if (recievedmessage)
+                {
+                    lastMessageTime = DateTime.Now;
+                    Debug.Log("Message Received");
+                    //Debug.Log(BitConverter.ToString(message));
+                    if(index >= byte_dataList.Count)
+                    {
+                        Debug.Log("Transfer Finished");
+                        socket.SendFrame("PointData Finished");
+                        return ReceiveStatus.SUCCESS;
+                    }
+                    string convert = System.Text.Encoding.UTF8.GetString(message, 0, message.Length);
+                    if (convert == "PointCollumn Echo")
+                    {
+                        Debug.Log("length of " + index + " : " + dataList[index].Length);
+
+                        Debug.Log("length of " + index + " : " + byte_dataList[index].Length);
+                        socket.SendFrame(byte_dataList[index]);
+                        lastMessageTime = DateTime.Now;
+                        index++;
+                    }
+                }
+                DateTime currentTime = DateTime.Now;
+                DateTime stopTime = lastMessageTime.AddSeconds(TimeLimit);
+                if (stopTime < currentTime)
+                {
+                    return ReceiveStatus.TIMEOUT;
+                }
+            }
+        }
         protected override ReceiveStatus ReceivePointValues()
         {
-            long timeSinceLastMessage;
+            //float timeSinceLastMessage;
+            DateTime lastMessageTime = DateTime.Now;
             while (true)
             {
                 socket.SendFrame("PointCollumn Echo");
+                Debug.Log("PointCollumn Echo Sent");
                 byte[] message = null;
                 bool recievedmessage = false;
-                timeSinceLastMessage = 0;
-
-                while (true)
+                lastMessageTime = DateTime.Now;
+                bool stopwhile = false;
+                while (stopwhile == false)
                 {
                     recievedmessage = socket.TryReceiveFrameBytes(out message);
                     if (recievedmessage)
                     {
-                        timeSinceLastMessage = 0;
+                        lastMessageTime = DateTime.Now;
                         Debug.Log("Message Received");
+                        //Debug.Log(message.ToString());
                         string convert = System.Text.Encoding.UTF8.GetString(message, 0, message.Length);
                         if (convert == "PointData Finished")
                         {
@@ -109,17 +200,16 @@ namespace IO
                         }
 
                         dataList.Add(array);
-                        break;
-
+                        stopwhile = true;
                     }
-                    else
+                    //else
+                    //{
+                    //lastMessageTime += Time.deltaTime;
+                    //}
+                    DateTime currentTime = DateTime.Now;
+                    DateTime stopTime = lastMessageTime.AddSeconds(TimeLimit);
+                    if (stopTime < currentTime)
                     {
-                        timeSinceLastMessage++;
-                    }
-
-                    if (timeSinceLastMessage > timeLimit)
-                    {
-                        //Doesn't seem very efficient, should probably find another way later.
                         return ReceiveStatus.TIMEOUT;
                     }
 

@@ -48,20 +48,6 @@ public class CloudBox : MonoBehaviour
     Material _material;
     bool _is_grabbed;
 
-    int[] _lines = {
-            0, 1,
-            0, 3,
-            0, 7,
-            6, 1,
-            6, 7,
-            1, 2,
-            4, 7,
-            6, 5,
-            5, 4,
-            5, 2,
-            3, 2,
-            3, 4
-        };
 
     public void Activate () {
         _cloud_status = GetComponent<CloudData>();
@@ -106,7 +92,7 @@ public class CloudBox : MonoBehaviour
     {
         Mesh mesh = _box.GetComponent<MeshFilter>().mesh;
         
-        Vector3[] vertices = {
+        List<Vector3> vertices = new List<Vector3>(){
             new Vector3(- 0.5f, - 0.5f, - 0.5f),
             new Vector3(0.5f, - 0.5f, - 0.5f),
             new Vector3(0.5f, 0.5f, - 0.5f),
@@ -116,14 +102,112 @@ public class CloudBox : MonoBehaviour
             new Vector3( 0.5f, - 0.5f,   0.5f),
             new Vector3(- 0.5f, - 0.5f,   0.5f),
         };
-    
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.SetIndices(_lines, MeshTopology.Lines, 0);
+        List<int> _lines = new List<int>(){
+            0, 1,
+            0, 3,
+            0, 7,
+            6, 1,
+            6, 7,
+            1, 2,
+            4, 7,
+            6, 5,
+            5, 4,
+            5, 2,
+            3, 2,
+            3, 4
+        };
 
         _box.transform.localScale = _cloud_status.globalMetaData.box_scale;
 
+        //Add if in Options
+        if(ApplicationOptions.instance.GetGraduationActivated() == true)
+        {
+            GenerateScaleBars(vertices, _lines);
+        }
+        mesh.Clear();
+        mesh.vertices = vertices.ToArray();
+        mesh.SetIndices(_lines.ToArray(), MeshTopology.Lines, 0);
+
+
         _box.tag = "PointCloud";
+    }
+
+    private void GenerateScaleBars(List<Vector3> verts, List<int> lines)
+    {
+        int graduationnumber = ApplicationOptions.instance.GetDefaultBoxScaleNumber();
+        float graduationlength = ApplicationOptions.instance.GetGraduationLength();
+        Vector3 point1 = new Vector3(-0.5f, -0.5f, -0.5f);
+        //Vector3 point2 = new Vector3(0.5f, 0.5f, -0.5f);
+        //Vector3 point3 = new Vector3(-0.5f, 0.5f, 0.5f);
+        //Vector3 point4 = new Vector3(0.5f, -0.5f, 0.5f);
+        Vector3[] pointArray = new Vector3[] { point1 }; //,point2,point3,point4};
+
+        foreach(Vector3 v in pointArray)
+        {
+            for(int i = 0; i <= graduationnumber; i++)
+            {
+                //Debug.Log(_box.transform.localScale);
+                Vector3 displacementVector = new Vector3((float)(i * (1f/graduationnumber)),0f,0f);
+                //Debug.Log(displacementVector);
+
+                Vector3 newpointVector;
+                if(v.x < 0)
+                {
+                    newpointVector = v + displacementVector;
+                }
+                else
+                {
+                    newpointVector = v - displacementVector;
+                }
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+
+                //Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength / _box.transform.localScale.y);
+                Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength );
+
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
+
+                displacementVector = new Vector3(0f, (float)(i * (1f / graduationnumber)), 0f);
+
+                if (v.y < 0)
+                {
+                    newpointVector = v + displacementVector;
+                }
+                else
+                {
+                    newpointVector = v - displacementVector;
+                }
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+
+                //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
+                endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
+
+
+                displacementVector = new Vector3(0f, 0f, (float)(i * (1f / graduationnumber)));
+
+                if (v.z < 0)
+                {
+                    newpointVector = v + displacementVector;
+                }
+                else
+                {
+                    newpointVector = v - displacementVector;
+                }
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+
+                //if(graduationlength.)
+                //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
+                endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
+                //Debug.Log(i);
+            }
+        }
     }
 
     public void Hovered(object o, InteractableObjectEventArgs e)

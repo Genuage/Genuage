@@ -101,7 +101,7 @@ namespace DesktopInterface
                         List<float> yvalues = new List<float>();
                         List<float> zvalues = new List<float>();
 
-                        List<Color> color = new List<Color>();
+                        //List<Color> color = new List<Color>();
                         List<float> coloruv = new List<float>();
 
                         float[] xvalue = data.columnData[data.columnData.Count - 3];
@@ -109,24 +109,33 @@ namespace DesktopInterface
                         float[] zvalue = data.columnData[data.columnData.Count - 1];
 
 
-                        foreach (var kvp in data.pointDataTable)
-                        {
-                            float theta = kvp.Value.theta_angle;
-                            float phi = kvp.Value.phi_angle;
-                            xvalues.Add(0.005f * Mathf.Sin(theta) * Mathf.Cos(phi));
-                            yvalues.Add(0.005f * Mathf.Sin(theta) * Mathf.Sin(phi));
-                            zvalues.Add(0.005f * Mathf.Cos(theta));
+                    foreach (var kvp in data.pointDataTable)
+                    {
+                        float theta = kvp.Value.theta_angle;
+                        float phi = kvp.Value.phi_angle;
+                    //DEG
+                    xvalues.Add(0.005f * Mathf.Sin(Mathf.Deg2Rad * theta) * Mathf.Cos(Mathf.Deg2Rad * phi));
+                    yvalues.Add(0.005f * Mathf.Sin(Mathf.Deg2Rad * theta) * Mathf.Sin(Mathf.Deg2Rad * phi));
+                    zvalues.Add(0.005f * Mathf.Cos(Mathf.Deg2Rad * theta));
+                    //RAD
+                    //xvalues.Add(0.005f * Mathf.Sin( theta) * Mathf.Cos(phi));
+                            //yvalues.Add(0.005f * Mathf.Sin(theta) * Mathf.Sin(phi));
+                            //zvalues.Add(0.005f * Mathf.Cos(theta));
+                    //color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
+                    //color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
+                     
+                    float mean = ((phi + theta) / 2f);
+                    //DEG
+                    coloruv.Add(mean / 360f);
+                    //RAD
+                    //coloruv.Add((Mathf.Rad2Deg * mean) / 360f);
 
-                            color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
-                            color.Add(Color.HSVToRGB(phi / 360f, 0.75f, 0.55f));
-                            float mean = Mathf.Rad2Deg * ((phi + theta) / 2f);
-                            coloruv.Add(mean / 360f);
-                            //coloruv.Add(phi / 360f);
-                        }
+                    //coloruv.Add(phi / 360f);
+                }
 
 
 
-                        Mesh mesh = new Mesh();
+                Mesh mesh = new Mesh();
                         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                         List<Vector3> vertices = new List<Vector3>();

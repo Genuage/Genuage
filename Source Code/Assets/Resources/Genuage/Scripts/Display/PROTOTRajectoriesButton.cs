@@ -267,7 +267,7 @@ namespace DesktopInterface
         {
             if (!playAnimation)
             {
-                CloudUpdater.instance.SetShaderFrame(0, TimeList.Count);
+                CloudUpdater.instance.SetShaderFrame(0, TimeList.Count-1);
 
 
             }
