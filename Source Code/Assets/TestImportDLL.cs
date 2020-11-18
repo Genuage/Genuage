@@ -75,8 +75,11 @@ public unsafe class TestImportDLL : MonoBehaviour
     public InputField floatParametersInputField;
     public InputField doubleParametersInputField;
 
+    private bool selectionSent = false;
+    private Dictionary<int, int> IDKEYDICT;
     public void Launch()
     {
+        IDKEYDICT = new Dictionary<int, int>();
         var extensions = new[]
             {
                 new ExtensionFilter("DLL", "dll"),
@@ -146,20 +149,49 @@ public unsafe class TestImportDLL : MonoBehaviour
         CloudData data = CloudUpdater.instance.LoadCurrentStatus();
         int pointnumber = 0;
 
-        foreach (var i in data.pointDataTable)
+        if (data.globalMetaData.SelectedPointsList.Count == 0)
         {
-            TrajectoriesList.Add(i.Value.trajectory);
-            Xvalues.Add(i.Value.position.x);
-            Yvalues.Add(i.Value.position.y);
-            Zvalues.Add(i.Value.position.z);
-            Cvalues.Add(i.Value._color_index);
-            Tvalues.Add(i.Value.time);
-            PHvalues.Add(i.Value.phi_angle);
-            THvalues.Add(i.Value.theta_angle);
-            Svalues.Add(i.Value.size);
-            pointnumber++;
+            selectionSent = false;
+            Debug.Log("Sending all points");
+            foreach (var i in data.pointDataTable)
+            {
+                TrajectoriesList.Add(i.Value.trajectory);
+                Xvalues.Add(i.Value.position.x);
+                Yvalues.Add(i.Value.position.y);
+                Zvalues.Add(i.Value.position.z);
+                Cvalues.Add(i.Value._color_index);
+                Tvalues.Add(i.Value.time);
+                PHvalues.Add(i.Value.phi_angle);
+                THvalues.Add(i.Value.theta_angle);
+                Svalues.Add(i.Value.size);
+                pointnumber++;
+
+            }
+        }
+        else
+        {
+            selectionSent = true;
+            Debug.Log("Sending selected points");
+            
+            foreach (var i in data.globalMetaData.SelectedPointsList)
+            {
+                TrajectoriesList.Add(data.pointDataTable[i].trajectory);
+                Xvalues.Add(data.pointDataTable[i].position.x);
+                Yvalues.Add(data.pointDataTable[i].position.y);
+                Zvalues.Add(data.pointDataTable[i].position.z);
+                Cvalues.Add(data.pointDataTable[i]._color_index);
+                Tvalues.Add(data.pointDataTable[i].time);
+                PHvalues.Add(data.pointDataTable[i].phi_angle);
+                THvalues.Add(data.pointDataTable[i].theta_angle);
+                Svalues.Add(data.pointDataTable[i].size);
+                pointnumber++;
+                IDKEYDICT.Add(Xvalues.Count - 1, i); //We map the id of the point with 
+                                                    //its index in the lists, just in case
+
+            }
 
         }
+
 
         float[] XvaluesArray = Xvalues.ToArray();
         float[] YvaluesArray = Yvalues.ToArray();
@@ -264,30 +296,69 @@ public unsafe class TestImportDLL : MonoBehaviour
 
                         float max = Mathf.NegativeInfinity;
                         float min = Mathf.Infinity;
-
-                        for (int i = 0; i < Results.Length; i++)
+                        if (selectionSent == false)
                         {
-                            if (Results[i] <= min)
+                            for (int i = 0; i < Results.Length; i++)
                             {
-                                min = Results[i];
-                            }
+                                if (Results[i] <= min)
+                                {
+                                    min = Results[i];
+                                }
 
-                            if (Results[i] >= max)
-                            {
-                                max = Results[i];
+                                if (Results[i] >= max)
+                                {
+                                    max = Results[i];
+                                }
                             }
+                            float[] restocopy = new float[pointnumber];
+                            Results.CopyTo(restocopy, 0);
+                            data.columnData.Add(restocopy);
+                            ColumnMetadata metadata = new ColumnMetadata();
+                            metadata.ColumnID = data.columnData.Count - 1;
+                            metadata.MaxValue = max;
+                            metadata.MinValue = min;
+                            metadata.MinThreshold = min;
+                            metadata.MaxThreshold = max;
+                            metadata.Range = max - min;
+                            data.globalMetaData.columnMetaDataList.Add(metadata);
+
                         }
-                        float[] restocopy = new float[pointnumber];
-                        Results.CopyTo(restocopy, 0);
-                        data.columnData.Add(restocopy);
-                        ColumnMetadata metadata = new ColumnMetadata();
-                        metadata.ColumnID = data.columnData.Count - 1;
-                        metadata.MaxValue = max;
-                        metadata.MinValue = min;
-                        metadata.MinThreshold = min;
-                        metadata.MaxThreshold = max;
-                        metadata.Range = max - min;
-                        data.globalMetaData.columnMetaDataList.Add(metadata);
+                        else
+                        {
+                            float[] FullResults = new float[data.pointDataTable.Count];
+                            for(int k = 0; k < data.pointDataTable.Count; k++)
+                            {
+                                FullResults[k] = 0f;
+                            }
+                            for (int j = 0; j < Results.Length; j++)
+                            {
+                                FullResults[IDKEYDICT[j]] = Results[j];
+                            }
+                            for (int i = 0; i < FullResults.Length; i++)
+                            {
+                                if (FullResults[i] <= min)
+                                {
+                                    min = FullResults[i];
+                                }
+
+                                if (FullResults[i] >= max)
+                                {
+                                    max = FullResults[i];
+                                }
+                            }
+                            float[] restocopy = new float[data.pointDataTable.Count];
+                            FullResults.CopyTo(restocopy, 0);
+                            data.columnData.Add(restocopy);
+                            ColumnMetadata metadata = new ColumnMetadata();
+                            metadata.ColumnID = data.columnData.Count - 1;
+                            metadata.MaxValue = max;
+                            metadata.MinValue = min;
+                            metadata.MinThreshold = min;
+                            metadata.MaxThreshold = max;
+                            metadata.Range = max - min;
+                            data.globalMetaData.columnMetaDataList.Add(metadata);
+
+                        }
 
                         ModalWindowManager.instance.CreateModalWindow("Column has been added to the data." + "\n");
                     }
