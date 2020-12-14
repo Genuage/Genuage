@@ -272,6 +272,26 @@ namespace Data
             CloudData currcloud = LoadStatus(id);
             currcloud.gameObject.GetComponent<CloudBox>().CreateBox();
         }
+
+        public void ChangeBoxGraduationsX(float value)
+        {
+            CloudData currentCloud = LoadCurrentStatus();
+            currentCloud.globalMetaData.ScaleBarNumberX = (int)value;
+            currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
+        }
+        public void ChangeBoxGraduationsY(float value)
+        {
+            CloudData currentCloud = LoadCurrentStatus();
+            currentCloud.globalMetaData.ScaleBarNumberY = (int)value;
+            currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
+        }
+        public void ChangeBoxGraduationsZ(float value)
+        {
+            CloudData currentCloud = LoadCurrentStatus();
+            currentCloud.globalMetaData.ScaleBarNumberZ = (int)value;
+            currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
+        }
+
         #endregion
         public override void ChangeCloudScale(Vector3 new_scale)
         {
@@ -482,14 +502,62 @@ namespace Data
                 default:
                     Debug.Log("colormap saturation error");
                     break;
+
+
             }
+
+            float minspace = cmin * 255;
+            float maxspace = cmax * 255;
+            Color[] tempcolorarray = null;
+            if (cmax-cmin > 0)
+            {
+                Texture2D tempTex = ColorMap.CreateColormap(ColorMap.colorArray, (int)(maxspace - minspace));
+                tempcolorarray = tempTex.GetPixels();
+            }
+            int counter = 0;
+            for (int i = 0; i < colormapArray.Length; i++)
+            {
+
+                if (i <= (int)(minspace))
+                {
+                    colormapArray[i] = ColorMap.colorArray[0];
+                }
+                else if (i >= (int)(maxspace-1))
+                {
+                    colormapArray[i] = ColorMap.colorArray[ColorMap.colorArray.Length - 1];//Color.Lerp(ColorMap.colorArray[0], ColorMap.colorArray[1], (float)(i - cmin * 255f) / (255f) / delta);
+                }
+                else
+                {
+                    if (tempcolorarray != null)
+                    {
+                        colormapArray[i] = tempcolorarray[counter];
+                        counter++;
+
+                    }
+                    else
+                    {
+                        Debug.Log("ERROR : access to undefined texture");
+                    }
+                }
+
+            }
+
+
+            newtexture.SetPixels(colormapArray);
+            newtexture.Apply();
+            ColorMap.texture = newtexture;
+            OnColorMapSaturationChange(value1, value2);
+            ChangeCurrentColorMap(ColorMap.name);
+            ColorMap.cmaxValue = cmax;
+            ColorMap.cminValue = cmin;
+            /**
             delta = Mathf.Abs(cmax - cmin);
             if(delta == 0)
             {
                 delta = 0.00000000001f;
             }
-            int spacing = (int)(256/ (ColorMap.colorArray.Length));
-            int deltaspacing = (int)(delta*256 / (ColorMap.colorArray.Length));
+            int spacing = (int)(256/ (ColorMap.colorArray.Length-1));
+            int deltaspacing = (int)(delta*256 / (ColorMap.colorArray.Length-1)); //length-1
 
             for (int i = 0; i < colormapArray.Length; i++)
             {
@@ -505,24 +573,21 @@ namespace Data
                 
             }
 
+            //Recode with one for loop
             for (int i = (int)(cmin * 255f); i < (int)(cmax * 255f); i++)
             {
+                //Careful, can divide by zero, fix later
+
                 int j = Mathf.Min((int)(i - cmin*255f) / deltaspacing, ColorMap.colorArray.Length - 2);
 
                 colormapArray[i] = Color.Lerp(ColorMap.colorArray[j], ColorMap.colorArray[j + 1], (float)((i - (cmin * 255f) - (j * deltaspacing)) /deltaspacing / delta)); //Color.Lerp(ColorMap.colorArray[0], ColorMap.colorArray[1], (float)(i - cmin * 255f) / (255f) / delta);
 
             }
 
-            newtexture.SetPixels(colormapArray);
-            newtexture.Apply();
-            ColorMap.texture = newtexture;
-            OnColorMapSaturationChange(value1, value2);
-            ChangeCurrentColorMap(ColorMap.name);
-            ColorMap.cmaxValue = cmax;
-            ColorMap.cminValue = cmin;
+            
             //.globalMetaData.cmaxslidervalue = cmax;
             //currentCloud.globalMetaData.cminslidervalue = cmin;
-
+            **/
 
         }
 
@@ -610,6 +675,7 @@ namespace Data
 
             //Debug.Log("PointSize Changed");
         }
+
 
         #endregion
 
@@ -899,7 +965,8 @@ namespace Data
                 currcloud.gameObject.GetComponent<MeshFilter>().mesh.vertices = newpositionList;
                 if (id == cloudIDList[0])
                 {
-                    currcloud.transform.parent.Find("Box").localScale = new Vector3(normedxrange, normedyrange, normedzrange) / maxnormedRange;
+                    Vector3 newScale = new Vector3(normedxrange, normedyrange, normedzrange) / maxnormedRange;
+                    currcloud.transform.parent.Find("Box").localScale = Vector3.Scale(newScale, currcloud.globalMetaData.scale);
                 }
                 else
                 {
@@ -935,7 +1002,7 @@ namespace Data
                 GameObject box = currcloud.transform.parent.Find("Box").gameObject;
                 if (id == cloudIDList[0])
                 {
-                    box.transform.localScale = currcloud.globalMetaData.box_scale;
+                    box.transform.localScale = Vector3.Scale(currcloud.globalMetaData.box_scale, currcloud.globalMetaData.scale);
                 }
                 box.SetActive(true);
                 currcloud.GetComponent<VRTK_RigidbodyFollow>().gameObjectToFollow = box;
@@ -948,6 +1015,9 @@ namespace Data
         #endregion
 
         #region Column Selection and reload
+
+        public delegate void OnCloudReloadedEvent(int id);
+        public event OnCloudReloadedEvent OnCloudReloaded;
 
         public void ChangeCollumnSelection(List<int> collumnList)
         {
@@ -1143,6 +1213,10 @@ namespace Data
             ChangeCurrentColorMap(currcloud.globalMetaData.colormapName,currcloud.globalMetaData.colormapReversed);
             currcloud.globalMetaData.displayCollumnsConfiguration = collumnList.ToArray();
             ChangeThreshold();
+            if(OnCloudReloaded != null)
+            {
+                OnCloudReloaded(currcloud.globalMetaData.cloud_id);
+            }
         }
         #region Thresholding
         public void ChangeThreshold()
@@ -1790,62 +1864,53 @@ namespace Data
             }
             StatusMessage = "Looking for point locations";
             FindAllLocations(currentCloud, radius);
-            Dictionary<int, List<int>> locations = currentCloud.globalMetaData.pointbyLocationList;
+            Dictionary<Vector3Int, List<int>> locations = currentCloud.globalMetaData.pointbyLocationList;
             int index = 0;
+            long distanceindex = 0;
             int totalindex = locations.Count;
-            foreach (KeyValuePair<int, List<int>> item in locations)
+            foreach (KeyValuePair<Vector3Int, List<int>> item in locations)
             {
-                Vector3Int index_3D = To3D(item.Key, Mathf.RoundToInt(defaultlocationsNumber), Mathf.RoundToInt(defaultlocationsNumber));
-                //Color color = new Color()
                 index++;
                 StatusMessage = "Calculating density in points at location " + index+"/"+totalindex;
                 foreach (int point in item.Value)
                 {
                     
-                    float neighbors = 0f;
-                    foreach (int id in item.Value)
-                    {
-                        float distance = Vector3.Distance(currentCloud.pointDataTable[id].position, currentCloud.pointDataTable[point].position);
+                    float pointneighbors = 0f;
 
-                        if (distance <= radius)
-                        {
-                            neighbors++;
-                        }
-                    }
-
-
+                    //We iterate over the curent cube and all its neighbors
                     for (int x = -1; x < 2; x++)
                     {
                         for (int y = -1; y < 2; y++)
                         {
                             for (int z = -1; z < 2; z++)
                             {
-                                //currentCloud.pointDataTable[point].position;
+                                Vector3Int originalPosition = item.Key;
                                 Vector3Int add = new Vector3Int(x, y, z);
-                                Vector3Int neighborPosition = index_3D + add;
-                                int neighborKey = To1D(neighborPosition.x, neighborPosition.y, neighborPosition.z,
-                                    currentCloud.globalMetaData.locationMax, currentCloud.globalMetaData.locationMax);
-                                if (locations.ContainsKey(neighborKey))
+                                Vector3Int neighborPosition = originalPosition + add;
+
+                                if (locations.ContainsKey(neighborPosition))
                                 {
-                                    foreach (int id in locations[neighborKey])
+                                    foreach (int id in locations[neighborPosition])
                                     {
-                                        float distance = Vector3.Distance(currentCloud.pointDataTable[id].position, currentCloud.pointDataTable[point].position); 
+                                        //The distance calculation is very costly and iterated over a lot of points, optimization possible ?
+
+                                        float distance = Vector3.Distance(currentCloud.pointDataTable[id].position, currentCloud.pointDataTable[point].position);
+                                        distanceindex++;
                                         if (distance <= radius)
                                         {
-                                            neighbors++;
+                                            pointneighbors++;
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    //Debug.Log("neighbors found "+neighbors);
-                    currentCloud.globalMetaData.current_colormap_variable[point] = neighbors;
-                    currentCloud.pointMetaDataTable[point].local_density = neighbors;
-                    densityArray[point] = neighbors;
+                    currentCloud.globalMetaData.current_colormap_variable[point] = pointneighbors;
+                    currentCloud.pointMetaDataTable[point].local_density = pointneighbors;
+                    densityArray[point] = pointneighbors;
 
-                    if (currentCloud.globalMetaData.dMax < neighbors) { currentCloud.globalMetaData.dMax = neighbors; }
-                    if (currentCloud.globalMetaData.dMin > neighbors) { currentCloud.globalMetaData.dMin = neighbors; }
+                    if (currentCloud.globalMetaData.dMax < pointneighbors) { currentCloud.globalMetaData.dMax = pointneighbors; }
+                    if (currentCloud.globalMetaData.dMin > pointneighbors) { currentCloud.globalMetaData.dMin = pointneighbors; }
 
 
 
@@ -1853,7 +1918,6 @@ namespace Data
             }
             StatusMessage = "Saving density data";
 
-            //currentCloud.globalMetaData.current_normed_variable = new Vector2(currentCloud.globalMetaData.dMin, currentCloud.globalMetaData.dMax);
             if (currentCloud.globalMetaData.densityCalculated == false)
             {
                 currentCloud.globalMetaData.densityCalculated = true;
@@ -1870,8 +1934,8 @@ namespace Data
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinValue = currentCloud.globalMetaData.dMin;
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MaxThreshold = currentCloud.globalMetaData.dMax;
             currentCloud.globalMetaData.columnMetaDataList[currentCloud.globalMetaData.columnMetaDataList.Count - 1].MinThreshold = currentCloud.globalMetaData.dMin;
-            
-            
+
+            Debug.Log(distanceindex);
             isRunning = false;
         }
 
@@ -1887,36 +1951,31 @@ namespace Data
         public void FindAllLocations(CloudData currentCloud, float radius)
         {
 
-
+            long counter = 0;
+            int pointnbr = currentCloud.pointDataTable.Count;
             Dictionary<int, PointMetaData> metadata = currentCloud.pointMetaDataTable;
             foreach (KeyValuePair<int, PointData> item in currentCloud.pointDataTable)
             {
-                int location = FindLocation(radius, item.Value.position,
+                StatusMessage = "Finding location for point " + counter + " / " + pointnbr;
+                counter++;
+                Vector3Int location = FindLocation(radius, item.Value.position,
                                 new Vector3(currentCloud.globalMetaData.xMin, currentCloud.globalMetaData.yMin, currentCloud.globalMetaData.zMin),
                                 new Vector3(currentCloud.globalMetaData.xMax, currentCloud.globalMetaData.yMax, currentCloud.globalMetaData.zMax));
+                
+                
 
-                if (location == -1)
+                if (currentCloud.globalMetaData.pointbyLocationList.ContainsKey(location))
                 {
-                    Debug.Log("location not found, this should not happen :V");
-                    //Debug.Log(currentCloud.pointDataTable[item.Key].normed_position);
-
-
+                    currentCloud.globalMetaData.pointbyLocationList[location].Add(item.Key);
                 }
                 else
                 {
-                    if (currentCloud.globalMetaData.pointbyLocationList.ContainsKey(location))
-                    {
-                        currentCloud.globalMetaData.pointbyLocationList[location].Add(item.Key);
-                    }
-                    else
-                    {
-                        currentCloud.globalMetaData.pointbyLocationList.Add(location, new List<int>());
-                        currentCloud.globalMetaData.pointbyLocationList[location].Add(item.Key);
-                    }
-                    metadata[item.Key].cloudzone = location;
-
-                    //Debug.Log("Location found :D");
+                    currentCloud.globalMetaData.pointbyLocationList.Add(location, new List<int>());
+                    currentCloud.globalMetaData.pointbyLocationList[location].Add(item.Key);
                 }
+                metadata[item.Key].cloudzone = location;
+
+                
             }
             Debug.Log("number of sections : " + currentCloud.globalMetaData.pointbyLocationList.Count);
 
@@ -1924,70 +1983,22 @@ namespace Data
 
         }
 
-        public int FindLocation(float radius, Vector3 point_position, Vector3 min, Vector3 max)
+        public Vector3Int FindLocation(float radius, Vector3 point_position, Vector3 min, Vector3 max)
         {
             float xrange = max.x - min.x;
             float yrange = max.y - min.y;
             float zrange = max.z - min.z;
             float maxrange = Mathf.Max(xrange, yrange, zrange);
+            float cubesize = 2 * radius;
+            float cubenumber = maxrange / cubesize; //cube size is (2R) so we get the number of cubes 
+                                                    //by dividing the range of the cloud's max dimension by the size of the cubes
 
-            /**
-            if(maxrange / radius < )
-            {
+            int xvalue = Mathf.FloorToInt(point_position.x / cubesize);
+            int yvalue = Mathf.FloorToInt(point_position.y / cubesize);
+            int zvalue = Mathf.FloorToInt(point_position.z / cubesize);
 
-            }
-    **/
-            float size = defaultlocationsNumber;
-
-            float dimensionx = xrange / size;
-            float dimensiony = yrange / size;
-            float dimensionz = zrange / size;
-            int id;
-
-
-
-            for (int xmultiplier = 1; xmultiplier < size + 1; xmultiplier++)
-            {
-
-                for (int ymultiplier = 1; ymultiplier < size + 1; ymultiplier++)
-                {
-
-                    for (int zmultiplier = 1; zmultiplier < size + 1; zmultiplier++)
-                    {
-
-                        if (point_position.x >= (min.x + (dimensionx * (xmultiplier - 1))) && point_position.x < (min.x + (dimensionx * xmultiplier)) &&
-                            point_position.y >= (min.y + (dimensiony * (ymultiplier - 1))) && point_position.y < (min.y + (dimensiony * ymultiplier)) &&
-                            point_position.z >= (min.z + (dimensionz * (zmultiplier - 1))) && point_position.z < (min.z + (dimensionz * zmultiplier)))
-                        {
-                            id = To1D(xmultiplier, ymultiplier, zmultiplier, Mathf.RoundToInt(size), Mathf.RoundToInt(size));
-
-                            //Debug.Log(id + " " + xmultiplier + " " + ymultiplier + " " + zmultiplier);
-                            return id;
-
-                        }
-                    }
-                }
-            }
-            id = -1;
+            Vector3Int id = new Vector3Int(xvalue, yvalue, zvalue);
             return id;
-        }
-
-
-
-        public int To1D(int x, int y, int z, int xMax, int yMax)
-        {
-            int result = (z * xMax * yMax) + (y * xMax) + x;
-            return result;
-        }
-
-        public Vector3Int To3D(int index, int xMax, int yMax)
-        {
-
-            int z = index / (xMax * yMax);
-            index -= z * xMax * yMax;
-            int y = index / xMax;
-            int x = index % xMax;
-            return new Vector3Int(x, y, z);
         }
     }
     #endregion
@@ -2002,7 +2013,6 @@ namespace Data
         public Mesh TrajectoryMesh = null;
         public Vector2[] PCuv3Array;
         public Vector2[] TRuv2Array;
-
         public Vector2[] TRuv3Array;
 
         public SelectPointsThreadHandler(CloudData cloud, List<HashSet<int>> Lists, Mesh Mesh, Mesh trajectorymesh = null)

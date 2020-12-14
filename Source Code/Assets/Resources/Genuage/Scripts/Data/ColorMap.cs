@@ -62,11 +62,41 @@ namespace Data
         }
 
 
-        private Texture2D CreateColormap(Color[] colors)
+        public Texture2D CreateColormap(Color[] colors, int width = 255)
         {
+            
+            int colornumber = colors.Length;
+            float spacing = Mathf.Ceil(width / (colors.Length-1));
+            Texture2D colormap_texture = new Texture2D(width, 1, TextureFormat.RGBA32, true);
+            colormap_texture.filterMode = FilterMode.Bilinear;
+            colormap_texture.wrapMode = TextureWrapMode.Clamp;
+            //Find ways to avoid autocasting to int
+            for(int i = 0; i< colors.Length; i++)
+            {
+
+                colormap_texture.SetPixel((int)(spacing*i),0,colors[i]);
+            }
+            
+            for(int i = 0; i < colors.Length-1; i++)
+            {
+                for(int j = (int)(i * spacing); j < (i + 1) * spacing; j++)
+                {
+                    float moduloJ = j%spacing;
+                    float LerpIndex = (moduloJ / spacing);
+                    //Debug.Log("name : " + name + " lerpindex : " + LerpIndex + " moduloJ : "+moduloJ + " spacing : "+spacing);
+                    colormap_texture.SetPixel(j, 0, Color.Lerp(colors[i], colors[i + 1], LerpIndex));
+                }
+            }
+            
+            colormap_texture.Apply();
+
+
+
+
+            return colormap_texture;
+            /**
             //Debug.Log(colors.Length);
             int width = 256;
-            int spacing = width / (colors.Length);
 
             Texture2D colormap_texture = new Texture2D(width, 1, TextureFormat.RGBA32, true);
             colormap_texture.filterMode = FilterMode.Bilinear;
@@ -78,8 +108,7 @@ namespace Data
                 colormap_texture.SetPixel(i, 0, Color.Lerp(colors[j], colors[j + 1], (float)(i - (j * spacing)) / (float)spacing));
             }
             colormap_texture.Apply();
-
-            return colormap_texture;
+            **/
         }
 
 

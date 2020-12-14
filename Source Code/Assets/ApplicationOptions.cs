@@ -14,9 +14,9 @@ public class ApplicationOptions : MonoBehaviour
 
     private float VRCullingDistance = VRDEFAULTCULLINGDISTANCE;
     //private AngleUnit DefaultAngleUnit = AngleUnit.DEGREES;
-    private bool BoxGraduationActivated = false;
+    private bool BoxGraduationActivated = true;
     private int BoxGraduationNumber = 10; //number of ticks on each dimensions
-    private float BoxGraduationLength = 0.05f; //Length of those ticks
+    private float BoxGraduationLength = 0.01f; //Length of those ticks
     
 
 
@@ -54,11 +54,11 @@ public class ApplicationOptions : MonoBehaviour
         return BoxGraduationActivated;
     }
 
-    public void UpdateOptions(float vrcullingDistance, int boxscalenumber, float graduationLength)
+    public void UpdateOptions(float vrcullingDistance)
     {
         UpdateVRCullingDistance(vrcullingDistance);
-        UpdateBoxGraduationNumber(boxscalenumber);
-        UpdateBoxGraduationLength(graduationLength);
+        //UpdateBoxGraduationNumber(boxscalenumber);
+        //UpdateBoxGraduationLength(graduationLength);
     }
 
     public void UpdateVRCullingDistance(float vrcullingDistance)

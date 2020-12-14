@@ -29,7 +29,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,7 +53,8 @@ namespace DesktopInterface
 
         public Text StatusText;
         // Start is called before the first frame update
-
+        public DateTime timesincelastmessage;
+        public bool checktime = false;
         private void Awake()
         {
             if (instance == null)
@@ -201,11 +202,27 @@ namespace DesktopInterface
         public void ChangeStatusText(string newtext)
         {
             StatusText.text = newtext;
+            timesincelastmessage = DateTime.Now;
+            checktime = true;
+
+
+        }
+
+        private void Update()
+        {
+            if (checktime)
+            {
+                if(timesincelastmessage.AddSeconds(5) < DateTime.Now)
+                {
+                    StatusText.text = " ";
+                    checktime = false;
+                }
+            }
         }
 
         public void ResetStatusText()
         {
-            StatusText.text = "Idle";
+            StatusText.text = " ";
         }
     }
 }

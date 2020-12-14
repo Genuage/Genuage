@@ -54,6 +54,8 @@ namespace DesktopInterface
 
         public override void Execute()
         {
+            UIManager.instance.ChangeStatusText("Loading Cloud...");
+
             // Open file with filter
             var extensions = new[] 
             {
@@ -81,6 +83,7 @@ namespace DesktopInterface
         /// <param name="paths"></param>
         public void LaunchCloudLoader(string[] paths)
         {
+
             foreach (string path in paths)
             {
                 CloudLoader.instance.LoadFromFile(path);

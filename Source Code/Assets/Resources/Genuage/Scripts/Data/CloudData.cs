@@ -151,7 +151,7 @@ namespace Data
         private bool _isSelected;
         public bool trueColorOverride;    
 
-        private int _cloudzone;
+        private Vector3Int _cloudzone;
         private float _local_density;
 
         #region Get/Setters
@@ -168,7 +168,7 @@ namespace Data
             set { _isSelected = value; }
         }
 
-        public int cloudzone
+        public Vector3Int cloudzone
         {
             get { return _cloudzone; }
 
@@ -271,6 +271,10 @@ namespace Data
         public List<ColumnMetadata> columnMetaDataList;
 
         private Vector3 _box_scale;
+        public int ScaleBarNumberX;
+        public int ScaleBarNumberY;
+        public int ScaleBarNumberZ;
+
 
         private float _maxRange;
         private float _maxLinkedRange;
@@ -301,7 +305,7 @@ namespace Data
         //public float meanThetaAngle;
         public AngleUnit angleUnit;
 
-        private Dictionary<int, List<int>> _pointbyLocationList;
+        private Dictionary<Vector3Int, List<int>> _pointbyLocationList;
 
         private int _locationMax;
 
@@ -547,7 +551,7 @@ namespace Data
         }
 
 
-        public Dictionary<int, List<int>> pointbyLocationList
+        public Dictionary<Vector3Int, List<int>> pointbyLocationList
         {
             get { return _pointbyLocationList; }
             set { _pointbyLocationList = value; }
@@ -630,7 +634,7 @@ namespace Data
 
             pointTrajectoriesTable = new Dictionary<float, TrajectoryData>();
 
-            globalMetaData.pointbyLocationList = new Dictionary<int, List<int>>();
+            globalMetaData.pointbyLocationList = new Dictionary<Vector3Int, List<int>>();
 
             globalMetaData.SelectedPointsList = new HashSet<int>();
             globalMetaData.SelectedTrajectories = new HashSet<float>();
@@ -670,7 +674,7 @@ namespace Data
             }
         }
 
-        public void CreatePointMetaData(int id, int cloudzone = 0, float local_density = 0, int trajectoryID = -1)
+        public void CreatePointMetaData(int id, float local_density = 0, int trajectoryID = -1)
         {
             if (!pointMetaDataTable.ContainsKey(id))
             {
@@ -680,7 +684,7 @@ namespace Data
                 newdata.isHidden = false;
                 newdata.isSelected = false;
                 newdata.trueColorOverride = false;
-                newdata.cloudzone = cloudzone;
+                newdata.cloudzone = Vector3Int.zero;
                 newdata.local_density = local_density;
                 pointMetaDataTable.Add(id, newdata);
             }
@@ -739,6 +743,9 @@ namespace Data
             globalMetaData.current_colormap_variable = colorDict;
 
             globalMetaData.angleUnit = AngleUnit.DEGREES;
+            globalMetaData.ScaleBarNumberX = 10;
+            globalMetaData.ScaleBarNumberY = 10;
+            globalMetaData.ScaleBarNumberZ = 10;
         }
 
         

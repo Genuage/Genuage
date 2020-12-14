@@ -72,7 +72,7 @@ namespace IO
         public float pointSize;
         public Vector3 scale;
         public string fileName;
-        public Dictionary<int, List<int>> pointsByLocationDict;
+        public Dictionary<Vector3Int, List<int>> pointsByLocationDict;
 
         #region VR Tools
         //Counter

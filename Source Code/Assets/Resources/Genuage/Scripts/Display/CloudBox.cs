@@ -37,6 +37,7 @@ using VRTK;
 using VRTK.GrabAttachMechanics;
 using Data;
 using DesktopInterface;
+using Display;
 /// <summary>
 /// Box use to show to the user the collider box around the CloudPoints
 /// </summary>
@@ -48,8 +49,10 @@ public class CloudBox : MonoBehaviour
     Material _material;
     bool _is_grabbed;
 
+    List<GameObject> TextList;
 
     public void Activate () {
+        TextList = new List<GameObject>();
         _cloud_status = GetComponent<CloudData>();
         _box = new GameObject("Box");
         _box.AddComponent<DragMouse>();
@@ -117,10 +120,15 @@ public class CloudBox : MonoBehaviour
             3, 4
         };
 
-        _box.transform.localScale = _cloud_status.globalMetaData.box_scale;
+        _box.transform.localScale = Vector3.Scale(_cloud_status.globalMetaData.box_scale, _cloud_status.globalMetaData.scale);
+        foreach(GameObject go in TextList)
+        {
+            Destroy(go);
+        }
+        TextList.Clear();
 
         //Add if in Options
-        if(ApplicationOptions.instance.GetGraduationActivated() == true)
+        if (ApplicationOptions.instance.GetGraduationActivated() == true)
         {
             GenerateScaleBars(vertices, _lines);
         }
@@ -134,24 +142,28 @@ public class CloudBox : MonoBehaviour
 
     private void GenerateScaleBars(List<Vector3> verts, List<int> lines)
     {
-        int graduationnumber = ApplicationOptions.instance.GetDefaultBoxScaleNumber();
+        //int graduationnumber = ApplicationOptions.instance.GetDefaultBoxScaleNumber();
+        int graduationnumberX = _cloud_status.globalMetaData.ScaleBarNumberX;
+        int graduationnumberY = _cloud_status.globalMetaData.ScaleBarNumberY;
+        int graduationnumberZ = _cloud_status.globalMetaData.ScaleBarNumberZ;
         float graduationlength = ApplicationOptions.instance.GetGraduationLength();
         Vector3 point1 = new Vector3(-0.5f, -0.5f, -0.5f);
-        //Vector3 point2 = new Vector3(0.5f, 0.5f, -0.5f);
-        //Vector3 point3 = new Vector3(-0.5f, 0.5f, 0.5f);
-        //Vector3 point4 = new Vector3(0.5f, -0.5f, 0.5f);
-        Vector3[] pointArray = new Vector3[] { point1 }; //,point2,point3,point4};
+        Vector3 point2 = new Vector3(0.5f, 0.5f, -0.5f);
+        Vector3 point3 = new Vector3(-0.5f, 0.5f, 0.5f);
+        Vector3 point4 = new Vector3(0.5f, -0.5f, 0.5f);
+        Vector3[] pointArray = new Vector3[] { point1,point2,point3,point4 }; //,point2,point3,point4};
 
         foreach(Vector3 v in pointArray)
         {
-            for(int i = 0; i <= graduationnumber; i++)
+            for (int i = 0; i <= graduationnumberX; i++)
             {
                 //Debug.Log(_box.transform.localScale);
-                Vector3 displacementVector = new Vector3((float)(i * (1f/graduationnumber)),0f,0f);
+                Vector3 displacementVector = new Vector3((float)(i * (1f / graduationnumberX)), 0f, 0f);
                 //Debug.Log(displacementVector);
 
                 Vector3 newpointVector;
-                if(v.x < 0)
+                //x rows
+                if (v.x < 0)
                 {
                     newpointVector = v + displacementVector;
                 }
@@ -161,14 +173,68 @@ public class CloudBox : MonoBehaviour
                 }
                 verts.Add(newpointVector);
                 lines.Add(verts.Count - 1);
+                Vector3 endvector;
+                if (v.z < 0)
+                {
+                    endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                }
 
-                //Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength / _box.transform.localScale.y);
-                Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength );
+                //Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength );
 
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
 
-                displacementVector = new Vector3(0f, (float)(i * (1f / graduationnumber)), 0f);
+                //new line
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+                if (v.y < 0)
+                {
+                    endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                }
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
+
+
+                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                {
+                    //GameObject container = new GameObject();
+                    //container.transform.SetParent(_box.transform);
+                    GameObject text_object = new GameObject("Text");
+                    //text_object.transform.position = endvector;
+                    
+                    text_object.transform.localScale = Vector3.one * 0.015f;
+                    text_object.transform.SetParent(_box.transform, true);
+                    text_object.transform.localPosition = new Vector3(newpointVector.x,
+                                                                 -0.55f,
+                                                                 -0.5f);
+                    text_object.AddComponent<MeshRenderer>();
+                    text_object.AddComponent<TextMesh>();
+                    float mark = 0 + i * ((_cloud_status.globalMetaData.xMax - _cloud_status.globalMetaData.xMin) / graduationnumberX);
+                    float roundedmark = Mathf.Round(mark);
+                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                    text_object.GetComponent<TextMesh>().color = Color.white;
+
+                    text_object.AddComponent<StaringLabel>();
+                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+
+                    TextList.Add(text_object);
+                }
+            }
+            for (int i = 0; i <= graduationnumberY; i++)
+            {//y rows
+                Vector3 newpointVector;
+
+                
+                Vector3 displacementVector = new Vector3(0f, (float)(i * (1f / graduationnumberY)), 0f);
 
                 if (v.y < 0)
                 {
@@ -181,13 +247,67 @@ public class CloudBox : MonoBehaviour
                 verts.Add(newpointVector);
                 lines.Add(verts.Count - 1);
 
+                Vector3 endvector;
+
                 //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
-                endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                if (v.x < 0)
+                {
+                    endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                }
+
+                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                {
+                    //GameObject container = new GameObject();
+                    //container.transform.SetParent(_box.transform);
+                    GameObject text_object = new GameObject("Text");
+                    //text_object.transform.position = endvector;
+                    text_object.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
+                    text_object.transform.SetParent(_box.transform, true);
+                    text_object.transform.localPosition = new Vector3(-0.55f ,
+                                                                 newpointVector.y ,
+                                                                 -0.5f);
+                    text_object.AddComponent<MeshRenderer>();
+                    text_object.AddComponent<TextMesh>();
+                    float mark = 0 + i * ((_cloud_status.globalMetaData.yMax - _cloud_status.globalMetaData.yMin) / graduationnumberY);
+                    float roundedmark = Mathf.Round(mark);
+                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                    text_object.GetComponent<TextMesh>().color = Color.white;
+
+                    text_object.AddComponent<StaringLabel>();
+                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                    TextList.Add(text_object);
+                }
+
+                //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
 
+                //newline
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+                if (v.z < 0)
+                {
+                    endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                }
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
 
-                displacementVector = new Vector3(0f, 0f, (float)(i * (1f / graduationnumber)));
+            }
+            for (int i = 0; i <= graduationnumberZ; i++)
+            {
+                Vector3 newpointVector;
+
+
+                Vector3 displacementVector = new Vector3(0f, 0f, (float)(i * (1f / graduationnumberZ)));
 
                 if (v.z < 0)
                 {
@@ -199,12 +319,63 @@ public class CloudBox : MonoBehaviour
                 }
                 verts.Add(newpointVector);
                 lines.Add(verts.Count - 1);
+                Vector3 endvector;
+
+                if (v.x < 0)
+                {
+                    endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                }
 
                 //if(graduationlength.)
                 //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
-                endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
+
+                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                {
+                    //GameObject container = new GameObject();
+                    //container.transform.SetParent(_box.transform);
+                    GameObject text_object = new GameObject("Text");
+                    //text_object.transform.position = endvector;
+                    text_object.transform.localScale = Vector3.one * 0.015f;
+                    text_object.transform.SetParent(_box.transform, true);
+                    text_object.transform.localPosition = new Vector3(-0.55f ,
+                                             -0.5f ,
+                                             newpointVector.z );
+
+                    text_object.AddComponent<MeshRenderer>();
+                    text_object.AddComponent<TextMesh>();
+                    float mark = 0 + i * ((_cloud_status.globalMetaData.zMax - _cloud_status.globalMetaData.zMin) / graduationnumberZ);
+                    float roundedmark = Mathf.Round(mark);
+                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                    text_object.GetComponent<TextMesh>().color = Color.white;
+
+                    text_object.AddComponent<StaringLabel>();
+
+                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                    TextList.Add(text_object);
+                }
+
+                //newline
+                verts.Add(newpointVector);
+                lines.Add(verts.Count - 1);
+                if (v.y < 0)
+                {
+                    endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                }
+                else
+                {
+                    endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                }
+                verts.Add(endvector);
+                lines.Add(verts.Count - 1);
+
                 //Debug.Log(i);
             }
         }

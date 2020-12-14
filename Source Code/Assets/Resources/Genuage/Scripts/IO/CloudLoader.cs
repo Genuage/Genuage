@@ -40,7 +40,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using VR_Interaction;
 using VR_Interaction.Convex_Hull;
-
+using DesktopInterface;
 
 namespace IO
 {
@@ -76,6 +76,7 @@ namespace IO
 
         public void LoadFromFile(string file_path)
         {
+            UIManager.instance.ChangeStatusText("Loading Cloud...");
             savedata = null;
             bool isJSON;
             string directory = Path.GetDirectoryName(file_path);
@@ -105,7 +106,18 @@ namespace IO
                 string[] entries = lines[j].Split('\t');
                 for(int k = 0; k < entries.Length; k++)
                 {
-                    collumnDataList[k][j] = Single.Parse(entries[k], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
+                    float parsednumber;
+                    bool ParseSuccess = Single.TryParse(entries[k], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out parsednumber);
+                    if (!ParseSuccess)
+                    {
+                        UIManager.instance.ChangeStatusText("ERROR : Parsing Error at line " + k + ", the file could not be loaded");
+                        return;
+                    }
+                    else
+                    {
+                        collumnDataList[k][j] = parsednumber;
+                    }
+                    //collumnDataList[k][j] = Single.Parse(entries[k], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
                 }
             }
 
@@ -136,8 +148,8 @@ namespace IO
                 {
                     if (!(pointvalue.GetType() == typeof(float)))
                     {
-                        ModalWindowManager.instance.CreateModalWindow("ERROR : Data number format is not float");
-                        //Destroy(window);
+                        ModalWindowManager.instance.CreateModalWindow("ERROR : Data number format is not float, data not loaded");
+                        UIManager.instance.ChangeStatusText("ERROR : Data number format can't be translated to float");
                         return;
                     }
                 }
@@ -154,7 +166,7 @@ namespace IO
         public void LoadFromRawData(List<float[]> columnDataList)
         {
             savedata = null;
-            window = ModalWindowManager.instance.CreateModalWindow("Loading the cloud, please wait...",false);
+            //window = ModalWindowManager.instance.CreateModalWindow("Loading the cloud, please wait...",false);
 
             GameObject cloud = CreateCloudPoint(columnDataList);
             PutInMemory(cloud);
@@ -206,6 +218,7 @@ namespace IO
                 {
                     if(j == savedata.CounterObjectsPositions.Count)
                     {
+                        UIManager.instance.ChangeStatusText("Error While Loading Saved VR Objects");
                         ModalWindowManager.instance.CreateModalWindow("Error While Loading Saved VRObjects");
                         break;
                     }
@@ -258,6 +271,7 @@ namespace IO
                 {
                     if (j == savedata.RulerObjectPositionsList.Count)
                     {
+                        UIManager.instance.ChangeStatusText("Error While Loading Saved VRObjects");
                         ModalWindowManager.instance.CreateModalWindow("Error While Loading Saved VRObjects");
                         break;
                     }
@@ -349,6 +363,7 @@ namespace IO
                 {
                     if (j == savedata.ConvexHullObjectPositionsList.Count)
                     {
+                        UIManager.instance.ChangeStatusText("Error While Loading Saved VRObjects");
                         ModalWindowManager.instance.CreateModalWindow("Error While Loading Saved VRObjects");
                         break;
                     }
@@ -396,6 +411,8 @@ namespace IO
                 {
                     if (j == savedata.AnglemeasureObjectsPositionsList.Count)
                     {
+                        UIManager.instance.ChangeStatusText("Error While Loading Saved VRObjects");
+
                         ModalWindowManager.instance.CreateModalWindow("Error While Loading Saved VRObjects");
                         break;
                     }
@@ -994,6 +1011,7 @@ namespace IO
             //mesh.uv4 = uv3Array; // trajectoryID, frame
             mesh.SetIndices(indices, MeshTopology.Points, 0);
             root.GetComponent<MeshFilter>().mesh = mesh;
+            UIManager.instance.ChangeStatusText(indices.Length + " points loaded");
             Debug.Log(indices.Length + " points loaded into cloudData");
             Debug.Log(vertices.Length + " vertices");
             

@@ -63,6 +63,9 @@ namespace DesktopInterface
         {
             scale = new Vector3(value, value, value);
             UpdateScale();
+            XSlider.value = scale.x;
+            YSlider.value = scale.y;
+            ZSlider.value = scale.z;
         }
 
         public void ChangeXScale(float value)
@@ -86,11 +89,15 @@ namespace DesktopInterface
         public void UpdateScale()
         {
             CloudUpdater.instance.ChangeCloudScale(scale);
+
         }
 
         public void OnSelectionChange(int id)
         {
             scale = CloudUpdater.instance.LoadCurrentStatus().globalMetaData.scale;
+            XSlider.value = scale.x;
+            YSlider.value = scale.y;
+            ZSlider.value = scale.z;
         }
     }
 }

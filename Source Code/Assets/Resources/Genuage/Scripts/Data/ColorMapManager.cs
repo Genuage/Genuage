@@ -64,15 +64,15 @@ namespace Data
         {
             colormapDict = new Dictionary<string, ColorMap>();
 
-            ColorMap c1 = GenerateColorMap("autumn",new List<Color>() { Color.red, Color.yellow});
-            ColorMap c2 = GenerateColorMap("spring", new List<Color>() { Color.magenta, Color.yellow });
-            ColorMap c3 = GenerateColorMap("winter", new List<Color>() { Color.blue, Color.green });
-            ColorMap c4 = GenerateColorMap("greenred", new List<Color>() { Color.green, Color.red});
-            ColorMap c5 = GenerateColorMap("Blues", new List<Color>() { Color.blue, Color.white });
-            ColorMap c6 = GenerateColorMap("Greens", new List<Color>() { Color.green, Color.white });
-            ColorMap c7 = GenerateColorMap("hot", new List<Color>() { Color.black, Color.red, Color.yellow, Color.white });
-            ColorMap c8 = GenerateColorMap("jet", new List<Color>() { Color.blue, Color.cyan, Color.green, Color.yellow, Color.red});
-            ColorMap c9 = GenerateColorMap("hsv", new List<Color>() { Color.red, Color.yellow, Color.green,Color.blue, Color.cyan, Color.magenta, Color.red });
+            ColorMap c1 = GenerateColorMap("autumn",new List<Color>() {Color.red, Color.yellow});
+            ColorMap c2 = GenerateColorMap("spring", new List<Color>() {Color.magenta, Color.yellow });
+            ColorMap c3 = GenerateColorMap("winter", new List<Color>() {Color.blue, Color.green });
+            ColorMap c4 = GenerateColorMap("greenred", new List<Color>() {Color.green, Color.red});
+            ColorMap c5 = GenerateColorMap("Blues", new List<Color>() {Color.blue, Color.white });
+            ColorMap c6 = GenerateColorMap("Greens", new List<Color>() {Color.green, Color.white });
+            ColorMap c7 = GenerateColorMap("hot", new List<Color>() {Color.black, Color.red, Color.yellow, Color.white });
+            ColorMap c8 = GenerateColorMap("jet", new List<Color>() {Color.blue, Color.cyan, Color.green, Color.yellow, Color.red});
+            ColorMap c9 = GenerateColorMap("hsv", new List<Color>() {Color.red, Color.yellow, Color.green,Color.blue, Color.cyan, Color.magenta, Color.red });
 
 
             colormapDict.Add(c1.name, c1);
