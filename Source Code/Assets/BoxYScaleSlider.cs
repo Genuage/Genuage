@@ -20,8 +20,10 @@ namespace DesktopInterface
             {
                 _field.onEndEdit.RemoveListener(InputLabelChanged);
             }
-            UpdateRange(0);
-
+            if (!CloudSelector.instance.noSelection)
+            {
+                UpdateRange(0);
+            }
         }
 
         private void UpdateRange(int id)

@@ -39,31 +39,6 @@ using UnityEngine.UI;
 
 public unsafe class NativePluginInfer3D : NativePlugin
 {
-    /**
-    public enum FunctionID
-    {
-        DFXFYFZPosterior = 0,
-        D_LIKELYHOOD_NO_NOISE = 1,
-        DPOSTERIOR_NO_NOISE_NON_INFORMATIVE_PRIOR = 2,
-        D_POSTERIOR_NO_NOISE_CONGUGATEPRIOR = 3,
-        DLIKELYHOOD_UNIFORM_NOISE = 4,
-        DPOSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE_PRIOR = 5,
-        DLIKELYHOOD_ASYMETRIC_NOISE = 6,
-        DPOSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE = 7,
-        DLIKELYHOOD_APPROX_NOISE_ONLY_Z = 8,
-        DPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INFORMATIVE = 9,
-        DVLIKELYHOOD_NO_NOISE = 10,
-        DVPOSTERIOR_NO_NOISE_NON_INFORMATIVE = 11,
-        DVPOSTERIOR_NO_NOISE_CONJUGATE_PRIOR = 12,
-        DVLIKELYHOOD_UNIFORM_NOISE = 13,
-        DVPOSTERIOR_UNIFORM_NOISE_NON_INFORMATIVE = 14,
-        DVLIKELYHOOD_ASYMETRIC_NOISE = 15,
-        DVPOSTERIOR_ASYMETRIC_NOISE_NON_INFORMATIVE = 16,
-        DVLIKELYHOOD_APPROX_NOISE_ONLY_Z = 17,
-        DVPOSTERIOR_APPROX_NOISE_ONLY_Z_NON_INfORMATIVE = 18,
-
-    };
-        **/
 
     private enum HeaderID
     {
@@ -118,11 +93,6 @@ public unsafe class NativePluginInfer3D : NativePlugin
 
     [DllImport(DLLName)]
     private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
-
-    private void Awake()
-    {
-
-    }
 
     protected override void LaunchPluginFunction(CloudData data)
     {
@@ -260,7 +230,8 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             Debug.Log("Sigmaz " + SigmaZ);
 
 
-                            Infer3D((int)headerID, (int)paramID, Sigma, SigmaXY, SigmaZ, N, trajectories, xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
+                            Infer3D((int)headerID, (int)paramID, Sigma, SigmaXY, SigmaZ, N, trajectories, 
+                                    xCoord, yCoord, zCoord, tCoord, Diffusion, ForceX, ForceY, ForceZ);
                             double diffusionres = *Diffusion;
                             double forceXres = *ForceX;
                             double forceYres = *ForceY;

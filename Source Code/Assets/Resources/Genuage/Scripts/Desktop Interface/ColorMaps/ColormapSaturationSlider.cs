@@ -30,9 +30,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
 
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using Data;
@@ -43,6 +44,9 @@ namespace DesktopInterface
 
     public class ColormapSaturationSlider : SliderScript
     {
+        private float min;
+        private float max;
+        private float Range;
         public int multiplier;
         public Slider otherSlider;
         // Start is called before the first frame update
@@ -50,12 +54,46 @@ namespace DesktopInterface
         {
             slider = GetComponent<Slider>();
             //slider.onValueChanged.AddListener(delegate { CloudUpdater.instance.changeColorMapSaturation(multiplier * slider.value); });
+            CloudSelector.instance.OnSelectionChange += UpdateRange;
+            CloudUpdater.instance.OnCloudReloaded += UpdateRange;
+            if (_field)
+            {
+                _field.onEndEdit.RemoveListener(InputLabelChanged);
+                _field.onEndEdit.AddListener(OnInputFieldChanged);
+            }
+
             CloudUpdater.instance.OnColorMapChange += ResetSlider;
             InitializeSliderEvent();
+        }
+        private void UpdateRange(int id)
+        {
+            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+            min = data.globalMetaData.iMin;
+            max = data.globalMetaData.iMax;
+            Range = data.globalMetaData.iMax - data.globalMetaData.iMin;
+            if (_field)
+            {
+                _field.text = (min + slider.value * Range).ToString();
+            }
+        }
+
+        private void OnInputFieldChanged(string value)
+        {
+            float new_value = Single.Parse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
+            float RangedValue = new_value - min;
+            slider.value = RangedValue / Range;
+            Debug.Log(RangedValue / Range);
         }
 
         public override void Execute(float value)
         {
+            if (_field)
+            {
+
+                _field.text = (min + slider.value * Range).ToString();
+
+            }
+
             CloudUpdater.instance.ChangeColorMapSaturation(value, otherSlider.value, gameObject.name);
         }
 

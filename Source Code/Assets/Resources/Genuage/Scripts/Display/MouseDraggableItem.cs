@@ -39,21 +39,44 @@ namespace Display
 {
 
 
-    public class MouseDraggableItem : MonoBehaviour
+    public class MouseDraggableItem : MonoBehaviour, IDragHandler
     {
         public float moveSpeed = 0.001f;
 
         Vector3 previousMousePosition;
         Vector3 objectInitialPosition;
         Vector3 deltaMousePosition;
-        Camera camera;
+
+        Vector3 Offset;
+
+        [SerializeField]
+        Vector2 startPoint;
+
+        [SerializeField]
+        Vector2 endPoint;
+
+        [SerializeField]
+        bool drag;
+
+
+        public RectTransform DragTransform;
 
         // Start is called before the first frame update
         void Start()
         {
             objectInitialPosition = this.transform.position;
-            camera = DesktopApplication.instance.MainCamera.GetComponent<Camera>();
         }
+
+
+
+
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            DragTransform.anchoredPosition += eventData.delta / DesktopApplication.instance.Canvas.GetComponent<Canvas>().scaleFactor;
+        }
+
+
 
         /**
         // Update is called once per frame
@@ -78,7 +101,7 @@ namespace Display
                 }
             }
         }
-        **/
+        
 
         void Update()
         {
@@ -102,5 +125,6 @@ namespace Display
                 }
             }
         }
+        **/
     }
 }

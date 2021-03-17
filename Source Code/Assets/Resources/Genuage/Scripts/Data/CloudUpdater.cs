@@ -258,6 +258,16 @@ namespace Data
         #region Visualization Parameters
 
         #region Cloud Box Parameters
+        //USED BY THE VIDEO CAPTURE SYSTEM FOR EFFCIENT MESH CHANGES
+        public void OverrideBoxScale(Vector3 new_scale)
+        {
+            CloudData currcloud = LoadCurrentStatus();
+            Transform box = currcloud.transform.parent.GetChild(1);
+            //box.localScale = new_scale;
+            currcloud.globalMetaData.box_scale = new_scale;
+        }
+
+
         public void ReloadAllBoxes()
         {
             List<int> IDlist = LoadAllIDs();
@@ -676,6 +686,15 @@ namespace Data
             //Debug.Log("PointSize Changed");
         }
 
+        //Used by the video capture tools to change cloud states
+        //without heavy computation, 
+        //Should not be used elsewhere
+        public void OverrideMesh(Mesh mesh)
+        {
+            CloudData data = LoadCurrentStatus();
+            Debug.Log(data == data.gameObject.GetComponent<MeshFilter>().mesh);
+            data.gameObject.GetComponent<MeshFilter>().mesh = mesh;
+        }
 
         #endregion
 
@@ -1023,18 +1042,18 @@ namespace Data
         {
             CloudData currcloud = LoadCurrentStatus();
 
-            float xMax = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MaxValue;
-            float xMin = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MinValue;
-            float yMax = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MaxValue;
-            float yMin = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MinValue;
-            float zMax = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MaxValue;
-            float zMin = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MinValue;
-            float iMax = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MaxValue;
-            float iMin = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MinValue;
-            float tMax = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MaxValue;
-            float tMin = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MinValue;
-            float sMax = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MaxValue;
-            float sMin = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MinValue;
+            float xMax = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MaxThreshold;
+            float xMin = currcloud.globalMetaData.columnMetaDataList[collumnList[0]].MinThreshold;
+            float yMax = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MaxThreshold;
+            float yMin = currcloud.globalMetaData.columnMetaDataList[collumnList[1]].MinThreshold;
+            float zMax = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MaxThreshold;
+            float zMin = currcloud.globalMetaData.columnMetaDataList[collumnList[2]].MinThreshold;
+            float iMax = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MaxThreshold;
+            float iMin = currcloud.globalMetaData.columnMetaDataList[collumnList[3]].MinThreshold;
+            float tMax = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MaxThreshold;
+            float tMin = currcloud.globalMetaData.columnMetaDataList[collumnList[4]].MinThreshold;
+            float sMax = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MaxThreshold;
+            float sMin = currcloud.globalMetaData.columnMetaDataList[collumnList[7]].MinThreshold;
 
 
 
@@ -1116,6 +1135,7 @@ namespace Data
             Vector2[] trajectoryuv = new Vector2[currcloud.pointDataTable.Count]; 
             foreach (int key in currcloud.pointDataTable.Keys)
             {
+
                 Vector3 normedposition = (currcloud.pointDataTable[key].position - offsetVector) / MaxRange;
                 currcloud.pointDataTable[key].normed_position = normedposition;
                 currcloud.pointDataTable[key]._color_index = (currcloud.pointDataTable[key].intensity - iMin) / (iMax - iMin);
@@ -1213,6 +1233,7 @@ namespace Data
             ChangeCurrentColorMap(currcloud.globalMetaData.colormapName,currcloud.globalMetaData.colormapReversed);
             currcloud.globalMetaData.displayCollumnsConfiguration = collumnList.ToArray();
             ChangeThreshold();
+            ReloadBox(currcloud.globalMetaData.cloud_id);
             if(OnCloudReloaded != null)
             {
                 OnCloudReloaded(currcloud.globalMetaData.cloud_id);

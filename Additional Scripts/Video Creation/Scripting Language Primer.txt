@@ -1,0 +1,13 @@
+WAYPOINT|POS;ROT;TIME : Function to create a waypoint for the camera to move to
+
+POS parameter : Position of the waypoint in space around the cloud, separated by ','. 0,0,0 is the center of the cloud, maximum size for the biggest dimension of a cloud (in the default scale of Genuage) is 1 (going from -0.5 to 0.5 in the coordinates).
+Syntax : POS=0,1,2.3
+
+ROT parameter : Rotation angles for the waypoint for each axis in degrees.
+Syntax : ROT=0,90,0
+
+TIME parameter : Time at which the camera should reach the waypoint's position, in seconds. No waypoint may share the same TIME parameter as another.
+Syntax : TIME=15
+
+Function LOOKAT:X,Y,Z : Function to create a rotation parameter so that the camera is oriented towards the specified position.
+Syntax : ROT=LOOKAT:1,0,-0.5

@@ -32,7 +32,6 @@ namespace DesktopInterface
             CreateAllButtons();
             VRObjectsManager.instance.OnContainerCreated += ContainerCreated;
             VRObjectsManager.instance.OnContainerDeleted += ContainerDeleted;
-
             CloudSelector.instance.OnSelectionChange += SelectionChanged;
         }
 

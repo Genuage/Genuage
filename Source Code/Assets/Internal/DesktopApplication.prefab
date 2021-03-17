@@ -63,7 +63,8 @@ MonoBehaviour:
     type: 3}
   ColorMapManagerPrefab: {fileID: 469480715569440647, guid: 462083d867c5a4144b2cd66a59315397,
     type: 3}
-  VRUIManagerPrefab: {fileID: 0}
+  VRUIManagerPrefab: {fileID: 3281253224730637551, guid: bca92f73fe0335d49be6db09a327fdb6,
+    type: 3}
   EventSystemPrefab: {fileID: 3851307434936472477, guid: d6ad956dde776a345bb90c50ea8dcd08,
     type: 3}
   ModalWindowManagerPrefab: {fileID: 9022112630626831254, guid: 8b1f5a2c5df31194d9c621a431abae3a,
@@ -71,6 +72,10 @@ MonoBehaviour:
   VRTKPrefab: {fileID: 5725870093624447468, guid: c2d0818e4505cde40959c9112cd06204,
     type: 3}
   GroundPrefab: {fileID: 3373863852148004446, guid: 25a1a0b6346999846ab980d9d4870e8f,
+    type: 3}
+  VideoScriptingVRUIMenu: {fileID: 5694331025182206164, guid: 4ac8376bfe90a3f40ab73c6273ac5b9d,
+    type: 3}
+  VideoScriptingDesktopUIMenu: {fileID: 3667261127304295160, guid: ae08ad1d207861c4ea80faee48dcdbac,
     type: 3}
   CameraManager: {fileID: 0}
   Canvas: {fileID: 0}

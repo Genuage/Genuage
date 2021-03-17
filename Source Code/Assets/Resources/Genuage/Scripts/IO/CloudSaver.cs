@@ -83,16 +83,20 @@ namespace IO
             {
                 for (int i = 0; i < currcloud.pointDataTable.Count; i++)
                 {
-                    string s = "";
-                    for (int j = 0; j < currcloud.columnData.Count; j++)
+                    if (currcloud.pointMetaDataTable[i].isHidden == false)
                     {
-                        s = s + currcloud.columnData[j][i].ToString(CultureInfo.InvariantCulture);
-                        if (j < currcloud.columnData.Count - 1)
+
+                        string s = "";
+                        for (int j = 0; j < currcloud.columnData.Count; j++)
                         {
-                            s = s + "\t";
+                            s = s + currcloud.columnData[j][i].ToString(CultureInfo.InvariantCulture);
+                            if (j < currcloud.columnData.Count - 1)
+                            {
+                                s = s + "\t";
+                            }
                         }
+                        writer.WriteLine(s);
                     }
-                    writer.WriteLine(s);
                 }
             }
 
@@ -151,7 +155,6 @@ namespace IO
                     }
                 }
             }
-
         }
 
         public void SaveSelectionCSV(string path)
@@ -186,10 +189,6 @@ namespace IO
                     //}
                 }
             }
-
         }
-
-
-
     }
 }

@@ -43,7 +43,7 @@ public class DesktopApplication : MonoBehaviour
 {
 
     public static DesktopApplication instance = null;
-
+    //Prefabs to instanciate at app start
     public GameObject CameraManagerPrefab;
     public GameObject CanvasPrefab;
     public GameObject CloudLoaderPrefab;
@@ -58,6 +58,11 @@ public class DesktopApplication : MonoBehaviour
     public GameObject ModalWindowManagerPrefab;
     public GameObject VRTKPrefab;
     public GameObject GroundPrefab;
+
+    //Prefabs to store for other objects
+    public GameObject VideoScriptingVRUIMenu;
+    public GameObject VideoScriptingDesktopUIMenu;
+
 
     public GameObject CameraManager;
     public GameObject Canvas;

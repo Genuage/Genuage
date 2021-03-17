@@ -59,7 +59,7 @@ namespace DesktopInterface
                 window.transform.SetParent(DesktopApplication.instance.Canvas.transform);
                 window.transform.localPosition = localpos;
                 window.transform.localScale = Vector3.one;
-                window.transform.GetChild(0).gameObject.GetComponent<ToggleManager>().Create();
+                window.transform.GetChild(0).GetChild(0).gameObject.GetComponent<ToggleManager>().Create();
                 UIManager.instance.DeactivateUI();
             }
         }

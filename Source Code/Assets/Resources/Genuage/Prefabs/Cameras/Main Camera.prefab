@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3201942227726651684}
   - component: {fileID: 3201942227726651687}
   - component: {fileID: 3201942227726651680}
+  - component: {fileID: 5663343571687166251}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -70,7 +71,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 0
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -113,3 +114,23 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3201942227726651707}
   m_Enabled: 1
+--- !u!114 &5663343571687166251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3201942227726651707}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39db9f9ebe3de6b4e92d97b975dabb79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFrames: 1200
+  frameRate: 30
+  outputname: test2
+  updateText: {fileID: 0}
+  box: {fileID: 0}
+  persistentDataPath: 
+  ffmpath: 
+  isVideoReady: 0

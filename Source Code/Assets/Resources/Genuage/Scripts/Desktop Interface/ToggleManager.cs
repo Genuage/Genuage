@@ -116,7 +116,7 @@ namespace DesktopInterface
         {
             int i = 0;
             List<string> OptionList = new List<string>();
-            foreach (Transform child in this.transform)
+            foreach (Transform child in this.transform.GetChild(0))
             {
                 Transform layout = child.GetChild(0);
                 if (child.gameObject.name == "header")
@@ -192,6 +192,14 @@ namespace DesktopInterface
                     i++;
                 }
             }
+            //Transform xLayout = this.transform.GetChild(0).GetChild(1).GetChild(0);
+            //Debug.Log(xLayout.GetComponent<RectTransform>().sizeDelta.x);
+            float xsize = 25 * collumnnbr;
+            if(xsize < 485.9f)
+            {
+                xsize = 485.9f;
+            }
+            this.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(xsize, this.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y);
             InitializeToggles();
         }
 
@@ -269,7 +277,7 @@ namespace DesktopInterface
             UIManager.instance.ActivateUI();
             CloudUpdater.instance.ChangeCollumnSelection(selectionList);
             
-            Destroy(transform.parent.gameObject);
+            Destroy(transform.parent.parent.gameObject);
         }
     }
 }

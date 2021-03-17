@@ -71,6 +71,8 @@ namespace VR_Interaction
         public IControllerTool multiclippingPlane;
         public IControllerTool anglemeasure;
         public IControllerTool histogram;
+        public IControllerTool screencapture;
+        public IControllerTool camera;
 
         public Dictionary<string,ToolState> toolsDict; // available tools on the controller
         public List<string> _current_tools; // the tool currently selected
@@ -104,7 +106,11 @@ namespace VR_Interaction
             {
                 clippingPlane = this.gameObject.AddComponent<ClippingPlane>();
             }
-            
+            if (!camera)
+            {
+                camera = this.gameObject.AddComponent<VRCameraTool>();
+            }
+
 
             toolsDict = new Dictionary<string, ToolState>();
             toolsDict.Add("Pointer", new ToolState("Pointer", 
@@ -114,52 +120,59 @@ namespace VR_Interaction
 
             toolsDict.Add("Selection Sphere", new ToolState("Selection Sphere",
                                                                 selectionSphere,
-                                                                new List<string>() { "Selection Convex Hull", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
+                                                                new List<string>() { "Selection Convex Hull", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                                                                 false));
             toolsDict.Add("Selection Convex Hull", new ToolState("Selection Convex Hull",
                                                                 selectionConvexHull,
-                                                                new List<string>() { "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
+                                                                new List<string>() { "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                                                                 false));
 
             toolsDict.Add("Free Selection", new ToolState("Free Selection",
                                                     freeselection,
-                                                    new List<string>() { "Selection Convex Hull", "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane" },
+                                                    new List<string>() { "Selection Convex Hull", "Selection Sphere", "Counter", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Screen Capture", "Video Recording" },
                                                     false));
 
             toolsDict.Add("Counter", new ToolState("Counter",
                                                      counter,
-                                                     new List<string>() { "Selection Convex Hull", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
+                                                     new List<string>() { "Selection Convex Hull", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                                                      false));
 
             toolsDict.Add("Measure Distance", new ToolState("Measure Distance",
                                                      measureDistance,
-                                                     new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection" },
+                                                     new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Angle Measure", "Histogram", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                                                      false));
 
             toolsDict.Add("Angle Measure", new ToolState("Angle Measure",
                                          anglemeasure,
-                                         new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Histogram", "MultiClipping Plane", "Free Selection" },
+                                         new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Histogram", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                                          false));
 
             toolsDict.Add("Histogram", new ToolState("Histogram",
                              histogram,
-                             new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "MultiClipping Plane", "Free Selection" },
+                             new List<string>() { "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "MultiClipping Plane", "Free Selection", "Screen Capture", "Video Recording" },
                              false));
 
 
 
             toolsDict.Add("Clipping Plane", new ToolState("Clipping Plane",
                                          clippingPlane,
-                                         new List<string>() { "MultiClipping Plane" } ,
+                                         new List<string>() { "MultiClipping Plane", "Screen Capture", "Video Recording" } ,
                                          false));
 
             toolsDict.Add("MultiClipping Plane", new ToolState("MultiClipping Plane",
                              multiclippingPlane,
-                             new List<string>() { "Clipping Plane", "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "Free Selection" },
+                             new List<string>() { "Clipping Plane", "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "Free Selection", "Screen Capture", "Video Recording" },
                              false));
 
-
-
+            toolsDict.Add("Screen Capture", new ToolState("Screen Capture",
+                                      screencapture,
+                                      new List<string>() { "Clipping Plane", "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "Free Selection", "MultiClipping Plane", "Video Recording"},
+                                      false));
+            
+            toolsDict.Add("Video Recording", new ToolState("Video Recording",
+                                                  camera,
+                                                  new List<string>() { "Clipping Plane", "Selection Convex Hull", "Counter", "Selection Sphere", "Measure Distance", "Angle Measure", "Histogram", "Free Selection", "MultiClipping Plane", "Screen Capture"},
+                                                  false));
 
             VRTK_EventSystem.current.sendNavigationEvents = false;
         }
