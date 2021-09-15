@@ -1,0 +1,13 @@
+﻿  pch.cpp
+  K-MeansClusteringNative dllmain.cpp
+  kmeans.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\kmeans.cpp(27,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\kmeans.cpp(68,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\kmeans.cpp(87,19): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\kmeans.cpp(158,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+     Creating library E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\x64\Release\K-Means Clustering Native DLL.lib and object E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\x64\Release\K-Means Clustering Native DLL.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 318 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  K-Means Clustering DLL.vcxproj -> E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\K-Means Clustering Native DLL\K-Means Clustering DLL\x64\Release\K-Means Clustering Native DLL.dll

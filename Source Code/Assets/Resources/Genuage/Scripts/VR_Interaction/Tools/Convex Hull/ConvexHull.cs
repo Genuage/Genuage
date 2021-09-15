@@ -148,10 +148,11 @@ namespace VR_Interaction
             }
 
             #region Convex Hull creation
-            public Mesh CreateMesh()
+            //public Mesh CreateTriangleMesh();
+            public Mesh CreateLineMesh()
             {
-                Assert.IsTrue(pointList.Count >= 4);
-                if (pointList.Count == 4)
+                Assert.IsTrue(positionList.Count >= 4);
+                if (positionList.Count == 4)
                 {
                     initializeHull();
                     //assign each point to a specific face, unless they are inside the hull. 
@@ -186,13 +187,13 @@ namespace VR_Interaction
 
                 }
 
-                if (pointList.Count > 4)
+                if (positionList.Count > 4)
                 {
 
                     initializeHull();
 
                     openSetTail = openSet.Count - 5;
-                    Assert.IsTrue(openSet.Count == pointList.Count);
+                    Assert.IsTrue(openSet.Count == positionList.Count);
 
                     for (int k = 0; k <= openSetTail; k++)
                     {
@@ -248,7 +249,7 @@ namespace VR_Interaction
 
                 }
 
-                Mesh mesh = ExportMesh();
+                Mesh mesh = ExportMeshLines();
                 return mesh;
 
 
@@ -256,7 +257,7 @@ namespace VR_Interaction
 
             public void initializeHull()
             {
-                Assert.IsTrue(pointList.Count >= 4);
+                Assert.IsTrue(positionList.Count >= 4);
                 openSet.Clear();
                 faces.Clear();
 
@@ -284,7 +285,7 @@ namespace VR_Interaction
                     faces[faceCount++] = new Face(b1, b3, b2, 2, 0, 1, Normal(positionList[b1], positionList[b3], positionList[b2]));
                 }
                 VerifyFaces();
-                for (int i = 0; i < pointList.Count; i++)
+                for (int i = 0; i < positionList.Count; i++)
                 {
                     if(!(i==b0 || i == b1 || i == b2 || i == b3))
                     {
@@ -569,7 +570,7 @@ namespace VR_Interaction
                 }
             }
 
-            Mesh ExportMesh(bool splitVerts = true)
+            Mesh ExportMeshLines(bool splitVerts = true)
             {
                 List<Vector3> verts = new List<Vector3>();
                 List<int> tris = new List<int>();

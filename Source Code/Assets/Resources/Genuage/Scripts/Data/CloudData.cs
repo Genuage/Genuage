@@ -154,6 +154,8 @@ namespace Data
         private Vector3Int _cloudzone;
         private float _local_density;
 
+        private int _clusterID;
+
         #region Get/Setters
         public int pointID
         {
@@ -181,6 +183,14 @@ namespace Data
 
             set { _local_density = value; }
         }
+
+        public int clusterID
+        {
+            get { return _clusterID; }
+
+            set { _clusterID = value; }
+        }
+
         #endregion
     }
 
@@ -271,6 +281,9 @@ namespace Data
         public List<ColumnMetadata> columnMetaDataList;
 
         private Vector3 _box_scale;
+        public float ScaleBarDistanceX;
+        public float ScaleBarDistanceY;
+        public float ScaleBarDistanceZ;
         public int ScaleBarNumberX;
         public int ScaleBarNumberY;
         public int ScaleBarNumberZ;
@@ -300,7 +313,8 @@ namespace Data
         private Vector2 _normed_f;
         private Vector2 _normed_d;
 
-
+        public GameObject mapLineParent;
+        public GameObject mapSolidsParent;
         //public float meanPhiAngle;
         //public float meanThetaAngle;
         public AngleUnit angleUnit;
@@ -726,6 +740,9 @@ namespace Data
             globalMetaData.tMaxThreshold = tmax;
             globalMetaData.tMinThreshold = tmin;
 
+            globalMetaData.ScaleBarDistanceX = (xmax - xmin) / 10;
+            globalMetaData.ScaleBarDistanceY = (ymax - ymin) / 10;
+            globalMetaData.ScaleBarDistanceZ = (zmax - zmin) / 10;
 
             globalMetaData.scale = Vector3.one;
 

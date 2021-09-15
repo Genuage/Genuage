@@ -40,13 +40,13 @@ using UnityEngine.UI;
 public unsafe class NativePluginInfer3D : NativePlugin
 {
 
-    private enum HeaderID
+    public enum HeaderID
     {
         Diffusion = 0,
         Diffusion_Velocity = 1,
     };
 
-    private enum ParamID
+    public enum ParamID
     {
         LIKELYHOOD_NO_NOISE = 0,
         LIKELYHOOD_UNIFORM_NOISE = 1,
@@ -78,21 +78,25 @@ public unsafe class NativePluginInfer3D : NativePlugin
     public Vector3 ArrowLocalPosition;
 
     int N;
-    double* trajectories;
-    double* xCoord;
-    double* yCoord;
-    double* zCoord;
-    double* tCoord;
+    private double* trajectories;
+    private double* xCoord;
+    private double* yCoord;
+    private double* zCoord;
+    private double* tCoord;
 
-    double* Diffusion;
-    double* ForceX;
-    double* ForceY;
-    double* ForceZ;
+    private double* Diffusion;
+    private double* ForceX;
+    private double* ForceY;
+    private double* ForceZ;
+
+    public float diffusionResult;
 
     const string DLLName = "Infer3DPlugin";
 
     [DllImport(DLLName)]
-    private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
+    private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, 
+                                       int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, 
+                                       void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
 
     protected override void LaunchPluginFunction(CloudData data)
     {
@@ -240,7 +244,7 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             forceXres = Math.Round(forceXres, 3);
                             forceYres = Math.Round(forceYres, 3);
                             forceZres = Math.Round(forceZres, 3);
-
+                            diffusionResult = (float)diffusionres;
                             ResultsString = "diffusion : " + diffusionres + "\n" + "forceX : " + forceXres + "\n"
                                             + "forceY : " + forceYres + "\n" + "forceZ : " + forceZres + "\n";
                             Debug.Log("N : " + N);

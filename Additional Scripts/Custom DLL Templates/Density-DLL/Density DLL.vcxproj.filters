@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateDensity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateDensity_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateDensity_initialize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateDensity_terminate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculateDensity_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="coder_array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="coder_bounded_array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointCloud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointCloudArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rtwtypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_ComputeMetric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_kdtree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tmwtypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blascompat32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="covrt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_acfObjectDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_disparitySGM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_foregroundDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_ocrutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_searchOrganizedPointCloud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvstCG_voxelGridFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emlrt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fintrf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="io64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lapack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lapacke.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lapacke_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwboxfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwboxfilter3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwdistEDT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwdistEDT_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwdistEDTFT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwdistEDTFT_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwlookup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwlookup_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwpackc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwpackctbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwunpackc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwbwunpackctbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwcannythresholding_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwddist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwedgesobelprewitt_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwedgethinning_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwgetnumcores.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwgrayto8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwgrayto16.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwgrayxform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwgrayxform_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimlincomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimlincomb_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimreconstruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimregionalmax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwimterp2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwint8touint8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwint16touint16.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwint32touint32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwintlut.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwintluttbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwippfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwippgeotrans.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwippmedianfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwippreconstruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwjpegreader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_binary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_binary_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_flat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_flat_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_ipp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_nonflat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_nonflat_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwmorphop_packed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwordfilt2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwremap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwremaptbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwrgb2gray_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwrgb2hsv_tbb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwtbbhist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmwuint16toint16.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatlabCppSharedLib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatlabDataArray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatlabEngine.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatlabExecutionInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MatlabTypesInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclcom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclcomclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclcppclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclmcr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclmcrrt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mclxlmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mexAdapter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mwmathutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mwservices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mwslpointerutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mwstringutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opencvgpumex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opencvmex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="polygonBoolean.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Parallel-Density-dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculateDensity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculateDensity_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculateDensity_initialize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculateDensity_terminate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pointCloud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

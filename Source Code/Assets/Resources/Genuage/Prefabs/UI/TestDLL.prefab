@@ -894,7 +894,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8988607308715727717}
-  - component: {fileID: 8988607308715727718}
+  - component: {fileID: 8047377642931804069}
   m_Layer: 0
   m_Name: Test Dll
   m_TagString: Untagged
@@ -916,7 +916,7 @@ Transform:
   m_Father: {fileID: 8988607308025257483}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8988607308715727718
+--- !u!114 &8047377642931804069
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -925,12 +925,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8988607308715727719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c4519dd4c106554ab703174a85cb662, type: 3}
+  m_Script: {fileID: 11500000, guid: 8170f1da2d581044faa532121dbf0ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dropdown: {fileID: 8988607308755912351}
   intParametersInputField: {fileID: 8988607308266423560}
-  floatParametersInputField: {fileID: 8988607309326231728}
+  floatParametersInputField: {fileID: 8988607308266423560}
   doubleParametersInputField: {fileID: 8988607309383715446}
 --- !u!1 &8988607308755912345
 GameObject:
@@ -1056,6 +1056,8 @@ MonoBehaviour:
     - m_Text: Add Column
       m_Image: {fileID: 0}
     - m_Text: Calculate Values
+      m_Image: {fileID: 0}
+    - m_Text: Create New Cloud
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1364,7 +1366,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8988607308715727718}
+      - m_Target: {fileID: 0}
         m_MethodName: Launch
         m_Mode: 1
         m_Arguments:

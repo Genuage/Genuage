@@ -42,6 +42,8 @@ namespace DesktopInterface
     public class ColorMapButtonManager : MonoBehaviour
     {
         public GameObject colormapButtonPrefab;
+        public GameObject ColormapDisplay;
+        public bool ActivateButtons = true;
         private void Awake()
         {
             GenerateButtons();        
@@ -60,6 +62,11 @@ namespace DesktopInterface
                 newbutton.transform.SetParent(transform);
                 newbutton.transform.localScale = Vector3.one;
                 newbutton.GetComponent<ColorMapButton>().Initialize();
+                newbutton.GetComponent<ColorMapButton>()._colormapdisplay = ColormapDisplay;
+                if (ActivateButtons == false)
+                {
+                    newbutton.GetComponent<ColorMapButton>().ActiveButton = false;
+                }
             }
 
             //transform.parent.parent.gameObject.SetActive(false);

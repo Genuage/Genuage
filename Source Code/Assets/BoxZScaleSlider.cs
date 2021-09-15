@@ -14,14 +14,11 @@ namespace DesktopInterface
         private void Start()
         {
             slider = this.GetComponent<Slider>();
-            InitializeSliderEvent();
+            
             CloudSelector.instance.OnSelectionChange += UpdateRange;
             CloudUpdater.instance.OnCloudReloaded += UpdateRange;
-            if (_field)
-            {
-                _field.onEndEdit.RemoveListener(InputLabelChanged);
-            }
             UpdateRange(0);
+            InitializeSliderEvent();
 
         }
 
@@ -29,11 +26,15 @@ namespace DesktopInterface
         {
             CloudData data = CloudUpdater.instance.LoadCurrentStatus();
             ZRange = data.globalMetaData.zMax - data.globalMetaData.zMin;
-            slider.value = data.globalMetaData.ScaleBarNumberZ;
+            slider.minValue = ZRange / 500;
+            slider.maxValue = ZRange;
+            slider.value = data.globalMetaData.ScaleBarDistanceZ;
+            //slider.value = data.globalMetaData.ScaleBarNumberX;
             if (_field)
             {
-                _field.text = (ZRange / slider.value).ToString();
+                _field.text = (slider.value).ToString();
             }
+
         }
 
         public override void Execute(float value)
@@ -41,7 +42,7 @@ namespace DesktopInterface
             CloudUpdater.instance.ChangeBoxGraduationsZ(value);
             if (_field)
             {
-                _field.text = (ZRange / slider.value).ToString();
+                _field.text = (slider.value).ToString();
             }
 
         }

@@ -286,19 +286,19 @@ namespace Data
         public void ChangeBoxGraduationsX(float value)
         {
             CloudData currentCloud = LoadCurrentStatus();
-            currentCloud.globalMetaData.ScaleBarNumberX = (int)value;
+            currentCloud.globalMetaData.ScaleBarDistanceX = (int)value;
             currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
         }
         public void ChangeBoxGraduationsY(float value)
         {
             CloudData currentCloud = LoadCurrentStatus();
-            currentCloud.globalMetaData.ScaleBarNumberY = (int)value;
+            currentCloud.globalMetaData.ScaleBarDistanceY = (int)value;
             currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
         }
         public void ChangeBoxGraduationsZ(float value)
         {
             CloudData currentCloud = LoadCurrentStatus();
-            currentCloud.globalMetaData.ScaleBarNumberZ = (int)value;
+            currentCloud.globalMetaData.ScaleBarDistanceZ = (int)value;
             currentCloud.gameObject.GetComponent<CloudBox>().CreateBox();
         }
 
@@ -1193,11 +1193,13 @@ namespace Data
             currcloud.globalMetaData.xMax = xMax;
             currcloud.globalMetaData.yMax = yMax;
             currcloud.globalMetaData.zMax = zMax;
+            currcloud.globalMetaData.iMax = iMax;
             currcloud.globalMetaData.tMax = tMax;
             currcloud.globalMetaData.xMin = xMin;
             currcloud.globalMetaData.yMin = yMin;
             currcloud.globalMetaData.zMin = zMin;
             currcloud.globalMetaData.tMin = tMin;
+            currcloud.globalMetaData.iMin = iMin;
 
 
 
@@ -1982,9 +1984,9 @@ namespace Data
                 Vector3Int location = FindLocation(radius, item.Value.position,
                                 new Vector3(currentCloud.globalMetaData.xMin, currentCloud.globalMetaData.yMin, currentCloud.globalMetaData.zMin),
                                 new Vector3(currentCloud.globalMetaData.xMax, currentCloud.globalMetaData.yMax, currentCloud.globalMetaData.zMax));
-                
-                
 
+
+                //Debug.Log(currentCloud.globalMetaData.pointbyLocationList.Count);
                 if (currentCloud.globalMetaData.pointbyLocationList.ContainsKey(location))
                 {
                     currentCloud.globalMetaData.pointbyLocationList[location].Add(item.Key);

@@ -143,9 +143,21 @@ public class CloudBox : MonoBehaviour
     private void GenerateScaleBars(List<Vector3> verts, List<int> lines)
     {
         //int graduationnumber = ApplicationOptions.instance.GetDefaultBoxScaleNumber();
+        /**
         int graduationnumberX = _cloud_status.globalMetaData.ScaleBarNumberX;
         int graduationnumberY = _cloud_status.globalMetaData.ScaleBarNumberY;
         int graduationnumberZ = _cloud_status.globalMetaData.ScaleBarNumberZ;
+        **/
+        float GraduationDistanceX = _cloud_status.globalMetaData.ScaleBarDistanceX;
+        float GraduationDistanceY = _cloud_status.globalMetaData.ScaleBarDistanceY;
+        float GraduationDistanceZ = _cloud_status.globalMetaData.ScaleBarDistanceZ;
+        float Xrange = (_cloud_status.globalMetaData.xMax - _cloud_status.globalMetaData.xMin);
+        float Yrange = (_cloud_status.globalMetaData.yMax - _cloud_status.globalMetaData.yMin);
+        float Zrange = (_cloud_status.globalMetaData.zMax - _cloud_status.globalMetaData.zMin);
+        float graduationnumberX = Xrange / GraduationDistanceX;
+        int graduationnumberY = 0;
+        int graduationnumberZ = 0;
+
         float graduationlength = ApplicationOptions.instance.GetGraduationLength();
         Vector3 point1 = new Vector3(-0.5f, -0.5f, -0.5f);
         Vector3 point2 = new Vector3(0.5f, 0.5f, -0.5f);
@@ -155,10 +167,14 @@ public class CloudBox : MonoBehaviour
 
         foreach(Vector3 v in pointArray)
         {
-            for (int i = 0; i <= graduationnumberX; i++)
+            float TotalValue = 0;
+            //X
+            while (TotalValue < Xrange)
+            //for (int i = 0; i <= graduationnumberX; i++)
             {
+                
                 //Debug.Log(_box.transform.localScale);
-                Vector3 displacementVector = new Vector3((float)(i * (1f / graduationnumberX)), 0f, 0f);
+                Vector3 displacementVector = new Vector3((float)(TotalValue / Xrange), 0f, 0f);
                 //Debug.Log(displacementVector);
 
                 Vector3 newpointVector;
@@ -217,7 +233,7 @@ public class CloudBox : MonoBehaviour
                                                                  -0.5f);
                     text_object.AddComponent<MeshRenderer>();
                     text_object.AddComponent<TextMesh>();
-                    float mark = 0 + i * ((_cloud_status.globalMetaData.xMax - _cloud_status.globalMetaData.xMin) / graduationnumberX);
+                    float mark = TotalValue;
                     float roundedmark = Mathf.Round(mark);
                     text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
                     text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
@@ -228,14 +244,24 @@ public class CloudBox : MonoBehaviour
 
                     TextList.Add(text_object);
                 }
+
+                TotalValue += GraduationDistanceX;
+
             }
-            for (int i = 0; i <= graduationnumberY; i++)
-            {//y rows
+
+            TotalValue = 0;
+            //y
+            while (TotalValue < Yrange)
+            //for (int i = 0; i <= graduationnumberX; i++)
+            {
+
+                //Debug.Log(_box.transform.localScale);
+                Vector3 displacementVector = new Vector3(0f, (float)(TotalValue / Yrange), 0f);
+
+//y rows
                 Vector3 newpointVector;
 
                 
-                Vector3 displacementVector = new Vector3(0f, (float)(i * (1f / graduationnumberY)), 0f);
-
                 if (v.y < 0)
                 {
                     newpointVector = v + displacementVector;
@@ -272,7 +298,7 @@ public class CloudBox : MonoBehaviour
                                                                  -0.5f);
                     text_object.AddComponent<MeshRenderer>();
                     text_object.AddComponent<TextMesh>();
-                    float mark = 0 + i * ((_cloud_status.globalMetaData.yMax - _cloud_status.globalMetaData.yMin) / graduationnumberY);
+                    float mark = TotalValue;
                     float roundedmark = Mathf.Round(mark);
                     text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
                     text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
@@ -300,14 +326,20 @@ public class CloudBox : MonoBehaviour
                 }
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
+                TotalValue += GraduationDistanceY;
+
 
             }
-            for (int i = 0; i <= graduationnumberZ; i++)
+            TotalValue = 0;
+            //y
+            while (TotalValue < Zrange)
+            //for (int i = 0; i <= graduationnumberX; i++)
             {
+
+                //Debug.Log(_box.transform.localScale);
+                Vector3 displacementVector = new Vector3(0f, 0f, (float)(TotalValue / Zrange));
+
                 Vector3 newpointVector;
-
-
-                Vector3 displacementVector = new Vector3(0f, 0f, (float)(i * (1f / graduationnumberZ)));
 
                 if (v.z < 0)
                 {
@@ -350,7 +382,7 @@ public class CloudBox : MonoBehaviour
 
                     text_object.AddComponent<MeshRenderer>();
                     text_object.AddComponent<TextMesh>();
-                    float mark = 0 + i * ((_cloud_status.globalMetaData.zMax - _cloud_status.globalMetaData.zMin) / graduationnumberZ);
+                    float mark = TotalValue;
                     float roundedmark = Mathf.Round(mark);
                     text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
                     text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
@@ -375,6 +407,7 @@ public class CloudBox : MonoBehaviour
                 }
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
+                TotalValue += GraduationDistanceZ;
 
                 //Debug.Log(i);
             }

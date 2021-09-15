@@ -116,7 +116,7 @@ namespace VR_Interaction
                 convexhull = new ConvexHull();
                 convexhull.pointList = pointList;
                 convexhull.positionList = localPositionList;
-                Mesh mesh = convexhull.CreateMesh();
+                Mesh mesh = convexhull.CreateLineMesh();
                 meshfilter.mesh = mesh;
 
                 if (!GetComponent<PointSelectorConvexHull>())

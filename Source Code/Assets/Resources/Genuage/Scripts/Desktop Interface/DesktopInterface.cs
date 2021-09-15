@@ -72,7 +72,7 @@ namespace DesktopInterface
         /// Handle NewInput String
         /// </summary>
         /// <param name="value"></param>
-        public void InputLabelChanged(string value)
+        public virtual void InputLabelChanged(string value)
         {
             float new_value = Single.Parse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
 

@@ -84,6 +84,7 @@ namespace Data
                     float moduloJ = j%spacing;
                     float LerpIndex = (moduloJ / spacing);
                     //Debug.Log("name : " + name + " lerpindex : " + LerpIndex + " moduloJ : "+moduloJ + " spacing : "+spacing);
+                    
                     colormap_texture.SetPixel(j, 0, Color.Lerp(colors[i], colors[i + 1], LerpIndex));
                 }
             }

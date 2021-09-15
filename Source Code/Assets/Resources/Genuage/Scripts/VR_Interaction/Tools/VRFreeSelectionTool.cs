@@ -227,7 +227,8 @@ namespace VR_Interaction
 
         bool SelectionTaskOn = false;
         bool DeletionTaskOn = false;
-
+        bool ColumnSelectionTaskOn = false;
+        int selectedColumn;
         public HashSet<int> selectedPoints;
 
         /**
@@ -271,6 +272,14 @@ namespace VR_Interaction
             DeletionTaskOn = true;
         }
 
+        public void DoColumnSelection(int columnID)
+        {
+            PrepareThread();
+            selectedColumn = columnID;
+            ColumnSelectionTaskOn = true;
+
+        }
+
         private void Update()
         {
             //Debug.Log("UpdateStart");
@@ -279,10 +288,9 @@ namespace VR_Interaction
                 if (Thread.isFinished == true)
                 {
                     SelectionTaskOn = false;
-
+                    Thread.thread.Join();
                     selectedPoints.UnionWith(Thread.pointSelectionList);
                     data.globalMetaData.FreeSelectionIDList = selectedPoints;
-                    Thread.thread.Join();
                     if(selectedPoints.Count > 0)
                     {
                         UpdateSelection();
@@ -301,13 +309,38 @@ namespace VR_Interaction
                     {
                         selectedPoints.ExceptWith(Thread.pointSelectionList);
                         data.globalMetaData.FreeSelectionIDList = selectedPoints;
-                        Thread.thread.Join();
                         UpdateSelection();
                     }
                     Debug.Log(selectedPoints.Count);
                 }
             }
 
+            if (ColumnSelectionTaskOn == true)
+            {
+                if (Thread.isFinished == true)
+                {
+                    ColumnSelectionTaskOn = false;
+                    Thread.thread.Join();
+                    selectedPoints = Thread.pointSelectionList;
+                    if (selectedPoints.Count > 0)
+                    {
+                        int pointID = selectedPoints.Min();
+                        selectedPoints.Clear();
+                        selectedPoints.Add(pointID);
+                        float[] column = data.columnData[selectedColumn];
+                        for(int i = 0; i < column.Length;i++)
+                        {
+                            if(column[pointID] == column[i])
+                            {
+                                selectedPoints.Add(i);
+                            }
+                        }
+                        data.globalMetaData.FreeSelectionIDList = selectedPoints;
+                        UpdateSelection();
+
+                    }
+                }
+            }
         }
 
         public void UpdateSelection()

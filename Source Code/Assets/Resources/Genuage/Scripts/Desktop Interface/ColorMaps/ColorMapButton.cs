@@ -52,10 +52,10 @@ namespace DesktopInterface
         public Texture2D texture;
         public Texture2D reversedTexture;
         public string _color_map_name;
-
+        public bool ActiveButton = true;
         public void Initialize()
         {
-            _colormapdisplay = GameObject.Find("ColorMapButton");
+            //_colormapdisplay = GameObject.Find("ColorMapButton");
             button = gameObject.AddComponent<Button>();
             initializeClickEvent();
 
@@ -68,28 +68,35 @@ namespace DesktopInterface
 
         public override void Execute()
         {
-            CloudUpdater.instance.ChangeCurrentColorMap(_color_map_name);
+            if (ActiveButton)
+            {
+                CloudUpdater.instance.ChangeCurrentColorMap(_color_map_name);
+
+            }
 
 
         }
-        
+
         public virtual void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.clickCount == 1)
+            if (ActiveButton)
             {
-                bool reverse = false;
 
-                if (eventData.button == PointerEventData.InputButton.Right)
+                if (eventData.clickCount == 1)
                 {
-                    reverse = true;
+                    bool reverse = false;
+
+                    if (eventData.button == PointerEventData.InputButton.Right)
+                    {
+                        reverse = true;
+                    }
+                    CloudUpdater.instance.ChangeCurrentColorMap(_color_map_name, reverse);
                 }
-                _colormapdisplay.GetComponent<ColorMapLoader>().ChangeColorMap(_color_map_name);
-                _colormapdisplay.SetActive(true);
-                CloudUpdater.instance.ChangeCurrentColorMap(_color_map_name,reverse);
-                transform.parent.parent.parent.gameObject.SetActive(false);
             }
+            _colormapdisplay.GetComponent<ColorMapLoader>().ChangeColorMap(_color_map_name);
+            _colormapdisplay.SetActive(true);
+            transform.parent.parent.parent.gameObject.SetActive(false);
         }
-    
 
 
     }

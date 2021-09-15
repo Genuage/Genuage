@@ -1,0 +1,33 @@
+﻿  pch.cpp
+  CalculateDensity.cpp
+  CalculateDensity_data.cpp
+  CalculateDensity_initialize.cpp
+  CalculateDensity_terminate.cpp
+  Parallel-Density-dllmain.cpp
+E:\Documents\Genuage\Custom DLL Templates\Density-DLL\Parallel-Density-dllmain.cpp(110,67): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Documents\Genuage\Custom DLL Templates\Density-DLL\Parallel-Density-dllmain.cpp(111,67): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Documents\Genuage\Custom DLL Templates\Density-DLL\Parallel-Density-dllmain.cpp(112,67): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+E:\Documents\Genuage\Custom DLL Templates\Density-DLL\Parallel-Density-dllmain.cpp(123,32): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=double
+          ]
+  pointCloud.cpp
+     Creating library E:\Documents\Genuage\Custom DLL Templates\Density-DLL\x64\Release\Density-DLL.lib and object E:\Documents\Genuage\Custom DLL Templates\Density-DLL\x64\Release\Density-DLL.exp
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 237 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Density DLL.vcxproj -> E:\Documents\Genuage\Custom DLL Templates\Density-DLL\x64\Release\Density-DLL.dll

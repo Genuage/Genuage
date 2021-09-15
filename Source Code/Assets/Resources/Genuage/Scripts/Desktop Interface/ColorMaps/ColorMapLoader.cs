@@ -51,6 +51,8 @@ namespace DesktopInterface
         public string _current_colormap_name = "autumn";
         public GameObject _colormap_selector;
         public bool _colormap_reversed;
+
+        public bool pointColor = true;
         //public CloudStatus _cloud_status;
 
 
@@ -60,12 +62,14 @@ namespace DesktopInterface
             initializeClickEvent();
             //gameObject.AddComponent<RawImage>();
             //_cloud_status.OnColorMapChange += ChangeColorMap;
-            CloudSelector.instance.OnSelectionChange += ChangeColorMap;
-            CloudUpdater.instance.OnColorMapSaturationChange += GenerateNewTexture;
-            CloudUpdater.instance.OnColorMapReversed += ReverseColorMap;
-            CloudUpdater.instance.OnColorMapChange += ChangeColorMap;
-
-            ChangeColorMap("autumn");
+            if (pointColor)
+            {
+                CloudSelector.instance.OnSelectionChange += ChangeColorMap;
+                CloudUpdater.instance.OnColorMapSaturationChange += GenerateNewTexture;
+                CloudUpdater.instance.OnColorMapReversed += ReverseColorMap;
+                CloudUpdater.instance.OnColorMapChange += ChangeColorMap;
+            }
+            ChangeColorMap(_current_colormap_name);
         }
 
         public override void Execute()
@@ -76,6 +80,8 @@ namespace DesktopInterface
                 this.gameObject.SetActive(!this.gameObject.activeSelf);
             }
         }
+        public delegate void OnColorMapChangeEvent(string name);
+        public event OnColorMapChangeEvent OnTextureChange;
 
         /// <summary>
         /// Update color map to be displayed by its name
@@ -87,6 +93,12 @@ namespace DesktopInterface
             Texture2D newtex = ColorMapManager.instance.colormapDict[name].texture;
             GetComponent<RawImage>().texture = newtex;
            _current_colormap_name = name;
+            if (OnTextureChange != null)
+            {
+                Debug.Log("Event Called");
+                OnTextureChange(_current_colormap_name);
+            }
+
         }
 
         public void ChangeColorMap(int id)
@@ -97,6 +109,12 @@ namespace DesktopInterface
             GetComponent<RawImage>().texture = newtex;
 
             _current_colormap_name = currentMap;
+            if (OnTextureChange != null)
+            {
+                Debug.Log("Event Called");
+                OnTextureChange(_current_colormap_name);
+            }
+
         }
 
         public void GenerateNewTexture(float value1, float value2)
@@ -196,9 +214,14 @@ namespace DesktopInterface
 
         private void OnDestroy()
         {
-            CloudSelector.instance.OnSelectionChange -= ChangeColorMap;
-            CloudUpdater.instance.OnColorMapSaturationChange -= GenerateNewTexture;
-            CloudUpdater.instance.OnColorMapReversed -= ReverseColorMap;
+            if (pointColor)
+            {
+                CloudSelector.instance.OnSelectionChange -= ChangeColorMap;
+                CloudUpdater.instance.OnColorMapSaturationChange -= GenerateNewTexture;
+                CloudUpdater.instance.OnColorMapReversed -= ReverseColorMap;
+                CloudUpdater.instance.OnColorMapChange -= ChangeColorMap;
+            }
+
 
         }
     }

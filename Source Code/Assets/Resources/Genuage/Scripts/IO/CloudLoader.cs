@@ -36,6 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations;
 using VR_Interaction;
@@ -50,13 +51,17 @@ namespace IO
     /// 
     public class CloudLoader : MonoBehaviour
     {
+        private const char DefaultSeparator = '\t';
         public GameObject _cloudPointPrefab;
         public static CloudLoader instance = null;
         public Texture2D _sprite_texture;
         private CloudSaveableData savedata = null;
 
-        GameObject window;
+        private char Separator = '\t';
+        private bool IgnoreHeader = false;
+        private int StartLineNumber = 0;
 
+        GameObject window;
 
         private void Awake()
         {
@@ -69,6 +74,18 @@ namespace IO
             {
                 Destroy(gameObject);
             }
+        }
+
+        public void ChangeSeparator(char newSeparator)
+        {
+            Separator = newSeparator;
+
+        }
+
+        public void ChangeHeaderIgnore(bool ignore)
+        {
+            IgnoreHeader = ignore;
+
         }
 
         public delegate void OnCloudCreatedEvent(int id);
@@ -91,37 +108,72 @@ namespace IO
                 isJSON = false;
             }
 
+            if (IgnoreHeader)
+            {
+                //Don't read first line
+                StartLineNumber = 1;
+            }
+            else
+            {
+                StartLineNumber = 0;
+            }
+
             string[] lines = File.ReadAllLines(file_path);
+           
             int N = lines.Length;
             
-            List<float[]> collumnDataList = new List<float[]>();
+            List<List<float>> columnDataList = new List<List<float>>();
 
-            int columnNumber = lines[0].Split('\t').Length;
+            int columnNumber = lines[StartLineNumber].Split(Separator).Length;
             for (int i = 0; i < columnNumber; i++)
             {
-                collumnDataList.Add(new float[N]);
+                columnDataList.Add(new List<float>());
             }
-            for (int j = 0; j< lines.Length; j++)
+            for (int j = StartLineNumber; j< lines.Length; j++)
             {
-                string[] entries = lines[j].Split('\t');
-                for(int k = 0; k < entries.Length; k++)
+                string[] entries = lines[j].Split(Separator);
+                float?[] numberArray = new float?[entries.Length]; //Define array of nullable floats
+                bool noNullValues = true;
+                for (int k = 0; k < entries.Length; k++)
                 {
+                    if(entries[k] == "NaN" || entries[k] == "nan")
+                    {
+                        //Deal with unavailable entries
+                    }
                     float parsednumber;
                     bool ParseSuccess = Single.TryParse(entries[k], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out parsednumber);
                     if (!ParseSuccess)
                     {
-                        UIManager.instance.ChangeStatusText("ERROR : Parsing Error at line " + k + ", the file could not be loaded");
-                        return;
+                        numberArray[k] = null;
+                        noNullValues = false;
+                        //UIManager.instance.ChangeStatusText("ERROR : Parsing Error at line " + k+1 + ", the file could not be loaded");
+                        //return;
                     }
                     else
                     {
-                        collumnDataList[k][j] = parsednumber;
+                        numberArray[k] = parsednumber;
+                        //collumnDataList[k][j] = parsednumber;
                     }
                     //collumnDataList[k][j] = Single.Parse(entries[k], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
                 }
+                
+               
+                if (noNullValues)
+                {
+                    for (int m = 0; m < entries.Length; m++)
+                    {
+                        columnDataList[m].Add((float)numberArray[m]);
+                    }
+                }
             }
 
-            GameObject cloud = CreateCloudPoint(collumnDataList,file_path,isJSON,jsonpath);
+            List<float[]> newDataList = new List<float[]>();
+            foreach(List<float> list in columnDataList)
+            {
+                newDataList.Add(list.ToArray());
+            }
+
+            GameObject cloud = CreateCloudPoint(newDataList, file_path,isJSON,jsonpath);
             PutInMemory(cloud);
 
             if (isJSON)
@@ -192,7 +244,15 @@ namespace IO
             data.globalMetaData.point_size = savedata.pointSize;
             data.globalMetaData.scale = savedata.scale;
             data.globalMetaData.fileName = savedata.fileName;
-            data.globalMetaData.pointbyLocationList = savedata.pointsByLocationDict;
+            if (savedata.pointsByLocationDict != null)
+            {
+                data.globalMetaData.pointbyLocationList = savedata.pointsByLocationDict;
+            }
+            else
+            {
+                data.globalMetaData.pointbyLocationList = new Dictionary<Vector3Int, List<int>>();
+
+            }
         }
         #region CreateVRObjects
         public void CreateSubGameObjects(CloudData data)
@@ -809,74 +869,19 @@ namespace IO
             float sMax = Mathf.NegativeInfinity;
             float sMin = Mathf.Infinity;
 
+            xMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MaxValue;
+            xMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MinValue;
+            yMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MaxValue;
+            yMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MinValue;
+            zMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MaxValue;
+            zMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MinValue;
+            iMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MaxValue;
+            iMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MinValue;
+            tMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MaxValue;
+            tMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MinValue;
 
-            HashSet<float> TimeSet = new HashSet<float>();
-            List<float> TimeList = new List<float>();
-
-            for (int i = 0; i < N; i++)
-            {
-
-                _positions[i] = new Vector3(cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[0]][i],
-                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[1]][i],
-                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[2]][i]);
-
-                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[3]][i];
-                _trajectory[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[5]][i];
-
-                _time[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]][i];
-
-                _phi[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[6]][i];
-                _theta[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[7]][i];
-
-                _size[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[8]][i];
-
-                _indices[i] = i;
-
-                // Update min max
-                /**
-                if (xMax < _positions[i].x) { xMax = _positions[i].x; }
-                if (xMin > _positions[i].x) { xMin = _positions[i].x; }
-                if (yMax < _positions[i].y) { yMax = _positions[i].y; }
-                if (yMin > _positions[i].y) { yMin = _positions[i].y; }
-                if (zMax < _positions[i].z) { zMax = _positions[i].z; }
-                if (zMin > _positions[i].z) { zMin = _positions[i].z; }
-                if (iMax < _intensity[i]) { iMax = _intensity[i]; }
-                if (iMin > _intensity[i]) { iMin = _intensity[i]; }
-                if (tMax < _time[i]) { tMax = _time[i]; }
-                if (tMin > _time[i]) { tMin = _time[i]; }
-                **/
-
-                xMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MaxValue;
-                xMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MinValue;
-                yMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MaxValue;
-                yMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MinValue;
-                zMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MaxValue;
-                zMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MinValue;
-                iMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MaxValue;
-                iMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MinValue;
-                tMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MaxValue;
-                tMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MinValue;
-
-                sMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MaxValue;
-                sMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MinValue;
-
-
-
-                TimeSet.Add(_time[i]);
-    
-
-            }
-            foreach(float f in TimeSet)
-            {
-                TimeList.Add(f);
-            }
-            TimeList.Sort();
-
-            Dictionary<float, int> FrameDict = new Dictionary<float, int>();
-            for(int u =0; u < TimeList.Count; u++)
-            {
-                FrameDict.Add(TimeList[u], u);
-            }
+            sMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MaxValue;
+            sMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MinValue;
 
             float xRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].Range;
             float yRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].Range;
@@ -898,53 +903,101 @@ namespace IO
             float normedzMax = Mathf.NegativeInfinity;
             float normedzMin = Mathf.Infinity;
 
+            List<float> TimeList = new List<float>();
 
 
-            foreach (int point in _indices)
+            float[] TimeArray = new float[N];
+            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].CopyTo(TimeArray, 0);
+            IEnumerable<float> DistinctTimeArray = TimeArray.Distinct();
+            TimeList = DistinctTimeArray.ToList();
+
+            TimeList.Sort();
+
+            Dictionary<float, int> FrameDict = new Dictionary<float, int>();
+            for (int u = 0; u < TimeList.Count; u++)
             {
-                _normed_positions[point] = ((_positions[point] - offsetVector) / MaxRange);
-                _colors[point] = new Color(((_intensity[point] - iMin) / (iMax-iMin)), ((_intensity[point] - iMin) / iMax - iMin), ((_intensity[point] - iMin) / iMax - iMin), 1);
+                FrameDict.Add(TimeList[u], u);
+            }
 
-                cloud_data.pointDataTable[point].position = _positions[point];
-                cloud_data.pointDataTable[point].normed_position = _normed_positions[point];
-                cloud_data.pointDataTable[point].intensity = _intensity[point];
-                cloud_data.pointDataTable[point].time = _time[point];
-                cloud_data.pointDataTable[point].frame = FrameDict[_time[point]];
-                cloud_data.pointDataTable[point].trajectory = _trajectory[point];
-                cloud_data.pointDataTable[point].size = (_size[point] - sMin) / (sMax - sMin);
-                cloud_data.pointDataTable[point].phi_angle = _phi[point];
-                cloud_data.pointDataTable[point].theta_angle = _theta[point];
+
+            for (int i = 0; i < N; i++)
+            {
+
+                _positions[i] = new Vector3(cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[0]][i],
+                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[1]][i],
+                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[2]][i]);
+
+                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[3]][i];
+                _trajectory[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[5]][i];
+
+                _time[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]][i];
+
+                _phi[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[6]][i];
+                _theta[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[7]][i];
+
+                _size[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[8]][i];
+
+                _indices[i] = i;
+
+                _normed_positions[i] = ((_positions[i] - offsetVector) / MaxRange);
+                _colors[i] = new Color(((_intensity[i] - iMin) / (iMax - iMin)), ((_intensity[i] - iMin) / iMax - iMin), ((_intensity[i] - iMin) / iMax - iMin), 1);
+
+                cloud_data.pointDataTable[i].position = _positions[i];
+                cloud_data.pointDataTable[i].normed_position = _normed_positions[i];
+                cloud_data.pointDataTable[i].intensity = _intensity[i];
+                cloud_data.pointDataTable[i].time = _time[i];
+                cloud_data.pointDataTable[i].frame = FrameDict[_time[i]];
+                cloud_data.pointDataTable[i].trajectory = _trajectory[i];
+                cloud_data.pointDataTable[i].size = (_size[i] - sMin) / (sMax - sMin);
+                cloud_data.pointDataTable[i].phi_angle = _phi[i];
+                cloud_data.pointDataTable[i].theta_angle = _theta[i];
                 //cloud_data.pointDataTable[point].color = _colors[point];
-                cloud_data.pointDataTable[point]._color_index = _colors[point].r;
+                cloud_data.pointDataTable[i]._color_index = _colors[i].r;
 
-                uv0List.Add(new Vector2(cloud_data.pointDataTable[point].size, 0f));
-                uv1List.Add(new Vector2(cloud_data.pointDataTable[point]._color_index, point));
+                uv0List.Add(new Vector2(cloud_data.pointDataTable[i].size, 0f));
+                uv1List.Add(new Vector2(cloud_data.pointDataTable[i]._color_index, i));
                 //uv3List.Add(new Vector2(cloud_data.pointDataTable[point].trajectory, cloud_data.pointDataTable[point].time));
-                cloud_data.pointDataTable[point].depth = _positions[point].z;
+                cloud_data.pointDataTable[i].depth = _positions[i].z;
 
                 float selected = 0f;
                 float hidden = 0f;
-                if (cloud_data.pointMetaDataTable[point].isSelected)
+                if (cloud_data.pointMetaDataTable[i].isSelected)
                 {
                     selected = 1f;
                 }
-                if (cloud_data.pointMetaDataTable[point].isHidden)
+                if (cloud_data.pointMetaDataTable[i].isHidden)
                 {
                     hidden = 1f;
                 }
                 uv2List.Add(new Vector2(selected, hidden));
 
-                uv3List.Add(new Vector2(cloud_data.pointDataTable[point].trajectory, cloud_data.pointDataTable[point].frame));
+                uv3List.Add(new Vector2(cloud_data.pointDataTable[i].trajectory, cloud_data.pointDataTable[i].frame));
 
-                if (normedxMax < _normed_positions[point].x) { normedxMax = _normed_positions[point].x; }
-                if (normedxMin > _normed_positions[point].x) { normedxMin = _normed_positions[point].x; }
-                if (normedyMax < _normed_positions[point].y) { normedyMax = _normed_positions[point].y; }
-                if (normedyMin > _normed_positions[point].y) { normedyMin = _normed_positions[point].y; }
-                if (normedzMax < _normed_positions[point].z) { normedzMax = _normed_positions[point].z; }
-                if (normedzMin > _normed_positions[point].z) { normedzMin = _normed_positions[point].z; }
+                if (normedxMax < _normed_positions[i].x) { normedxMax = _normed_positions[i].x; }
+                if (normedxMin > _normed_positions[i].x) { normedxMin = _normed_positions[i].x; }
+                if (normedyMax < _normed_positions[i].y) { normedyMax = _normed_positions[i].y; }
+                if (normedyMin > _normed_positions[i].y) { normedyMin = _normed_positions[i].y; }
+                if (normedzMax < _normed_positions[i].z) { normedzMax = _normed_positions[i].z; }
+                if (normedzMin > _normed_positions[i].z) { normedzMin = _normed_positions[i].z; }
+                
 
 
+                // Update min max
+                /**
+                if (xMax < _positions[i].x) { xMax = _positions[i].x; }
+                if (xMin > _positions[i].x) { xMin = _positions[i].x; }
+                if (yMax < _positions[i].y) { yMax = _positions[i].y; }
+                if (yMin > _positions[i].y) { yMin = _positions[i].y; }
+                if (zMax < _positions[i].z) { zMax = _positions[i].z; }
+                if (zMin > _positions[i].z) { zMin = _positions[i].z; }
+                if (iMax < _intensity[i]) { iMax = _intensity[i]; }
+                if (iMin > _intensity[i]) { iMin = _intensity[i]; }
+                if (tMax < _time[i]) { tMax = _time[i]; }
+                if (tMin > _time[i]) { tMin = _time[i]; }
+                **/
             }
+            
+
 
 
             cloud_data.globalMetaData.maxRange = MaxRange;

@@ -52,10 +52,27 @@ namespace DesktopInterface
         /// From SFB API, launch native file explorer and launch new CloudStatus loading if path is valid
         /// </summary>
 
+        public Dropdown SeparatorDropdown;
+        public Toggle IgnoreHeaderToggle;
+
         public override void Execute()
         {
             UIManager.instance.ChangeStatusText("Loading Cloud...");
 
+            string s = SeparatorDropdown.options[SeparatorDropdown.value].text;
+            if(s == "Tab")
+            {
+                s = "\t";
+            }
+            if (s == "Space")
+            {
+                s = " ";
+            }
+            //Debug.Log(s);
+            bool IgnoreHeader = IgnoreHeaderToggle.isOn;
+            Debug.Log(IgnoreHeader);
+            CloudLoader.instance.ChangeHeaderIgnore(IgnoreHeader);
+            CloudLoader.instance.ChangeSeparator(s.ToCharArray()[0]);
             // Open file with filter
             var extensions = new[] 
             {

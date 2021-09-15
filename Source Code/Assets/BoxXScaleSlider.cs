@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using Data;
@@ -14,24 +16,31 @@ namespace DesktopInterface
         private void Start()
         {
             slider = this.GetComponent<Slider>();
-            InitializeSliderEvent();
             CloudSelector.instance.OnSelectionChange += UpdateRange;
             CloudUpdater.instance.OnCloudReloaded += UpdateRange;
-            if (_field)
-            {
-                _field.onEndEdit.RemoveListener(InputLabelChanged);
-            }
             UpdateRange(0);
+            InitializeSliderEvent();
         }
+        /**
+        public override void InputLabelChanged(string value)
+        {
+            float new_value = Single.Parse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture);
+            int intvalue = Mathf.RoundToInt(new_value);
+            slider.value = new_value;
 
+        }
+        **/
         private void UpdateRange(int id)
         {
-            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
-            XRange = data.globalMetaData.xMax - data.globalMetaData.xMin;
-            slider.value = data.globalMetaData.ScaleBarNumberX;
-            if (_field)
+            if (!CloudSelector.instance.noSelection)
             {
-                _field.text = (XRange / slider.value).ToString();
+                CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+                XRange = data.globalMetaData.xMax - data.globalMetaData.xMin;
+                slider.minValue = XRange / 500;
+                slider.maxValue = XRange;
+                slider.value = data.globalMetaData.ScaleBarDistanceX;
+                Execute(slider.value);
+
             }
         }
 
@@ -40,7 +49,7 @@ namespace DesktopInterface
             CloudUpdater.instance.ChangeBoxGraduationsX(value);
             if (_field)
             {
-                _field.text = (XRange / slider.value).ToString();
+                _field.text = (slider.value).ToString();
             }
 
         }

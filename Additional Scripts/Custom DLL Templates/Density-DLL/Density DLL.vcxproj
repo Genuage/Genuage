@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b0102ca5-33df-4dd4-9dc7-419bd9cadeea}</ProjectGuid>
+    <RootNamespace>ParallelDensityDLL</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Density-DLL</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;PARALLELDENSITYDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;PARALLELDENSITYDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;PARALLELDENSITYDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>libmwkdtree.lib;libmwComputeMetric.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;PARALLELDENSITYDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>libmwkdtree.lib;libmwComputeMetric.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="blas.h" />
+    <ClInclude Include="blascompat32.h" />
+    <ClInclude Include="CalculateDensity.h" />
+    <ClInclude Include="CalculateDensity_data.h" />
+    <ClInclude Include="CalculateDensity_initialize.h" />
+    <ClInclude Include="CalculateDensity_terminate.h" />
+    <ClInclude Include="CalculateDensity_types.h" />
+    <ClInclude Include="coder_array.h" />
+    <ClInclude Include="coder_bounded_array.h" />
+    <ClInclude Include="covrt.h" />
+    <ClInclude Include="cvstCG_acfObjectDetector.h" />
+    <ClInclude Include="cvstCG_ComputeMetric.h" />
+    <ClInclude Include="cvstCG_disparitySGM.h" />
+    <ClInclude Include="cvstCG_foregroundDetector.h" />
+    <ClInclude Include="cvstCG_kdtree.h" />
+    <ClInclude Include="cvstCG_ocrutils.h" />
+    <ClInclude Include="cvstCG_searchOrganizedPointCloud.h" />
+    <ClInclude Include="cvstCG_voxelGridFilter.h" />
+    <ClInclude Include="emlrt.h" />
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="fintrf.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="io64.h" />
+    <ClInclude Include="lapack.h" />
+    <ClInclude Include="lapacke.h" />
+    <ClInclude Include="lapacke_config.h" />
+    <ClInclude Include="libmwboxfilter.h" />
+    <ClInclude Include="libmwboxfilter3.h" />
+    <ClInclude Include="libmwbwdistEDT.h" />
+    <ClInclude Include="libmwbwdistEDTFT.h" />
+    <ClInclude Include="libmwbwdistEDTFT_tbb.h" />
+    <ClInclude Include="libmwbwdistEDT_tbb.h" />
+    <ClInclude Include="libmwbwlookup.h" />
+    <ClInclude Include="libmwbwlookup_tbb.h" />
+    <ClInclude Include="libmwbwpackc.h" />
+    <ClInclude Include="libmwbwpackctbb.h" />
+    <ClInclude Include="libmwbwunpackc.h" />
+    <ClInclude Include="libmwbwunpackctbb.h" />
+    <ClInclude Include="libmwcannythresholding_tbb.h" />
+    <ClInclude Include="libmwddist.h" />
+    <ClInclude Include="libmwedgesobelprewitt_tbb.h" />
+    <ClInclude Include="libmwedgethinning_tbb.h" />
+    <ClInclude Include="libmwgetnumcores.h" />
+    <ClInclude Include="libmwgrayto16.h" />
+    <ClInclude Include="libmwgrayto8.h" />
+    <ClInclude Include="libmwgrayxform.h" />
+    <ClInclude Include="libmwgrayxform_tbb.h" />
+    <ClInclude Include="libmwimfilter.h" />
+    <ClInclude Include="libmwimlincomb.h" />
+    <ClInclude Include="libmwimlincomb_tbb.h" />
+    <ClInclude Include="libmwimreconstruct.h" />
+    <ClInclude Include="libmwimregionalmax.h" />
+    <ClInclude Include="libmwimterp2d.h" />
+    <ClInclude Include="libmwint16touint16.h" />
+    <ClInclude Include="libmwint32touint32.h" />
+    <ClInclude Include="libmwint8touint8.h" />
+    <ClInclude Include="libmwintlut.h" />
+    <ClInclude Include="libmwintluttbb.h" />
+    <ClInclude Include="libmwippfilter.h" />
+    <ClInclude Include="libmwippgeotrans.h" />
+    <ClInclude Include="libmwippmedianfilter.h" />
+    <ClInclude Include="libmwippreconstruct.h" />
+    <ClInclude Include="libmwjpegreader.h" />
+    <ClInclude Include="libmwmorphop_binary.h" />
+    <ClInclude Include="libmwmorphop_binary_tbb.h" />
+    <ClInclude Include="libmwmorphop_flat.h" />
+    <ClInclude Include="libmwmorphop_flat_tbb.h" />
+    <ClInclude Include="libmwmorphop_ipp.h" />
+    <ClInclude Include="libmwmorphop_nonflat.h" />
+    <ClInclude Include="libmwmorphop_nonflat_tbb.h" />
+    <ClInclude Include="libmwmorphop_packed.h" />
+    <ClInclude Include="libmwordfilt2.h" />
+    <ClInclude Include="libmwremap.h" />
+    <ClInclude Include="libmwremaptbb.h" />
+    <ClInclude Include="libmwrgb2gray_tbb.h" />
+    <ClInclude Include="libmwrgb2hsv_tbb.h" />
+    <ClInclude Include="libmwtbbhist.h" />
+    <ClInclude Include="libmwuint16toint16.h" />
+    <ClInclude Include="mat.h" />
+    <ClInclude Include="MatlabCppSharedLib.hpp" />
+    <ClInclude Include="MatlabDataArray.hpp" />
+    <ClInclude Include="MatlabEngine.hpp" />
+    <ClInclude Include="MatlabExecutionInterface.hpp" />
+    <ClInclude Include="MatlabTypesInterface.hpp" />
+    <ClInclude Include="matrix.h" />
+    <ClInclude Include="mclbase.h" />
+    <ClInclude Include="mclcom.h" />
+    <ClInclude Include="mclcomclass.h" />
+    <ClInclude Include="mclcppclass.h" />
+    <ClInclude Include="mclmcr.h" />
+    <ClInclude Include="mclmcrrt.h" />
+    <ClInclude Include="mclxlmain.h" />
+    <ClInclude Include="mcr.h" />
+    <ClInclude Include="mex.h" />
+    <ClInclude Include="mex.hpp" />
+    <ClInclude Include="mexAdapter.hpp" />
+    <ClInclude Include="mwmathutil.h" />
+    <ClInclude Include="mwservices.h" />
+    <ClInclude Include="mwslpointerutil.h" />
+    <ClInclude Include="mwstringutil.h" />
+    <ClInclude Include="opencvgpumex.hpp" />
+    <ClInclude Include="opencvmex.hpp" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="pointCloud.h" />
+    <ClInclude Include="pointCloudArray.h" />
+    <ClInclude Include="polygonBoolean.h" />
+    <ClInclude Include="rtwtypes.h" />
+    <ClInclude Include="tmwtypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CalculateDensity.cpp" />
+    <ClCompile Include="CalculateDensity_data.cpp" />
+    <ClCompile Include="CalculateDensity_initialize.cpp" />
+    <ClCompile Include="CalculateDensity_terminate.cpp" />
+    <ClCompile Include="Parallel-Density-dllmain.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="pointCloud.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
