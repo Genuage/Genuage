@@ -60,7 +60,7 @@ namespace DesktopInterface
                 window.transform.localPosition = localpos;
                 window.transform.localScale = Vector3.one * 0.0045f;
                 window.transform.rotation = transform.rotation;
-                window.transform.GetChild(0).gameObject.GetComponent<ToggleManager>().Create();
+                window.transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<ToggleManager>().Create();
                 UIManager.instance.DeactivateUI();
             }
         }

@@ -46,15 +46,14 @@ namespace DesktopInterface
 
         public InputField thetainput;
         public InputField rhoinput;
-
-
-
+        public ColorMapLoader MapLoader;
 
         private void Awake()
         {
             button = GetComponent<Button>();
             initializeClickEvent();
             CloudSelector.instance.OnSelectionChange += onSelectionChange;
+            MapLoader.OnTextureChange += ChangeMeshColor;
 
         }
 
@@ -211,5 +210,21 @@ namespace DesktopInterface
                 
             }
         }
+
+        private void ChangeMeshColor(string mapname)
+        {
+            CloudUpdater.instance.SetOrientationShaderColor(mapname);
+            //ColorMap map = ColorMapManager.instance.GetColorMap(mapname);
+            //solidparent.transform.GetChild(i).GetComponent<MeshRenderer>();
+            //ColorMap map = ColorMapManager.instance.GetColorMap("jet");
+            //Mrenderer.material.SetColor("_Color", map.texture.GetPixel(Mathf.RoundToInt((float)(ClusterList[i].propertyValue / maxClusterValue) * 255), 1));
+
+        }
+        private void OnDisable()
+        {
+            MapLoader.OnTextureChange -= ChangeMeshColor;
+
+        }
+
     }
 }

@@ -1,0 +1,22 @@
+﻿  pch.cpp
+  DiffusionCoef.cpp
+  DiffusionCoef_data.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\DiffusionCoef_data.cpp(15,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  DiffusionCoef_initialize.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\DiffusionCoef_initialize.cpp(20,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  DiffusionCoef_terminate.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\DiffusionCoef_terminate.cpp(21,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  dllmain.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(43,43): error C3861: 'argInit_real_T': identifier not found
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(109,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(110,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(111,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(112,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(115,18): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(117,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  find.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\find.cpp(57,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  polyfit.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\polyfit.cpp(321,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  xnrm2.cpp
+E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\xnrm2.cpp(57,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?

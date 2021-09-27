@@ -7,6 +7,66 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 250204710477056845, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Text
+      value: Change Column
+      objectReference: {fileID: 0}
+    - target: {fileID: 669896404414957626, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669896404414957626, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669896404414957626, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 723483522165849735, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Text
+      value: Select Point Column
+      objectReference: {fileID: 0}
+    - target: {fileID: 2559291682344401979, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Text
+      value: Change Column
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056667957006286416, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Text
+      value: Select One Point
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056667957006286416, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_FontData.m_RichText
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4061860222652380350, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_Text
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7538346425851289405, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 5725870092303682081}
+    - target: {fileID: 7633168287742397388, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633168287903322514, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7633168288603821881, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -69,3 +129,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7a3aa9d0dfeb10448e2251b7d236ef2, type: 3}
+--- !u!114 &5725870092303682081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7633168288323603698, guid: d7a3aa9d0dfeb10448e2251b7d236ef2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2780997640471791315}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eba3cd5456cd79e49948f5ceb58544b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

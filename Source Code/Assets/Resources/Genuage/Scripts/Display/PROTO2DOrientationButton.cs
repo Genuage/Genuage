@@ -45,10 +45,13 @@ namespace DesktopInterface
     {
         bool orientation2DmodeOn = false;
         public InputField input;
+        public ColorMapLoader MapLoader;
+
         private void Awake()
         {
             button = GetComponent<Button>();
             initializeClickEvent();
+            MapLoader.OnTextureChange += ChangeMeshColor;
         }
         public override void Execute()
         {
@@ -172,6 +175,21 @@ namespace DesktopInterface
                 data.orientationObject.GetComponent<MeshRenderer>().enabled = false;
                 orientation2DmodeOn = false;
             }
+        }
+        private void ChangeMeshColor(string mapname)
+        {
+            CloudUpdater.instance.SetOrientationShaderColor(mapname);
+            //ColorMap map = ColorMapManager.instance.GetColorMap(mapname);
+            //solidparent.transform.GetChild(i).GetComponent<MeshRenderer>();
+            //ColorMap map = ColorMapManager.instance.GetColorMap("jet");
+            //Mrenderer.material.SetColor("_Color", map.texture.GetPixel(Mathf.RoundToInt((float)(ClusterList[i].propertyValue / maxClusterValue) * 255), 1));
+
+        }
+
+        private void OnDisable()
+        {
+            MapLoader.OnTextureChange -= ChangeMeshColor;
+
         }
     }
     

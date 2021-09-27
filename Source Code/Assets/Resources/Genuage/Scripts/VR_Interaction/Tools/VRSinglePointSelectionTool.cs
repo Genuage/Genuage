@@ -20,6 +20,11 @@ namespace VR_Interaction
         private PointSelectorDistanceBased pointSelector;
         public Material material;
 
+
+        public GameObject SingleSelectionUICanvas;
+
+        public TextMesh sectionselectiontextmesh;
+        public int selectiondisplayID;
         public int selectedcolumnID = 0;
 
         public VRSinglePointSelectionTool(VRTK_ControllerEvents controller)
@@ -41,6 +46,15 @@ namespace VR_Interaction
             _controller = GetComponent<VRTK_ControllerEvents>();
             _controller.TouchpadPressed += OnTriggerClicked;
             diameter = 0.01f;
+
+            SingleSelectionUICanvas = GetComponent<ControllerObjectsRefference>().CanvasSinglePointSelection;
+            SingleSelectionUICanvas.SetActive(true);
+
+            sectionselectiontextmesh = SingleSelectionUICanvas.GetComponent<VRContainerUIRef>().centertext;
+            selectiondisplayID = 1;
+            selectedcolumnID = selectiondisplayID - 1;
+            sectionselectiontextmesh.text = "1";
+
             jobON = true;
             Shader.EnableKeyword("FREE_SELECTION");
         }
@@ -61,12 +75,24 @@ namespace VR_Interaction
 
             else if (e.touchpadAxis.x <= -0.15 && e.touchpadAxis.y < (Mathf.Sqrt(2f) / 2) && e.touchpadAxis.y > (-Mathf.Sqrt(2f) / 2))
             {
+
                 //left
+                if(selectiondisplayID-1 > 0)
+                {
+                    selectiondisplayID--;
+                    selectedcolumnID = selectiondisplayID - 1;
+                    sectionselectiontextmesh.text = selectiondisplayID.ToString();
+                }
 
             }
             else if (e.touchpadAxis.x >= 0.15 && e.touchpadAxis.y < (Mathf.Sqrt(2f) / 2) && e.touchpadAxis.y > (-Mathf.Sqrt(2f) / 2))
             {
                 //right
+                selectiondisplayID++;
+                selectedcolumnID = selectiondisplayID - 1;
+                sectionselectiontextmesh.text = selectiondisplayID.ToString();
+
+
             }
         }
 
@@ -131,6 +157,7 @@ namespace VR_Interaction
 
             }
 
+            SingleSelectionUICanvas.SetActive(false);
             Destroy(pointSelector);
 
         }

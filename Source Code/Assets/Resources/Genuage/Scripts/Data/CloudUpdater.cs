@@ -1527,6 +1527,19 @@ namespace Data
                 
             }
         }
+        
+        public void SetTrajectoryShaderColor(string colormap_name)
+        {
+            CloudData data = LoadCurrentStatus();
+
+            if (data.trajectoryObject)
+            {
+                MeshRenderer TrajectoriesRenderer = data.trajectoryObject.GetComponent<MeshRenderer>();
+                //MeshRenderer PointsRenderer = data.GetComponent<MeshRenderer>();
+
+                TrajectoriesRenderer.material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap(colormap_name).texture);
+            }
+        }
         #endregion
 
         #region Orientation
@@ -1540,6 +1553,20 @@ namespace Data
 
             }
         }
+
+        public void SetOrientationShaderColor(string colormap_name)
+        {
+            CloudData data = LoadCurrentStatus();
+
+            if (data.orientationObject)
+            {
+                MeshRenderer OrientationRenderer = data.orientationObject.GetComponent<MeshRenderer>();
+                //MeshRenderer PointsRenderer = data.GetComponent<MeshRenderer>();
+
+                OrientationRenderer.material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap(colormap_name).texture);
+            }
+        }
+
 
         public void CalculateMeanOrientation()
         {

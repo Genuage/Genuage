@@ -79,6 +79,7 @@ public unsafe class Prototype_Map_Loader : NativePlugin
 
     public GameObject lineparent;
     public GameObject solidparent;
+    public GameObject arrowparent;
 
     //UI
     public InputField clusternbrInput;
@@ -355,7 +356,7 @@ public unsafe class Prototype_Map_Loader : NativePlugin
         foreach (Cluster c in ClusterList)
         {
             float value;
-            value = LaunchInfer3D(data, c.pointsIDList);
+            value = LaunchInfer3D(data, c.pointsIDList, c);
             c.UpdatePropertyValue(value);
             UnityEngine.Debug.Log("Region : " + c.ID + " - " + value);
             if (value >= maxClusterValue) { maxClusterValue = value; }
@@ -368,7 +369,7 @@ public unsafe class Prototype_Map_Loader : NativePlugin
         }
     }
 
-    private float LaunchInfer3D(CloudData data, List<int> PointIDList)
+    private float LaunchInfer3D(CloudData data, List<int> PointIDList, Cluster c)
     {
         List<double> TrajectoriesList = new List<double>();
         List<double> Xvalues = new List<double>();
@@ -381,6 +382,10 @@ public unsafe class Prototype_Map_Loader : NativePlugin
 
         //Debug.Log("uptime " + data.globalMetaData.uppertimeLimit);
 
+        float xaverage, yaverage, zaverage;
+        float xsum = 0;
+        float ysum = 0;
+        float zsum = 0;
 
         int pointnumber = 0;
         foreach (int i in PointIDList)
@@ -400,12 +405,22 @@ public unsafe class Prototype_Map_Loader : NativePlugin
                     Zvalues.Add((double)data.pointDataTable[i].position.z);
                     Tvalues.Add((double)data.pointDataTable[i].time);
 
+                    xsum += data.pointDataTable[i].normed_position.x;
+                    ysum += data.pointDataTable[i].normed_position.y;
+                    zsum += data.pointDataTable[i].normed_position.z;
 
                     pointnumber++;
 
                 }
             }
         }
+
+        xaverage = xsum / pointnumber;
+        yaverage = ysum / pointnumber;
+        zaverage = zsum / pointnumber;
+
+        Vector3 ArrowLocalPosition = new Vector3(xaverage, yaverage, zaverage);
+
 
         double diffusionres;
 
@@ -467,7 +482,10 @@ public unsafe class Prototype_Map_Loader : NativePlugin
                             forceYres = Math.Round(forceYres, 3);
                             forceZres = Math.Round(forceZres, 3);
                             //outValue = (float)diffusionres;
-
+                            if(headerID == NativePluginInfer3D.HeaderID.Diffusion_Velocity)
+                            {
+                                c.AddArrowPosition(ArrowLocalPosition, new Vector3((float)*ForceX, (float)*ForceY, (float)*ForceZ).normalized);
+                            }
                             
 
                         }
@@ -483,22 +501,28 @@ public unsafe class Prototype_Map_Loader : NativePlugin
         solidparent = new GameObject("SolidParent");
         //solidparent.AddComponent<DragMouse>();
         lineparent = new GameObject("LineParent");
+        arrowparent = new GameObject("ArrowsParent");
         //lineparent.AddComponent<DragMouse>();
         solidparent.transform.position = Vector3.zero;
         solidparent.transform.rotation = Quaternion.identity;
         lineparent.transform.position = Vector3.zero;
         lineparent.transform.rotation = Quaternion.identity;
+        arrowparent.transform.position = Vector3.zero;
+        arrowparent.transform.rotation = Quaternion.identity;
         //Transform t = data.transform;//.parent.GetComponent<CloudObjectRefference>().box.transform;
         data.transform.parent.GetComponent<CloudObjectRefference>().box.transform.position = Vector3.zero;
         data.transform.parent.GetComponent<CloudObjectRefference>().box.transform.rotation = Quaternion.identity;
         Transform t = data.transform;
         solidparent.transform.SetParent(t, true);
         lineparent.transform.SetParent(t, true);
+        arrowparent.transform.SetParent(t, true);
 
         solidparent.transform.localPosition = Vector3.zero;
         solidparent.transform.localRotation = Quaternion.identity;
         lineparent.transform.localPosition = Vector3.zero;
         lineparent.transform.localRotation = Quaternion.identity;
+        arrowparent.transform.localPosition = Vector3.zero;
+        arrowparent.transform.localRotation = Quaternion.identity;
 
 
         //TODO : FOR ALL POINTS WITHIN A CLUSTER, CREATE A CH
@@ -562,7 +586,21 @@ public unsafe class Prototype_Map_Loader : NativePlugin
 
             UnityEngine.Debug.Log("Iteration " + c.ID + " ends");
 
+            //Create arrows
+            if (c.containsArrow)
+            {
+                GameObject go3 = new GameObject("arrow");
+                go3.transform.position = Vector3.zero;
+                go3.transform.rotation = Quaternion.identity;
+                go3.transform.SetParent(arrowparent.transform, true);
 
+                //go.transform.SetParent(data.transform);
+                UnityEngine.Debug.Log(c.VectorMagnitude);
+                go3.AddComponent<GenerateArrow>();
+                go3.GetComponent<GenerateArrow>().GenerateSquarePyramidMesh(c.VectorMagnitude);
+                go3.transform.localPosition = c.ArrowPosition;
+
+            }
             //Debug.Log("Hull Created");
         }
         data.globalMetaData.mapLineParent = lineparent;
@@ -663,15 +701,19 @@ public unsafe class Prototype_Map_Loader : NativePlugin
 
     }
 }
-    public class Cluster
+public class Cluster
 {
     public int ID;
     public List<int> pointsIDList;
     public float propertyValue;
+    public bool containsArrow;
+    public Vector3 ArrowPosition;
+    public Vector3 VectorMagnitude;
     public Cluster(int id)
     {
         this.ID = id;
         pointsIDList = new List<int>();
+        this.containsArrow = false;
         //this.pointsID = points;
     }
 
@@ -688,5 +730,12 @@ public unsafe class Prototype_Map_Loader : NativePlugin
     public void UpdatePointIDList(List<int> points)
     {
         this.pointsIDList = points;
+    }
+
+    public void AddArrowPosition(Vector3 pos, Vector3 magnitude)
+    {
+        this.containsArrow = true;
+        this.ArrowPosition = pos;
+        this.VectorMagnitude = magnitude;
     }
 }

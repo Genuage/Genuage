@@ -127,7 +127,8 @@ namespace DesktopInterface
                     foreach (var kvp in data.pointDataTable)
                     {
                         Vector3 localpos = kvp.Value.normed_position;
-                        if (localpos.x >= MinX && localpos.x <= MaxX && localpos.y >= MinY && localpos.y <= MaxY)
+                        if (localpos.x >= MinX && localpos.x <= MaxX && localpos.y >= MinY && localpos.y <= MaxY 
+                            && data.pointMetaDataTable[kvp.Key].isHidden == false)
                         {
                             data.globalMetaData.FreeSelectionIDList.Add(kvp.Key);
 

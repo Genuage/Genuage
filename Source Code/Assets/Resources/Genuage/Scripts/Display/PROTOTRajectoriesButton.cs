@@ -89,6 +89,8 @@ namespace DesktopInterface
         //UI to control animation
         public GameObject TrajectoryUIContainer;
 
+        public ColorMapLoader MapLoader;
+
         private void Awake()
         {
             button = GetComponent<Button>();
@@ -117,6 +119,7 @@ namespace DesktopInterface
             CloudSelector.instance.OnSelectionChange += onSelectionChange;
 
             texture = ColorMapManager.instance.GetColorMap("jet").texture;
+            MapLoader.OnTextureChange += ChangeMeshColor;
         }
 
         public void onSelectionChange(int id)
@@ -137,7 +140,7 @@ namespace DesktopInterface
             {
                 
                 //UIManager.instance.DeactivateSelectionButtons();
-                TrajectoryUIContainer.SetActive(true);
+                //TrajectoryUIContainer.SetActive(true);
 
                 CloudUpdater.instance.DisplayTrajectories();                 
 
@@ -157,7 +160,7 @@ namespace DesktopInterface
             }
             else
             {
-                TrajectoryUIContainer.SetActive(false);
+                //TrajectoryUIContainer.SetActive(false);
 
                 //UIManager.instance.ActivateSelectionButtons();
 
@@ -326,6 +329,22 @@ namespace DesktopInterface
                 ActualizeText();
                 ActualizeSlider();
             }
+        }
+
+        private void ChangeMeshColor(string mapname)
+        {
+            CloudUpdater.instance.SetTrajectoryShaderColor(mapname);
+            //ColorMap map = ColorMapManager.instance.GetColorMap(mapname);
+            //solidparent.transform.GetChild(i).GetComponent<MeshRenderer>();
+            //ColorMap map = ColorMapManager.instance.GetColorMap("jet");
+            //Mrenderer.material.SetColor("_Color", map.texture.GetPixel(Mathf.RoundToInt((float)(ClusterList[i].propertyValue / maxClusterValue) * 255), 1));
+
+        }
+
+        private void OnDisable()
+        {
+            MapLoader.OnTextureChange -= ChangeMeshColor;
+
         }
     }
 }
