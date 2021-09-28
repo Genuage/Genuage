@@ -140,7 +140,7 @@ namespace DesktopInterface
             {
                 
                 //UIManager.instance.DeactivateSelectionButtons();
-                //TrajectoryUIContainer.SetActive(true);
+                TrajectoryUIContainer.SetActive(true);
 
                 CloudUpdater.instance.DisplayTrajectories();                 
 
@@ -160,7 +160,7 @@ namespace DesktopInterface
             }
             else
             {
-                //TrajectoryUIContainer.SetActive(false);
+                TrajectoryUIContainer.SetActive(false);
 
                 //UIManager.instance.ActivateSelectionButtons();
 
@@ -178,6 +178,7 @@ namespace DesktopInterface
                 if (j >= 0)
                 {
                     dragonTail = j;
+                    SetShaderTimeLimit();
                 }
             }
             else
@@ -292,6 +293,8 @@ namespace DesktopInterface
             if (Single.TryParse(animationSpeedDropdown.options[id].text, out float j))
             {
                 incrementSpeed = j;
+                CloudUpdater.instance.ChangeTrajectoryAnimSpeed(j);
+                //CloudData data = 
             }
             else
             {
@@ -308,6 +311,14 @@ namespace DesktopInterface
         public void Play()
         {
             playAnimation = !playAnimation;
+            if(playAnimation == true)
+            {
+                CloudUpdater.instance.PlayTrajectoryAnimation();
+            }
+            else
+            {
+                CloudUpdater.instance.StopTrajectoryAnimation();
+            }
         }
 
 
@@ -320,14 +331,16 @@ namespace DesktopInterface
         {
             if (playAnimation)
             {
+                
                 currentTimeIndex += incrementSpeed*Time.deltaTime;
-                SetShaderTimeLimit();
+                //SetShaderTimeLimit();
                 if (currentTimeIndex > TimeList.Count - 1)
                 {
                     currentTimeIndex = startTime;
                 }
                 ActualizeText();
                 ActualizeSlider();
+                
             }
         }
 

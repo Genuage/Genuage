@@ -74,6 +74,10 @@ namespace Data
         public bool thresholdJobON = false;
 
         private ZMQSynchronizedCommunicator ZMQSyncCom = null;
+
+        //Trajectory Animation Variables
+        private bool TrajectoryAnimationRunning = false;
+        private float TrajectoryAnimationSpeed = 1f;
         private void Start()
         {
             PointSelectionThreadList = new Queue<SelectPointsThreadHandler>();
@@ -1492,6 +1496,24 @@ namespace Data
             **/
         }
 
+        public void PlayTrajectoryAnimation()
+        {
+            CloudData data = LoadCurrentStatus();
+            if (data.trajectoryObject)
+            {
+                TrajectoryAnimationRunning = true;
+            }
+        }
+
+        public void StopTrajectoryAnimation()
+        {
+            CloudData data = LoadCurrentStatus();
+            if (data.trajectoryObject)
+            {
+                TrajectoryAnimationRunning = false;
+            }
+        }
+
         public void SetShaderFrame(float minframe, float maxframe)
         {
             CloudData data = LoadCurrentStatus();
@@ -1539,6 +1561,11 @@ namespace Data
 
                 TrajectoriesRenderer.material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap(colormap_name).texture);
             }
+        }
+
+        public void ChangeTrajectoryAnimSpeed(float i)
+        {
+            TrajectoryAnimationSpeed = i;
         }
         #endregion
 
@@ -1812,6 +1839,25 @@ namespace Data
                 {
                     thresholdJobON = false;
                 }
+            }
+            #endregion
+            #region TrajectoryAnimation
+            if (TrajectoryAnimationRunning)
+            {
+                CloudData data = LoadCurrentStatus();
+                float currentTimeIndex = data.globalMetaData.upperframeLimit;
+                float minTimeIndex = data.globalMetaData.lowerframeLimit;
+                currentTimeIndex += TrajectoryAnimationSpeed * Time.deltaTime;
+                minTimeIndex += TrajectoryAnimationSpeed * Time.deltaTime;
+                if (currentTimeIndex > data.globalMetaData.timeList.Count - 1)
+                {
+                    float difference = currentTimeIndex - minTimeIndex;
+                    currentTimeIndex = 0f;
+                    minTimeIndex = 0f - difference;
+                }
+                SetShaderFrame(minTimeIndex, currentTimeIndex);
+                //data.globalMetaData.lowerframeLimit = minframe;
+
             }
             #endregion
         }
