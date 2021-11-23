@@ -597,9 +597,9 @@ RectTransform:
   m_Father: {fileID: 1478694394621955596}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 81.65, y: -105}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &529337547623163742
@@ -4005,9 +4005,9 @@ RectTransform:
   m_Father: {fileID: 1478694394621955596}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 81.65, y: -45}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6824312400220974903
@@ -4332,7 +4332,6 @@ GameObject:
   - component: {fileID: 8908219306776386232}
   - component: {fileID: 6314598084073387976}
   - component: {fileID: 3280112945480673610}
-  - component: {fileID: 170251054687702490}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -4399,19 +4398,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Del
---- !u!114 &170251054687702490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2859274472220292232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04c5695569ae11b4cbd3c0779e00379a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: {fileID: 0}
 --- !u!1 &2961253109749992689
 GameObject:
   m_ObjectHideFlags: 0
@@ -6033,6 +6019,7 @@ MonoBehaviour:
   _current_colormap_name: autumn
   _colormap_selector: {fileID: 7443585826952061090}
   _colormap_reversed: 0
+  pointColor: 1
 --- !u!1 &4394733126673184975
 GameObject:
   m_ObjectHideFlags: 0
@@ -7592,9 +7579,9 @@ RectTransform:
   m_Father: {fileID: 1478694394621955596}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 81.65, y: -75}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6905984850836208170
@@ -10255,9 +10242,9 @@ RectTransform:
   m_Father: {fileID: 1478694394621955596}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 81.65, y: -15}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3292551790037829064
@@ -11454,7 +11441,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1478694394621955596
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13230,6 +13217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colormapButtonPrefab: {fileID: 3983530977195744100, guid: 116b25789f394374082575367ff1364f,
     type: 3}
+  ColormapDisplay: {fileID: 0}
+  ActivateButtons: 1
 --- !u!1 &9085823877301656061
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,12 +1,9 @@
-﻿  dllmain.cpp
-E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(111,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(112,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(113,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(114,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\dllmain.cpp(117,18): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-     Creating library E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.lib and object E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.exp
+﻿  DiffusionCoef.cpp
+E:\Documents\Genuage\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\DiffusionCoef.cpp(237,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+     Creating library E:\Documents\Genuage\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.lib and object E:\Documents\Genuage\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.exp
   Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 134 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  1 of 134 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  ApparentDiffusion-DLL.vcxproj -> E:\Documents\Genuage\Genuage_Pasteur\genuage\Assets\Resources\Plugins\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.dll
+  ApparentDiffusion-DLL.vcxproj -> E:\Documents\Genuage\Custom DLL Templates\ApparentDiffusion-DLL\ApparentDiffusion-DLL\ApparentDiffusion-DLL\x64\Release\ApparentDiffusion-DLL.dll

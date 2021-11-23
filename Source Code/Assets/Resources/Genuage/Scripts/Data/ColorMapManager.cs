@@ -73,7 +73,9 @@ namespace Data
             ColorMap c7 = GenerateColorMap("hot", new List<Color>() {Color.black, Color.red, Color.yellow, Color.white });
             ColorMap c8 = GenerateColorMap("jet", new List<Color>() {Color.blue, Color.cyan, Color.green, Color.yellow, Color.red});
             ColorMap c9 = GenerateColorMap("hsv", new List<Color>() {Color.red, Color.yellow, Color.green,Color.blue, Color.cyan, Color.magenta, Color.red });
-
+            ColorMap c10 = GenerateColorMap("colorblind_contrast", new List<Color>() { Color.cyan, Color.red});
+            ColorMap c11 = GenerateColorMap("colorblind_contrast_2", new List<Color>() { Color.cyan, new Color(1,0.27f,0) });
+            ColorMap c12 = GenerateColorMap("colorblind_contrast_3", new List<Color>() { new Color(0.5f,0,0.5f), new Color(1, 1, 0) });
 
             colormapDict.Add(c1.name, c1);
             colormapDict.Add(c2.name, c2);
@@ -84,6 +86,11 @@ namespace Data
             colormapDict.Add(c7.name, c7);
             colormapDict.Add(c8.name, c8);
             colormapDict.Add(c9.name, c9);
+            colormapDict.Add(c10.name, c10);
+            colormapDict.Add(c11.name, c11);
+            colormapDict.Add(c12.name, c12);
+
+
         }
 
         private ColorMap GenerateColorMap(string name, List<Color> colors)

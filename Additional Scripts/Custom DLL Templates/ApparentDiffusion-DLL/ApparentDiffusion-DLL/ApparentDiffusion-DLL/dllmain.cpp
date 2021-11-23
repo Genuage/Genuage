@@ -108,10 +108,10 @@ extern "C" DllExport void Execute(int point_number, void* x_coordinates, void* y
 		tracks[idx0 + (tracks.size(0) * 4)] = (double)TimeArray[idx0];
 	}
 
-	float positiontransform = DoubleParametersArray[0];//0.001;
-	float timetransform = DoubleParametersArray[1];//0.02;
-	float timeIncrement = IntParametersArray[1];//20;
-	float dimension = IntParametersArray[2];//6;
+	double positiontransform = (double)0.001;// DoubleParametersArray[0];//0.001;
+	double timetransform = (double)0.02;// DoubleParametersArray[1];//0.02;
+	double timeIncrement = (double)20.0;//IntParametersArray[1];//20;
+	int dimension = 6;// IntParametersArray[2];//6;
 	// Call the entry-point 'DiffusionCoef'.
 	f_coefficient_tmp = DiffusionCoef(tracks, positiontransform, timetransform,
 		timeIncrement, dimension);

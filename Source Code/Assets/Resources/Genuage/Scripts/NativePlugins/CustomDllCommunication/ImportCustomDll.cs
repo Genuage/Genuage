@@ -597,6 +597,7 @@ public unsafe class ImportCustomDll : MonoBehaviour
                             if (!float.IsNaN(Results[i]))
                             {
                                 float res = Results[i];
+                                Debug.Log(Results[i]);
                                 resultstring = resultstring + "result " + i + " : " + res + "\n";
                             }
                         }

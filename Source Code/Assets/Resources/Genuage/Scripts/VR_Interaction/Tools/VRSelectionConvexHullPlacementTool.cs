@@ -134,7 +134,8 @@ namespace VR_Interaction
             GameObject newpoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             newpoint.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
             newpoint.AddComponent<VRObjectConvexHull>();
-
+            //MeshRenderer renderer = newpoint.GetComponent<MeshRenderer>();
+            //renderer.materials[0] = new Material(Shader.Find("Standard"));
             //newpoint.transform.SetParent(container.transform, true);
 
 

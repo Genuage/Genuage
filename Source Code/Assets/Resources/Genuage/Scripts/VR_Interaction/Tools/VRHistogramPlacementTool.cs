@@ -134,6 +134,7 @@ namespace VR_Interaction
                     containersList[selectedContainerID].gameObject.GetComponent<CloudChildHistogram>().id = containersList[selectedContainerID].id;
 
                     containersList[selectedContainerID].gameObject.AddComponent<BoxCollider>();
+                    containersList[selectedContainerID].gameObject.GetComponent<BoxCollider>().size = Vector3.one * 0.01f;
 
                     VRObjectsManager.instance.ContainerCreated(containersList[selectedContainerID].id, containersList[selectedContainerID].gameObject, "Histogram");
 

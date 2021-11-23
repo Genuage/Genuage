@@ -35,6 +35,7 @@ namespace IO
         private DateTime StartTime;
         private DateTime StopTime;
 
+        private HashSet<int> InferredPointsIDSet; //Stores ids of the points already treated by the system.
 
         public static ZMQSynchronizedCommunicator instance = null;
         Button button;
@@ -60,7 +61,7 @@ namespace IO
         public void Activate()
         {
             InferenceModeActive = true;
-            InitiateInferenceMode();
+            ActivateInferenceMode();
         }
 
         public void Deactivate()
@@ -82,21 +83,33 @@ namespace IO
             }
         }
         **/
-        private void InitiateInferenceMode()
+        private void ActivateInferenceMode()
         {
-            CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+            InferredPointsIDSet = new HashSet<int>();
+            if (!CloudSelector.instance.noSelection)
+            {
 
-            CloudUpdater.instance.OnSelectionUpdate += SendData;
-            NullifyPointColors(data);
-            UnityEngine.Debug.Log("Real Time Inference activated");
-            UIManager.instance.ChangeStatusText("Real Time Inference Mode Activated");
-            UIManager.instance.DeactivateSelectionButtons();
+                CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+
+                CloudUpdater.instance.OnSelectionUpdate += SendData;
+                NullifyPointColors(data);
+                UnityEngine.Debug.Log("Real Time Inference activated");
+                UIManager.instance.ChangeStatusText("Real Time Inference Mode Activated");
+                UIManager.instance.DeactivateSelectionButtons();
+
+                if (data.globalMetaData.alphacolumnExists)
+                {
+                    //Fill hashset ??
+                }
+            }
         }
 
         private void DeactivateInferenceMode()
         {
+            InferredPointsIDSet.Clear();
             if (!CloudSelector.instance.noSelection)
             {
+                
                 CloudData data = CloudUpdater.instance.LoadCurrentStatus();
 
                 CloudUpdater.instance.OnSelectionUpdate -= SendData;
@@ -155,7 +168,7 @@ namespace IO
 
         private void SendData()
         {
-            if(receiveSocketON == false)
+            if (receiveSocketON == false && sendSocketON == false)
             {
                 CloudData data = CloudUpdater.instance.LoadCurrentStatus();
                 if (data.globalMetaData.SelectedPointsList.Count > 0)
@@ -194,7 +207,6 @@ namespace IO
             {
                 if (!sendSocket.isRunning)
                 {
-                    sendSocketON = false;
                     UnityEngine.Debug.Log("SENDSOCKET has finished job");
                     sendSocket.StopThread();
                     if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.SUCCESS)
@@ -202,33 +214,33 @@ namespace IO
                         //CloudLoader.instance.LoadFromConnection(thread.dataList);
                         UIManager.instance.ChangeStatusText("Selection data sent !");
                         ReceiveData();
-
                     }
 
-                    if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.TIMEOUT)
+                    else if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.TIMEOUT)
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : Timeout");
                     }
 
-                    if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.INVALID_FORMAT)
+                    else if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.INVALID_FORMAT)
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : Invalid Format");
                     }
 
-                    if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.BYTE_CONVERSION_ERROR)
+                    else if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.BYTE_CONVERSION_ERROR)
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : Can't convert Bytes into floats");
                     }
 
-                    if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.NO_BYTES)
+                    else if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.NO_BYTES)
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : No Bytes were sent");
                     }
 
-                    if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.COLLUMN_SIZE_DISCREPANCY)
+                    else if (sendSocket.receive_status == ThreadCommunicator.ReceiveStatus.COLLUMN_SIZE_DISCREPANCY)
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : All collumns do not have the same size");
                     }
+                    sendSocketON = false;
 
                 }
             }
@@ -236,7 +248,6 @@ namespace IO
             {
                 if (!receiveSocket.isRunning)
                 {
-                    receiveSocketON = false;
                     receiveSocket.StopThread();
                     if (receiveSocket.receive_status == ThreadCommunicator.ReceiveStatus.SUCCESS)
                     {
@@ -270,6 +281,7 @@ namespace IO
                     {
                         ModalWindowManager.instance.CreateModalWindow("ERROR : All collumns do not have the same size");
                     }
+                    receiveSocketON = false;
                 }
             }
         }
@@ -299,16 +311,20 @@ namespace IO
                 {
                     foreach (int j in data.pointTrajectoriesTable[i].pointsIDList)
                     {
-                        ids.Add(j);
-                        xvalues.Add(data.pointDataTable[j].position.x);
-                        yvalues.Add(data.pointDataTable[j].position.y);
-                        zvalues.Add(data.pointDataTable[j].position.z);
-                        colorvalues.Add(data.pointDataTable[j].intensity);
-                        timevalues.Add(data.pointDataTable[j].time);
-                        trajectoryvalues.Add(data.pointDataTable[j].trajectory);
-                        phivalues.Add(data.pointDataTable[j].phi_angle);
-                        thetavalues.Add(data.pointDataTable[j].theta_angle);
-                        sizevalues.Add(data.pointDataTable[j].size);
+                        if (!InferredPointsIDSet.Contains(j))
+                        {
+                            ids.Add(j);
+                            xvalues.Add(data.pointDataTable[j].position.x);
+                            yvalues.Add(data.pointDataTable[j].position.y);
+                            zvalues.Add(data.pointDataTable[j].position.z);
+                            colorvalues.Add(data.pointDataTable[j].intensity);
+                            timevalues.Add(data.pointDataTable[j].time);
+                            trajectoryvalues.Add(data.pointDataTable[j].trajectory);
+                            phivalues.Add(data.pointDataTable[j].phi_angle);
+                            thetavalues.Add(data.pointDataTable[j].theta_angle);
+                            sizevalues.Add(data.pointDataTable[j].size);
+
+                        }
                         //index++;
                     }
                 }
@@ -317,16 +333,20 @@ namespace IO
             {
                 foreach (int i in selectedpointsSet)
                 {
-                    ids.Add(i);
-                    xvalues.Add(data.pointDataTable[i].position.x);
-                    yvalues.Add(data.pointDataTable[i].position.y);
-                    zvalues.Add(data.pointDataTable[i].position.z);
-                    colorvalues.Add(data.pointDataTable[i].intensity);
-                    timevalues.Add(data.pointDataTable[i].time);
-                    trajectoryvalues.Add(data.pointDataTable[i].trajectory);
-                    phivalues.Add(data.pointDataTable[i].phi_angle);
-                    thetavalues.Add(data.pointDataTable[i].theta_angle);
-                    sizevalues.Add(data.pointDataTable[i].size);
+                    if (!InferredPointsIDSet.Contains(i))
+                    {
+
+                        ids.Add(i);
+                        xvalues.Add(data.pointDataTable[i].position.x);
+                        yvalues.Add(data.pointDataTable[i].position.y);
+                        zvalues.Add(data.pointDataTable[i].position.z);
+                        colorvalues.Add(data.pointDataTable[i].intensity);
+                        timevalues.Add(data.pointDataTable[i].time);
+                        trajectoryvalues.Add(data.pointDataTable[i].trajectory);
+                        phivalues.Add(data.pointDataTable[i].phi_angle);
+                        thetavalues.Add(data.pointDataTable[i].theta_angle);
+                        sizevalues.Add(data.pointDataTable[i].size);
+                    }
                 }
             }
             UnityEngine.Debug.Log("selectedtrajs length " + data.globalMetaData.SelectedTrajectories.Count);
@@ -369,10 +389,19 @@ namespace IO
                 CreateAlphaColumn(data, alphacolumn);
             }
 
-            for(int i = 0; i < SelectedAlphaList[0].Length; i++)
+            foreach (int i in InferredPointsIDSet)
+            {
+                alphacolumn[i] = data.columnData[data.globalMetaData.alphacolumnIndex][i];
+
+            }
+
+            for (int i = 0; i < SelectedAlphaList[0].Length; i++)
             {
                 alphacolumn[(int)SelectedAlphaList[0][i]] = SelectedAlphaList[1][i];
+                InferredPointsIDSet.Add((int)SelectedAlphaList[0][i]);
             }
+
+            
             //float[]
             //for(int i = 0; i < SelectedAlphaList.Count; i++)
             //{

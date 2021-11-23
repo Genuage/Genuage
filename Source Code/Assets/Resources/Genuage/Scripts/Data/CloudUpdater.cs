@@ -1743,12 +1743,18 @@ namespace Data
 
         public void SetZMQSyncComDefaultValue(int value)
         {
-            ZMQSyncCom.ChangeDefaultAlphaValue(value);
+            if (ZMQSyncCom != null)
+            {
+                ZMQSyncCom.ChangeDefaultAlphaValue(value);
+            }
         }
 
         public void SwitchZMQSyncComDefaultMode(bool value)
         {
-            ZMQSyncCom.SwitchTrajectoryParameter(value);
+            if (ZMQSyncCom != null)
+            {
+                ZMQSyncCom.SwitchTrajectoryParameter(value);
+            }
         }
 
         #endregion

@@ -111,6 +111,7 @@ namespace VR_Interaction
             {
                 containersList[selectedContainerID].transform.position = sphere.transform.position;
                 containersList[selectedContainerID].gameObject.AddComponent<BoxCollider>();
+                containersList[selectedContainerID].gameObject.GetComponent<BoxCollider>().size = Vector3.one * 0.01f;
                 containersList[selectedContainerID].gameObject.AddComponent<CloudChildCounter>();
                 containersList[selectedContainerID].gameObject.GetComponent<CloudChildCounter>().id = containersList[selectedContainerID].id;
                 VRObjectsManager.instance.ContainerCreated(containersList[selectedContainerID].id, containersList[selectedContainerID].gameObject, "Counter");

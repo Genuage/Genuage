@@ -80,7 +80,8 @@ dr2=0;
                 a = polyfit(delta_t,y_MSD,1);
                 %Y=a.p1*delta_t+a.p2;
     %calculate Diffusion coefficient from the slope and change unit to um^2/s
-    %D_coef=10^-6*a.p1/(c*dt*10^-3); 
+    %D_coef=10^-6*a.p1/(c*dt*10^-3);
+    a(1)
     D_coef=double(10^-6*a(1)/(c*dt*10^-3)); 
 
     if D_coef<0 

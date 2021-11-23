@@ -220,6 +220,7 @@ double DiffusionCoef(coder::array<double, 2U> &tracks, double f_position,
     b_MSD[i1] = MSD[(i2 + i1) + MSD.size(0)];
   }
   a = std::round(static_cast<double>(c) * dt);
+  /*
   if (a < 2.147483648E+9) {
     if (a >= -2.147483648E+9) {
       i1 = static_cast<int>(a);
@@ -231,9 +232,11 @@ double DiffusionCoef(coder::array<double, 2U> &tracks, double f_position,
   } else {
     i1 = 0;
   }
+  */
   coder::polyfit(ind, b_MSD, dv);
-  delta_t_max =
-      std::round(1.0E-6 * dv[0] / std::round(static_cast<double>(i1) * 0.001));
+  float temp_coeff= (1.0E-6 * dv[0]) / (a * 0.001);
+      //std::round(1.0E-6 * dv[0] / std::round(static_cast<double>(i1) * 0.001));
+  /*
   if (delta_t_max < 2.147483648E+9) {
     if (delta_t_max >= -2.147483648E+9) {
       i1 = static_cast<int>(delta_t_max);
@@ -245,7 +248,8 @@ double DiffusionCoef(coder::array<double, 2U> &tracks, double f_position,
   } else {
     i1 = 0;
   }
-  D_coef = i1;
+  */
+  D_coef = temp_coeff;
   ind.set_size(loop_ub);
   for (i1 = 0; i1 < loop_ub; i1++) {
     ind[i1] = MSD[i + i1];
