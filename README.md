@@ -15,3 +15,5 @@ The compiled version of the software is a standalone launcher, simply copy the f
 
 INSTRUCTIONS FOR USE
 To use the provided datasets select the Load from File option in the loading menu and select the data files.
+
+The source code was made with Unity version 2018.4.28, newer or older versions may not work properly.
