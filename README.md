@@ -2,7 +2,7 @@
 
 SYSTEM REQUIREMENTS
 CPU : Quad Core or better
-GPU : Nvidia Geforce 1050Ti or better (tested on GTX1050Ti, GTX1070m, GTX1080Ti and RTX2080)
+GPU : Nvidia Geforce 1050Ti or better (tested on GTX1050Ti, GTX1070m, GTX1080Ti, RTX2070 and RTX2080), integrated graphics cards are not supported
 RAM : 8Gb - 16Gb
 OS : Windows 10
 VR Hardware : HTC Vive / Valve Index with Vive controllers or Oculus Rift /Rift S with Oculus Touch controllers (Other headsets may work for visualization purposes)
