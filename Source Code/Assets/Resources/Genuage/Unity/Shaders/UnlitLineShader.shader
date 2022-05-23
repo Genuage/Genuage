@@ -124,7 +124,6 @@ Shader "Genuage/UnlitLineShader"
 				if (dis < 0) {
 					discard;
 				}
-
 				#endif
 
 
@@ -142,7 +141,6 @@ Shader "Genuage/UnlitLineShader"
 				
 				#if defined(COLOR_OVERRIDE)
 				color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
-
 				#endif
 
 				return color;

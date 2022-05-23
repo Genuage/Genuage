@@ -100,8 +100,8 @@ namespace IO
 		public string ffmpath;
 		private int screenWidth;
 		private int screenHeight;
-		private bool threadIsProcessing;
-		private bool terminateThreadWhenDone;
+		private bool recordingthreadIsProcessing;
+		private bool framesavingprocessfinished;
 		public bool isVideoReady = false;
 		public string DisplayText;
 
@@ -144,12 +144,14 @@ namespace IO
 			lastFrameTime = Time.time;
 
 			// Kill the encoder thread if running from a previous execution
-			if (encoderThread != null && (threadIsProcessing || encoderThread.IsAlive))
+			if (encoderThread != null && (recordingthreadIsProcessing || encoderThread.IsAlive))
 			{
-				threadIsProcessing = false;
+				recordingthreadIsProcessing = false;
 				encoderThread.Join();
 			}
-
+			isVideoReady = false;
+			framesavingprocessfinished = false;
+			recordingthreadIsProcessing = false;
 			// Start a new encoder thread
 			//threadIsProcessing = true;
 			//encoderThread = new Thread(EncodeAndSave);
@@ -159,10 +161,11 @@ namespace IO
 
 		public void ActivateRecording()
 		{
-			ScriptRunning = true;
-			threadIsProcessing = true;
-			encoderThread = new Thread(EncodeAndSave);
-			encoderThread.Start();
+			//ScriptRunning = true;
+			EncodeAndSave();
+			//threadIsProcessing = true;
+			//encoderThread = new Thread(EncodeAndSave);
+			//encoderThread.Start();
 
 		}
 
@@ -179,7 +182,7 @@ namespace IO
 			Application.targetFrameRate = -1;
 
 			// Inform thread to terminate when finished processing frames
-			terminateThreadWhenDone = true;
+			framesavingprocessfinished = true;
 
 		}
 
@@ -193,7 +196,7 @@ namespace IO
 					//Check if render target size has changed, if so, terminate
 					if (source.width != screenWidth || source.height != screenHeight)
 					{
-						threadIsProcessing = false;
+						recordingthreadIsProcessing = false;
 						this.enabled = false;
 						throw new UnityException("ScreenRecorder render target size has changed!");
 					}
@@ -234,7 +237,7 @@ namespace IO
 
 					//box.enabled = true;
 					// Inform thread to terminate when finished processing frames
-					terminateThreadWhenDone = true;
+					framesavingprocessfinished = true;
 					// Disable script
 					//this.enabled = false;
 				}
@@ -244,18 +247,32 @@ namespace IO
 		}
 		private void Update()
 		{
-			if (threadIsProcessing)
+			if (recordingthreadIsProcessing)
 			{
 
 				UIManager.instance.ChangeStatusText(DisplayText);
 
 			}
+			else if (isVideoReady == true)
+            {
+				encoderThread.Join();
+				recordingthreadIsProcessing = false;
+				SendRecordingEndEvent();
+			}
 		}
 		public void EncodeAndSave()
 		{
 			print("SCREENRECORDER IO THREAD STARTED");
+			ScriptRunning = true;
+			recordingthreadIsProcessing = true;
+			encoderThread = new Thread(ThreadProcess);
+			encoderThread.Start();
+			
+		}
 
-			while (threadIsProcessing)
+		private void ThreadProcess()
+        {
+			while (recordingthreadIsProcessing)
 			{
 				if (frameQueue.Count > 0)
 				{
@@ -279,7 +296,7 @@ namespace IO
 				}
 				else
 				{
-					if (terminateThreadWhenDone)
+					if (framesavingprocessfinished)
 					{
 						break;
 					}
@@ -289,9 +306,9 @@ namespace IO
 			}
 
 
-			terminateThreadWhenDone = false;
-			threadIsProcessing = false;
-			isVideoReady = true;
+			framesavingprocessfinished = false;
+			recordingthreadIsProcessing = false;
+			isVideoReady = false;
 
 			UnityEngine.Debug.Log("SCREENRECORDER IO THREAD FINISHED");
 			DateTime now = DateTime.Now;
@@ -320,8 +337,9 @@ namespace IO
 			{
 				File.Delete(frame);
 			}
-			SendRecordingEndEvent();
+			isVideoReady = true;
 		}
+
 		public delegate void OnRecordingEndEvent();
 		public event OnRecordingEndEvent OnRecordingEnd;
 

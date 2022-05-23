@@ -13,12 +13,12 @@ namespace DesktopInterface
     {
         private float XRange;
 
-        private void Start()
+        private void Awake()
         {
             slider = this.GetComponent<Slider>();
             CloudSelector.instance.OnSelectionChange += UpdateRange;
             CloudUpdater.instance.OnCloudReloaded += UpdateRange;
-            UpdateRange(0);
+            //UpdateRange(0);
             InitializeSliderEvent();
         }
         /**
@@ -36,7 +36,7 @@ namespace DesktopInterface
             {
                 CloudData data = CloudUpdater.instance.LoadCurrentStatus();
                 XRange = data.globalMetaData.xMax - data.globalMetaData.xMin;
-                slider.minValue = XRange / 500;
+                slider.minValue = XRange / 10;
                 slider.maxValue = XRange;
                 slider.value = data.globalMetaData.ScaleBarDistanceX;
                 Execute(slider.value);

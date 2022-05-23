@@ -218,33 +218,36 @@ public class CloudBox : MonoBehaviour
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
 
-
-                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
                 {
-                    //GameObject container = new GameObject();
-                    //container.transform.SetParent(_box.transform);
-                    GameObject text_object = new GameObject("Text");
-                    //text_object.transform.position = endvector;
-                    
-                    text_object.transform.localScale = Vector3.one * 0.015f;
-                    text_object.transform.SetParent(_box.transform, true);
-                    text_object.transform.localPosition = new Vector3(newpointVector.x,
-                                                                 -0.55f,
-                                                                 -0.5f);
-                    text_object.AddComponent<MeshRenderer>();
-                    text_object.AddComponent<TextMesh>();
-                    float mark = TotalValue;
-                    float roundedmark = Mathf.Round(mark);
-                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                    text_object.GetComponent<TextMesh>().color = Color.white;
 
-                    text_object.AddComponent<StaringLabel>();
-                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                    {
+                        //GameObject container = new GameObject();
+                        //container.transform.SetParent(_box.transform);
+                        GameObject text_object = new GameObject("Text");
+                        //text_object.transform.position = endvector;
 
-                    TextList.Add(text_object);
+                        text_object.transform.localScale = Vector3.one * 0.015f;
+                        text_object.transform.SetParent(_box.transform, true);
+                        text_object.transform.localPosition = new Vector3(newpointVector.x,
+                                                                     -0.55f,
+                                                                     -0.5f);
+                        text_object.AddComponent<MeshRenderer>();
+                        text_object.AddComponent<TextMesh>();
+                        float mark = TotalValue;
+                        float roundedmark = Mathf.Round(mark);
+                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                        text_object.GetComponent<TextMesh>().color = Color.white;
+
+                        text_object.AddComponent<StaringLabel>();
+                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+
+                        TextList.Add(text_object);
+                    }
+
                 }
-
                 TotalValue += GraduationDistanceX;
 
             }
@@ -284,29 +287,32 @@ public class CloudBox : MonoBehaviour
                 {
                     endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
                 }
-
-                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
                 {
-                    //GameObject container = new GameObject();
-                    //container.transform.SetParent(_box.transform);
-                    GameObject text_object = new GameObject("Text");
-                    //text_object.transform.position = endvector;
-                    text_object.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
-                    text_object.transform.SetParent(_box.transform, true);
-                    text_object.transform.localPosition = new Vector3(-0.55f ,
-                                                                 newpointVector.y ,
-                                                                 -0.5f);
-                    text_object.AddComponent<MeshRenderer>();
-                    text_object.AddComponent<TextMesh>();
-                    float mark = TotalValue;
-                    float roundedmark = Mathf.Round(mark);
-                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                    text_object.GetComponent<TextMesh>().color = Color.white;
+                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                    {
+                        //GameObject container = new GameObject();
+                        //container.transform.SetParent(_box.transform);
+                        GameObject text_object = new GameObject("Text");
+                        //text_object.transform.position = endvector;
+                        text_object.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
+                        text_object.transform.SetParent(_box.transform, true);
+                        text_object.transform.localPosition = new Vector3(-0.55f,
+                                                                     newpointVector.y,
+                                                                     -0.5f);
+                        text_object.AddComponent<MeshRenderer>();
+                        text_object.AddComponent<TextMesh>();
+                        float mark = TotalValue;
+                        float roundedmark = Mathf.Round(mark);
+                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                        text_object.GetComponent<TextMesh>().color = Color.white;
 
-                    text_object.AddComponent<StaringLabel>();
-                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
-                    TextList.Add(text_object);
+                        text_object.AddComponent<StaringLabel>();
+                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                        TextList.Add(text_object);
+                    }
+
                 }
 
                 //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
@@ -326,8 +332,8 @@ public class CloudBox : MonoBehaviour
                 }
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
-                TotalValue += GraduationDistanceY;
 
+                TotalValue += GraduationDistanceY;
 
             }
             TotalValue = 0;
@@ -368,30 +374,34 @@ public class CloudBox : MonoBehaviour
                 verts.Add(endvector);
                 lines.Add(verts.Count - 1);
 
-                if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
                 {
-                    //GameObject container = new GameObject();
-                    //container.transform.SetParent(_box.transform);
-                    GameObject text_object = new GameObject("Text");
-                    //text_object.transform.position = endvector;
-                    text_object.transform.localScale = Vector3.one * 0.015f;
-                    text_object.transform.SetParent(_box.transform, true);
-                    text_object.transform.localPosition = new Vector3(-0.55f ,
-                                             -0.5f ,
-                                             newpointVector.z );
 
-                    text_object.AddComponent<MeshRenderer>();
-                    text_object.AddComponent<TextMesh>();
-                    float mark = TotalValue;
-                    float roundedmark = Mathf.Round(mark);
-                    text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                    text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                    text_object.GetComponent<TextMesh>().color = Color.white;
+                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                    {
+                        //GameObject container = new GameObject();
+                        //container.transform.SetParent(_box.transform);
+                        GameObject text_object = new GameObject("Text");
+                        //text_object.transform.position = endvector;
+                        text_object.transform.localScale = Vector3.one * 0.015f;
+                        text_object.transform.SetParent(_box.transform, true);
+                        text_object.transform.localPosition = new Vector3(-0.55f,
+                                                 -0.5f,
+                                                 newpointVector.z);
 
-                    text_object.AddComponent<StaringLabel>();
+                        text_object.AddComponent<MeshRenderer>();
+                        text_object.AddComponent<TextMesh>();
+                        float mark = TotalValue;
+                        float roundedmark = Mathf.Round(mark);
+                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                        text_object.GetComponent<TextMesh>().color = Color.white;
 
-                    text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
-                    TextList.Add(text_object);
+                        text_object.AddComponent<StaringLabel>();
+
+                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                        TextList.Add(text_object);
+                    }
                 }
 
                 //newline

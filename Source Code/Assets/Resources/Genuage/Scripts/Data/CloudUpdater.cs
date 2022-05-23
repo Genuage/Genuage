@@ -266,8 +266,7 @@ namespace Data
         public void OverrideBoxScale(Vector3 new_scale)
         {
             CloudData currcloud = LoadCurrentStatus();
-            Transform box = currcloud.transform.parent.GetChild(1);
-            //box.localScale = new_scale;
+
             currcloud.globalMetaData.box_scale = new_scale;
         }
 
@@ -357,8 +356,10 @@ namespace Data
             }
             currentCloud.globalMetaData.colormapReversed = reverse;
             
-            
-            OnColorMapChange(newMapName);
+            if(OnColorMapChange != null)
+            {
+                OnColorMapChange(newMapName);
+            }
             //Debug.Log("eventcheck");
             currentCloud.globalMetaData.colormapName = newMapName;
             
@@ -1469,9 +1470,9 @@ namespace Data
             trajectorymesh.uv4 = TrajectoryUV3List.ToArray(); 
             //data.gameObject.GetComponent<MeshFilter>().mesh = trajectorymesh;
 
-            Material trajectorymaterial = new Material(Shader.Find("Genuage/UnlitLineShader"));
+            Material trajectorymaterial = new Material(Shader.Find("Genuage/ThickLineShader"));
             trajectorymaterial.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("jet").texture);
-
+            trajectorymaterial.SetFloat("_Thickness", 0.0005f);
             GameObject trajectorychild = new GameObject();
             trajectorychild.transform.SetParent(data.transform, false);
             trajectorychild.AddComponent<MeshFilter>();
@@ -1563,7 +1564,21 @@ namespace Data
             }
         }
 
-        public void ChangeTrajectoryAnimSpeed(float i)
+        public void ChangeTrajectorySegmentSize(float value)
+        {
+            CloudData data = LoadCurrentStatus();
+
+            if (data.trajectoryObject)
+            {
+                MeshRenderer TrajectoriesRenderer = data.trajectoryObject.GetComponent<MeshRenderer>();
+                //MeshRenderer PointsRenderer = data.GetComponent<MeshRenderer>();
+
+                TrajectoriesRenderer.material.SetFloat("_Thickness", value*0.2f);
+
+            }
+        }
+
+            public void ChangeTrajectoryAnimSpeed(float i)
         {
             TrajectoryAnimationSpeed = i;
         }

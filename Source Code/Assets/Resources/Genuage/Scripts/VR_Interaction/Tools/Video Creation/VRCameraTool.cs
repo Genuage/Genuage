@@ -45,8 +45,8 @@ namespace VR_Interaction
         public int Time;
         public int IndexKey;
         public GameObject obj = null;
-        //public Vector3 Position;
-        //public Quaternion Rotation;
+        public Vector3 Position;
+        public Quaternion Rotation;
         //Vector3 Scale;
         public CameraWaypoint(int id, int time)
         {

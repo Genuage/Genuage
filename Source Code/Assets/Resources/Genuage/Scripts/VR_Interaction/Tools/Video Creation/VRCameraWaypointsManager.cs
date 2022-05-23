@@ -1,5 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using Data;
 using VR_Interaction;
@@ -82,6 +86,7 @@ public class VRCameraWaypointsManager : MonoBehaviour
         UIMenu.OnAddCloudState += AddCloudState;
         UIMenu.OnWaypointDeleted += DeleteWaypoint;
         UIMenu.OnCloudStateDeleted += RemoveCloudState;
+        UIMenu.OnSaveTextFile += SaveTextFile;
 
     }
 
@@ -182,7 +187,10 @@ public class VRCameraWaypointsManager : MonoBehaviour
         {
             TimeToAssign = WaypointMasterID * KeyFrameTimestep;
         }
+        
         CameraWaypoint campoint = new CameraWaypoint(WaypointMasterID, Mathf.RoundToInt(TimeToAssign));
+        //campoint.Position = data.transform.worldToLocalMatrix.MultiplyPoint3x4(s.transform.position);
+        //campoint.Rotation = s.transform.localRotation * data.transform.rotation;
         campoint.obj = s;
         int indexkey;
         indexkey = animationScript.AddKeyframe(s.transform, campoint.Time);
@@ -494,6 +502,40 @@ public class VRCameraWaypointsManager : MonoBehaviour
 
     }
     #endregion
+
+    private void SaveTextFile()
+    {
+        CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+        data.transform.parent.gameObject.GetComponent<CloudObjectRefference>().box.transform.position = Vector3.zero;
+        data.transform.parent.gameObject.GetComponent<CloudObjectRefference>().box.transform.eulerAngles = Vector3.zero;
+        data.transform.position = Vector3.zero;
+        data.transform.eulerAngles = Vector3.zero;
+
+
+        DateTime now = DateTime.Now;
+        string outputname = " _"+ now.Year.ToString()+"_" + now.Month.ToString() + "_" + now.Day.ToString() + "_" + now.Hour.ToString() + "_" + now.Minute.ToString();
+
+        string filename = "NewVideoText"+ outputname+".txt";
+        string datapath = Application.dataPath + "/Records/VideoScripts/" + filename;
+        using (StreamWriter sw = File.AppendText(datapath))
+        {
+            for (int i = 0; i <= WaypointMasterID;i++)
+            {
+                if (CameraWaypointsDict.ContainsKey(i))
+                {
+                    CameraWaypoint cw = CameraWaypointsDict[i];
+                    cw.Position = cw.obj.transform.position;
+                    cw.Rotation = cw.obj.transform.rotation;
+                    sw.WriteLine("WAYPOINT|POS="+ cw.Position.x.ToString(CultureInfo.InvariantCulture) + ","+ cw.Position.y.ToString(CultureInfo.InvariantCulture) + "," + cw.Position.z.ToString(CultureInfo.InvariantCulture) +
+                                 ";ROT="+ cw.Rotation.eulerAngles.x.ToString(CultureInfo.InvariantCulture) + ","+ cw.Rotation.eulerAngles.y.ToString(CultureInfo.InvariantCulture) + "," + 
+                                 cw.Rotation.eulerAngles.z.ToString(CultureInfo.InvariantCulture) + ";TIME="+cw.Time.ToString(CultureInfo.InvariantCulture));
+
+                }
+            }
+            sw.Close();
+        }
+        ModalWindowManager.instance.CreateModalWindow("Text File "+ filename + " has been saved in the Records Folder");
+    }
 
     public void OnDisabled()
     {

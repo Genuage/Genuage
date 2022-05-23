@@ -10,12 +10,12 @@ namespace DesktopInterface
     {
         private float YRange;
 
-        private void Start()
+        private void Awake()
         {
             slider = this.GetComponent<Slider>();
             CloudSelector.instance.OnSelectionChange += UpdateRange;
             CloudUpdater.instance.OnCloudReloaded += UpdateRange;
-            UpdateRange(0);
+            //UpdateRange(0);
             InitializeSliderEvent();
 
         }
@@ -24,7 +24,7 @@ namespace DesktopInterface
         {
             CloudData data = CloudUpdater.instance.LoadCurrentStatus();
             YRange = data.globalMetaData.yMax - data.globalMetaData.yMin;
-            slider.minValue = YRange / 500;
+            slider.minValue = YRange / 10;
             slider.maxValue = YRange;
             slider.value = data.globalMetaData.ScaleBarDistanceY;
             

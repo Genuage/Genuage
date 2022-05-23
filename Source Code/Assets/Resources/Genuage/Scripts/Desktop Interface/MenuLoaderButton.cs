@@ -86,7 +86,7 @@ namespace DesktopInterface
         /// <summary>
         /// Init button listener
         /// </summary>
-        public void Start()
+        public void Awake()
         {
             button = GetComponent<Button>();
             initializeClickEvent();

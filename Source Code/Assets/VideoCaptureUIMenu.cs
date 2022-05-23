@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,8 @@ namespace VR_Interaction
         public Button RecordButton;
         public bool AutomaticModeOn = true;
         public int defaultTransitionTime = 5;
+
+        public Button SaveTextButton;
         private void Awake()
         {
             WaypointTimingButtonList = new Dictionary<int, VideoCaptureTimeButton>();
@@ -38,7 +41,10 @@ namespace VR_Interaction
             ApplyTimingChangesButton.interactable = false;
             RecordButton.onClick.AddListener(LaunchRecordingEvent);
             NewCloudStateButton.onClick.AddListener(LaunchAddCloudStateEvent);
-
+            if (SaveTextButton)
+            {
+                SaveTextButton.onClick.AddListener(SaveTextFile);
+            }
             if (CloseButton)
             {
                 CloseButton.onClick.AddListener(DeleteSelf);
@@ -75,6 +81,19 @@ namespace VR_Interaction
                 OnRecordStart();
             }
         }
+
+        public delegate void OnSaveTextFileEvent();
+        public event OnSaveTextFileEvent OnSaveTextFile;
+
+
+        private void SaveTextFile()
+        {
+            if (OnSaveTextFile != null)
+            {
+                OnSaveTextFile();
+            }
+        }
+
         private void CheckToggle(bool value)
         {
             if(value == true)

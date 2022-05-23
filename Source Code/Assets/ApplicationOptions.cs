@@ -15,6 +15,7 @@ public class ApplicationOptions : MonoBehaviour
     private float VRCullingDistance = VRDEFAULTCULLINGDISTANCE;
     //private AngleUnit DefaultAngleUnit = AngleUnit.DEGREES;
     private bool BoxGraduationActivated = true;
+    private bool BoxGraduationNumbersActivated = true;
     private int BoxGraduationNumber = 10; //number of ticks on each dimensions
     private float BoxGraduationLength = 0.01f; //Length of those ticks
     
@@ -54,6 +55,11 @@ public class ApplicationOptions : MonoBehaviour
         return BoxGraduationActivated;
     }
 
+    public bool GetGraduationNumbersActivated()
+    {
+        return BoxGraduationNumbersActivated;
+    }
+
     public void UpdateOptions(float vrcullingDistance)
     {
         UpdateVRCullingDistance(vrcullingDistance);
@@ -79,4 +85,15 @@ public class ApplicationOptions : MonoBehaviour
         CloudUpdater.instance.ReloadAllBoxes();
     }
     
+    public void UpdateBoxGraduationActivation ( bool activation)
+    {
+        BoxGraduationActivated = activation;
+        CloudUpdater.instance.ReloadAllBoxes();
+    }
+    public void UpdateBoxGraduationNumbersActivation(bool activation)
+    {
+        BoxGraduationNumbersActivated = activation;
+        CloudUpdater.instance.ReloadAllBoxes();
+    }
+
 }

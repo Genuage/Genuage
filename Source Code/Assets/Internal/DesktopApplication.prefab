@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraManagerPrefab: {fileID: 1249922692416848203, guid: e0b08aaef6766ae479355b2bba5edf12,
     type: 3}
-  CanvasPrefab: {fileID: 6113921263162520268, guid: 4f34cf63f27ebac4f8a97173102ddafc,
+  CanvasPrefab: {fileID: 6949007177254809542, guid: ed444efb776a1d54bb2067948a6edef9,
     type: 3}
   CloudLoaderPrefab: {fileID: 1975889528307398786, guid: 405573758962ae542a764bd1c4742463,
     type: 3}

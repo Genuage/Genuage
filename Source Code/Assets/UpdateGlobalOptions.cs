@@ -7,8 +7,10 @@ using UnityEngine.UI;
 public class UpdateGlobalOptions : MonoBehaviour
 {
     public Slider VRNearClippingPlaneSlider;
+    public Toggle GraduationToggle;
+    public Toggle GraduationNumbersToggle;
     //public Slider BoxGraduationNumberSlider;
-    //public Slider BoxGraduationLengthSlider;
+    public Slider BoxGraduationLengthSlider;
     //public Dropdown AngleUnitsDropdown;
     public void UpdateOptionsUI()
     {
@@ -19,6 +21,10 @@ public class UpdateGlobalOptions : MonoBehaviour
     public void UpdateOptions()
     {
         ApplicationOptions.instance.UpdateOptions(VRNearClippingPlaneSlider.value);
+        ApplicationOptions.instance.UpdateBoxGraduationActivation(GraduationToggle.isOn);
+        ApplicationOptions.instance.UpdateBoxGraduationNumbersActivation(GraduationNumbersToggle.isOn);
+        ApplicationOptions.instance.UpdateBoxGraduationLength(BoxGraduationLengthSlider.value);
+
     }
 
     private void OnDisable()
