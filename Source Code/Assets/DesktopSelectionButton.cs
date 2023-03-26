@@ -19,7 +19,7 @@ namespace DesktopInterface
         Vector3 FinalMousePosition;
         GameObject MeshObject;
         CloudData data;
-
+        public bool SelectOneTrajectory = false;
         public Button ExportButton;
 
         private void Awake()
@@ -27,6 +27,11 @@ namespace DesktopInterface
             button = GetComponent<Button>();
             initializeClickEvent();
             ExportButton.onClick.AddListener(ExportButtonClicked);
+        }
+
+        public void ToggleTrajectorySelection()
+        {
+            SelectOneTrajectory = !SelectOneTrajectory;
         }
 
         public void ExportButtonClicked()
@@ -124,16 +129,45 @@ namespace DesktopInterface
                     float MaxY = Mathf.Max(LocalVertex2.y, LocalVertex0.y);
                     float MinY = Mathf.Min(LocalVertex2.y, LocalVertex0.y);
 
-                    foreach (var kvp in data.pointDataTable)
+                    if (SelectOneTrajectory == true)
                     {
-                        Vector3 localpos = kvp.Value.normed_position;
-                        if (localpos.x >= MinX && localpos.x <= MaxX && localpos.y >= MinY && localpos.y <= MaxY 
-                            && data.pointMetaDataTable[kvp.Key].isHidden == false)
+                        bool finished = false;
+                        foreach (var kvp in data.pointDataTable)
                         {
-                            data.globalMetaData.FreeSelectionIDList.Add(kvp.Key);
-
+                            Vector3 localpos = kvp.Value.normed_position;
+                            if (localpos.x >= MinX && localpos.x <= MaxX && localpos.y >= MinY && localpos.y <= MaxY
+                                && data.pointMetaDataTable[kvp.Key].isHidden == false && kvp.Value.frame <= data.globalMetaData.upperframeLimit
+                                && kvp.Value.frame >= data.globalMetaData.lowerframeLimit && finished == false)
+                            {
+                                List<int> pointList = data.pointTrajectoriesTable[kvp.Value.trajectory].pointsIDList;
+                                Debug.Log("PointList Count " + pointList.Count);
+                                data.globalMetaData.FreeSelectionIDList.Clear();
+                                foreach (int id in pointList)
+                                {
+                                    data.globalMetaData.FreeSelectionIDList.Add(id);
+                                }
+                                finished = true;
+                                Debug.Log("Free Selection Count " + data.globalMetaData.FreeSelectionIDList.Count);
+                            }
                         }
                     }
+                    else
+                    {
+                        foreach (var kvp in data.pointDataTable)
+                        {
+                            Vector3 localpos = kvp.Value.normed_position;
+                            if (localpos.x >= MinX && localpos.x <= MaxX && localpos.y >= MinY && localpos.y <= MaxY
+                                && data.pointMetaDataTable[kvp.Key].isHidden == false)
+                            {
+                                data.globalMetaData.FreeSelectionIDList.Add(kvp.Key);
+
+                            }
+
+                        }
+                        Debug.Log("Free Selection Count " + data.globalMetaData.FreeSelectionIDList.Count);
+
+                    }
+
                     MeshObject.GetComponent<MeshFilter>().mesh = null;
                     CloudUpdater.instance.UpdatePointSelection();
                     //Find last mouse position and calculate the area selected
@@ -184,6 +218,8 @@ namespace DesktopInterface
 
                         }
                     }
+                    Debug.Log("Free Selection Count" + data.globalMetaData.FreeSelectionIDList.Count);
+
                     CloudUpdater.instance.UpdatePointSelection();
                     MeshObject.GetComponent<MeshFilter>().mesh = null;
 

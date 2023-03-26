@@ -38,5 +38,6 @@ using UnityEngine.UI;
 public class ModalWindow : MonoBehaviour
 {
     public Text text;
-    public Button button;
+    public Button closebutton;
+    public Button exportbutton;
 }

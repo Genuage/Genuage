@@ -93,7 +93,7 @@ Shader "Genuage/ThickLineShader"
                 v2g o;
                 //o.vertex = UnityObjectToClipPos(v.vertex);
                 o.vertex = v.vertex;
-                o.normal = v.vertex;
+                o.normal = v.normal;
                 o.uv1 = v.uv1;
                 o.uv2 = v.uv2;
                 o.uv3 = v.uv3;
@@ -104,48 +104,52 @@ Shader "Genuage/ThickLineShader"
             [maxvertexcount(4)]
             void geo(line v2g v[2], inout TriangleStream<g2f> ts)
             {
-                /*
+                
                 float4 p1 = v[0].vertex;
                 float4 p2 = v[1].vertex;
+                //p1 = UnityObjectToClipPos(v[0].vertex);
+                //p2 = UnityObjectToClipPos(v[1].vertex);
 
-                //float2 dir = normalize(p2.xy - p1.xy);
-                float2 direction = normalize((p2.xy / p2.w) - (p1.xy / p1.w));
-                float2 normal = float2(-direction.y, direction.x);
+                float3 linedirection = normalize(p2-p1);
+                float3 cameradirection = normalize(_WorldSpaceCameraPos - p1);
+                float3 orthogonalvector = cross(linedirection, cameradirection);
 
-                float4 offset1 = float4(normal * p1.w * _Thickness / 2.0f, 0, 0);
-                float4 offset2 = float4(normal * p2.w * _Thickness / 2.0f, 0, 0);
+
+                float4 offset = float4((_Thickness/100) * orthogonalvector, 1);
+                //offset.x *= _ScreenParams.y / _ScreenParams.x;
+
                 //offset1.x *= _ScreenParams.y / _ScreenParams.x;
                 //offset2.x *= _ScreenParams.y / _ScreenParams.x;
 
                 
-                float4 o1 = p1 + offset1;
-                float4 o2 = p1 - offset1;
-                float4 o3 = p2 + offset2;
-                float4 o4 = p2 - offset2;
+                float4 o1 = p1 + offset;
+                float4 o2 = p1 - offset;
+                float4 o3 = p2 + offset;
+                float4 o4 = p2 - offset;
 
 
                 g2f g[4];
 
                 g[0].vertex = UnityObjectToClipPos(o1);
-                g[0].normal = v[0].vertex;
+                g[0].normal = v[0].normal;
                 g[0].uv1 = v[0].uv1;
                 g[0].uv2 = v[0].uv2;
                 g[0].uv3 = v[0].uv3;
 
                 g[1].vertex = UnityObjectToClipPos(o2);
-                g[1].normal = v[0].vertex;
+                g[1].normal = v[0].normal;
                 g[1].uv1 = v[0].uv1;
                 g[1].uv2 = v[0].uv2;
                 g[1].uv3 = v[0].uv3;
 
                 g[2].vertex = UnityObjectToClipPos(o3);
-                g[2].normal = v[1].vertex;
+                g[2].normal = v[1].normal;
                 g[2].uv1 = v[1].uv1;
                 g[2].uv2 = v[1].uv2;
                 g[2].uv3 = v[1].uv3;
 
                 g[3].vertex = UnityObjectToClipPos(o4);
-                g[3].normal = v[1].vertex;
+                g[3].normal = v[1].normal;
                 g[3].uv1 = v[1].uv1;
                 g[3].uv2 = v[1].uv2;
                 g[3].uv3 = v[1].uv3;
@@ -154,19 +158,20 @@ Shader "Genuage/ThickLineShader"
                 ts.Append(g[1]);
                 ts.Append(g[2]);
                 ts.Append(g[3]);
-                */
                 
+                /*
                 float4 p1 = UnityObjectToClipPos(v[0].vertex);
                 float4 p2 = UnityObjectToClipPos(v[1].vertex);
 
                 //float2 dir = normalize(p2.xy - p1.xy);
+
                 float2 direction = normalize((p2.xy / p2.z) - (p1.xy / p1.z));
                 float2 normal = float2(-direction.y, direction.x);
 
-                float4 offset1 = float4(normal * p1.z * _Thickness / 2.0f, 0, 0);
-                float4 offset2 = float4(normal * p2.z * _Thickness / 2.0f, 0, 0);
-                //offset1.x *= _ScreenParams.y / _ScreenParams.x;
-                //offset2.x *= _ScreenParams.y / _ScreenParams.x;
+                float4 offset1 = float4(normal * p1.z * _Thickness/2 , 0, 0);
+                float4 offset2 = float4(normal * p2.z * _Thickness/2 , 0, 0);
+                offset1.x *= _ScreenParams.y / _ScreenParams.x;
+                offset2.x *= _ScreenParams.y / _ScreenParams.x;
 
 
                 float4 o1 = p1 + offset1;
@@ -205,7 +210,7 @@ Shader "Genuage/ThickLineShader"
                 ts.Append(g[1]);
                 ts.Append(g[2]);
                 ts.Append(g[3]);
-                
+                */
             }
 
             fixed4 frag(g2f v) : COLOR

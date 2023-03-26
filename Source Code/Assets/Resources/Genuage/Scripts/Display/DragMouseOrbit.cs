@@ -45,9 +45,9 @@ namespace Display
     public class DragMouseOrbit : MonoBehaviour
     {
         public Transform target;
-        public float distance = 1.0f;
+        public float distance = 0f;
         public float sensitivityDistance = 1.5f;
-        public float distanceMin = 0f;
+        public float distanceMin = -1f;
         public float distanceMax = 10f;
         //public float smoothTime = 8f;
         

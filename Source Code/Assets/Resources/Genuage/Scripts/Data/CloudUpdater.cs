@@ -2216,6 +2216,7 @@ namespace Data
 
             //mesh.uv4 = uv4Array;
             data.globalMetaData.SelectedPointsList = FinalList;
+            Debug.Log("Selected Points : " + FinalList.Count);
             Debug.Log("selection finished");
             isRunning = false;
 

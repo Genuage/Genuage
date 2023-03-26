@@ -32,11 +32,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using Data;
 using System;
+using System.IO;
+
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-
+using SFB;
 public unsafe class NativePluginInfer3D : NativePlugin
 {
 
@@ -90,13 +92,20 @@ public unsafe class NativePluginInfer3D : NativePlugin
     private double* ForceZ;
 
     public float diffusionResult;
-
+    public float forceX;
+    public float forceY;
+    public float forceZ;
     const string DLLName = "Infer3DPlugin";
 
     [DllImport(DLLName)]
     private static extern void Infer3D(int headerID, int paramID, double sigma, double sigmaxy, double sigmaz, 
                                        int NumberOfPoints, void* TrajectoryNumber, void* xCoordinates, void* yCoordinates, 
                                        void* zCoordinates, void* TimeStamp, double* Diffusion, double* ForceX, double* ForceY, double* ForceZ);
+
+    private void Awake()
+    {
+        resultwindow.GetComponent<ModalWindow>().exportbutton.onClick.AddListener(delegate { ExportResult(); });
+    }
 
     protected override void LaunchPluginFunction(CloudData data)
     {
@@ -245,6 +254,10 @@ public unsafe class NativePluginInfer3D : NativePlugin
                             forceYres = Math.Round(forceYres, 3);
                             forceZres = Math.Round(forceZres, 3);
                             diffusionResult = (float)diffusionres;
+                            forceX = (float)forceXres; 
+                            forceY = (float)forceYres;
+                            forceZ = (float)forceZres;
+
                             ResultsString = "diffusion : " + diffusionres + "\n" + "forceX : " + forceXres + "\n"
                                             + "forceY : " + forceYres + "\n" + "forceZ : " + forceZres + "\n";
                             Debug.Log("N : " + N);
@@ -280,4 +293,54 @@ public unsafe class NativePluginInfer3D : NativePlugin
         resultwindow.GetComponent<ModalWindow>().text.text = ResultsString;
     }
 
+
+
+    private void ExportResult()
+    {
+        CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+        BayesianInferenceSaveable save = new BayesianInferenceSaveable();
+        save.pointIDList = new List<int>(); 
+        save.pointTrajectoryList = new List<float> ();
+        save.DiffusionCoefficient = diffusionResult;
+        save.Force_X = forceX;
+        save.Force_Y = forceY;
+        save.Force_Z = forceZ;
+
+        foreach (int id in data.globalMetaData.SelectedPointsList)
+        {
+            save.pointIDList.Add(id);
+        }
+
+        foreach(float id in data.globalMetaData.SelectedTrajectories)
+        {
+            save.pointTrajectoryList.Add(id);
+        }
+
+        var extensions = new[] {
+                new ExtensionFilter("JSON", ".JSON")};
+        StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "", extensions, (string path) => { SaveJSON(path, save); });
+    }
+
+    private void SaveJSON(string path, BayesianInferenceSaveable saveable)
+    {
+        string JSON = JsonUtility.ToJson(saveable);
+        string directory = Path.GetDirectoryName(path);
+        string filename = Path.GetFileNameWithoutExtension(path);
+
+        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(directory + Path.DirectorySeparatorChar + filename + ".JSON"))
+        {
+            writer.WriteLine(JSON);
+        }
+    }
+
+}
+
+public class BayesianInferenceSaveable
+{
+    public List<int> pointIDList;
+    public List<float> pointTrajectoryList;
+    public float DiffusionCoefficient;
+    public float Force_X;
+    public float Force_Y;
+    public float Force_Z;
 }

@@ -245,10 +245,20 @@ namespace VR_Interaction
             if (canvas)
             {
                 canvascontainer.SetActive(false);
-                CloudData data = CloudUpdater.instance.LoadCurrentStatus();
-                CloudUpdater.instance.ChangeCurrentColorMap(data.globalMetaData.colormapName, data.globalMetaData.colormapReversed);
+                //CloudData data = CloudUpdater.instance.LoadCurrentStatus();
+                //CloudUpdater.instance.ChangeCurrentColorMap(data.globalMetaData.colormapName, data.globalMetaData.colormapReversed);
 
             }
+        }
+
+        public void DisableHistogramCanvas()
+        {
+            canvascontainer.SetActive(false);
+        }
+
+        public void DestroyHistogramCanvas()
+        {
+            Destroy(canvascontainer);
         }
 
         private void OnEnable()

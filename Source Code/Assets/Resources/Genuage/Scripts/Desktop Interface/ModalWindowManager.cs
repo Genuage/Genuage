@@ -58,7 +58,7 @@ public class ModalWindowManager : MonoBehaviour
         GameObject window = Instantiate(modalWindowPrefab) as GameObject;
         if (!hasCloseButton)
         {
-            window.GetComponent<ModalWindow>().button.gameObject.SetActive(false);
+            window.GetComponent<ModalWindow>().closebutton.gameObject.SetActive(false);
         }
         window.transform.SetParent(DesktopApplication.instance.Canvas.transform);
         window.GetComponent<ModalWindow>().text.text = text_to_display;

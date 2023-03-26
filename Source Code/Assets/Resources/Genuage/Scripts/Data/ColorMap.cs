@@ -66,7 +66,6 @@ namespace Data
         {
             
             int colornumber = colors.Length;
-            Debug.Log(colornumber);
             float spacing = Mathf.Ceil(width / (colors.Length-1));
             Texture2D colormap_texture = new Texture2D(width, 1, TextureFormat.RGBA32, true);
             colormap_texture.filterMode = FilterMode.Bilinear;

@@ -47,7 +47,10 @@ namespace IO
     public class HistogramSaveable
     {
         public List<float> HistogramXValues;
-        public List<float> HistogramYValues;
+        public List<int> HistogramYValues;
+        public Vector3 Side1Position;
+        public Vector3 Side2Position;
+        public float Distance;
     }
 
     [Serializable]
@@ -327,7 +330,7 @@ namespace IO
 
                     HistogramSaveable hsave = new HistogramSaveable();
                     hsave.HistogramXValues = containerscript.gameObject.GetComponent<HistogramPointSelector>().xValues;
-                    hsave.HistogramYValues = containerscript.gameObject.GetComponent<HistogramPointSelector>().xValues;
+                    hsave.HistogramYValues = containerscript.gameObject.GetComponent<HistogramPointSelector>().yValues;
                     histogramsaveList.Add(hsave);
                 }
             }

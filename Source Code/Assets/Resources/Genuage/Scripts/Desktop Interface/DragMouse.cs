@@ -43,7 +43,6 @@ namespace DesktopInterface
 
         bool _pressed;
 
-
         public Vector3 cameraInitialPosition;
         public Quaternion cloudInitialRotation;
         public float timesinceClick;

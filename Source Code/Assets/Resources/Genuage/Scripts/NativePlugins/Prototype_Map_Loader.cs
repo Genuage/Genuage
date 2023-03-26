@@ -43,6 +43,7 @@ using GK;
 using DesktopInterface;
 using HullDelaunayVoronoi;
 using HullDelaunayVoronoi.Primitives;
+using SFB;
 
 public unsafe class Prototype_Map_Loader : NativePlugin
 {
@@ -101,12 +102,13 @@ public unsafe class Prototype_Map_Loader : NativePlugin
     public InputField SigmaInput;
     public InputField SigmaxyInput;
     public InputField SigmazInput;
-
+    public Button ExportButton;
 
 
     private void Awake()
     {
         CloudSelector.instance.OnSelectionChange+=ResetAlgo;
+        ExportButton.onClick.AddListener(delegate { ExportData(); });
     }
     protected override void LaunchPluginFunction(CloudData data)
     {
@@ -700,6 +702,41 @@ public unsafe class Prototype_Map_Loader : NativePlugin
         }
 
     }
+
+    private void ExportData()
+    {
+        if (alreadyran)
+        {
+
+
+            MapsSaveable mapsave = new MapsSaveable();
+            mapsave.ClusterList = new List<ClusterSaveable>();
+            foreach (Cluster c in ClusterList)
+            {
+                ClusterSaveable clustersave = new ClusterSaveable();
+                clustersave.ID = c.ID;
+                clustersave.pointsIDList = c.pointsIDList;
+                clustersave.diffusionCoefficient = c.propertyValue;
+                mapsave.ClusterList.Add(clustersave);
+            }
+
+            var extensions = new[] {
+                new ExtensionFilter("JSON", ".JSON")};
+            StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "", extensions, (string path) => { SaveJSON(path, mapsave); });
+        }
+    }
+
+    private void SaveJSON(string path, MapsSaveable saveable)
+    {
+        string JSON = JsonUtility.ToJson(saveable);
+        string directory = Path.GetDirectoryName(path);
+        string filename = Path.GetFileNameWithoutExtension(path);
+
+        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(directory + Path.DirectorySeparatorChar + filename + ".JSON"))
+        {
+            writer.WriteLine(JSON);
+        }
+    }
 }
 public class Cluster
 {
@@ -738,4 +775,16 @@ public class Cluster
         this.ArrowPosition = pos;
         this.VectorMagnitude = magnitude;
     }
+}
+public class MapsSaveable
+{
+    public List<ClusterSaveable> ClusterList;
+}
+
+[Serializable]
+public class ClusterSaveable
+{
+    public int ID;
+    public List<int> pointsIDList;
+    public float diffusionCoefficient;
 }

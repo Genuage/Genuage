@@ -42,9 +42,9 @@ namespace VR_Interaction
 
     public class VRHistogramPlacementTool : VRObjectPlacementTool
     {
-        public bool task1_On = false;
-        public bool task2_On = false;
-        public bool taskSectionSelection_On = false;
+        public bool task1_On = false;//place first cylinder side
+        public bool task2_On = false;//place second cylinder side
+        public bool taskSectionSelection_On = false;//select number of bins
 
         public GameObject histogramCanvasPrefab;
 
