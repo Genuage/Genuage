@@ -42,6 +42,9 @@ namespace Data
         public RawImage image;
         public static ColorMapManager instance = null;
         public Dictionary<string,ColorMap> colormapDict;
+        public Dictionary<string, ColorMap> circularcolormapDict;
+
+
 
         private void Awake()
         {
@@ -63,7 +66,7 @@ namespace Data
         private void InitializeColorMaps()
         {
             colormapDict = new Dictionary<string, ColorMap>();
-
+            circularcolormapDict = new Dictionary<string, ColorMap>();
             ColorMap c1 = GenerateColorMap("autumn",new List<Color>() {Color.red, Color.yellow});
             ColorMap c2 = GenerateColorMap("spring", new List<Color>() {Color.magenta, Color.yellow });
             ColorMap c3 = GenerateColorMap("winter", new List<Color>() {Color.blue, Color.green });
@@ -72,10 +75,14 @@ namespace Data
             ColorMap c6 = GenerateColorMap("Greens", new List<Color>() {Color.green, Color.white });
             ColorMap c7 = GenerateColorMap("hot", new List<Color>() {Color.black, Color.red, Color.yellow, Color.white });
             ColorMap c8 = GenerateColorMap("jet", new List<Color>() {Color.blue, Color.cyan, Color.green, Color.yellow, Color.red});
-            ColorMap c9 = GenerateColorMap("hsv", new List<Color>() {Color.red, Color.yellow, Color.green,Color.blue, Color.cyan, Color.magenta, Color.red });
+            ColorMap c9 = GenerateColorMap("hsv", new List<Color>() {Color.red, Color.yellow, Color.green,Color.cyan, Color.blue, Color.magenta, Color.red }); // circular
             ColorMap c10 = GenerateColorMap("colorblind_contrast", new List<Color>() { Color.cyan, Color.red});
             ColorMap c11 = GenerateColorMap("colorblind_contrast_2", new List<Color>() { Color.cyan, new Color(1,0.27f,0) });
             ColorMap c12 = GenerateColorMap("colorblind_contrast_3", new List<Color>() { new Color(0.5f,0,0.5f), new Color(1, 1, 0) });
+            ColorMap circularc2 = GenerateColorMap("circular2", new List<Color>() { Color.red, Color.yellow, Color.red });
+            ColorMap circularc3 = GenerateColorMap("circular3", new List<Color>() { Color.blue, Color.green, Color.blue });
+            ColorMap circularc4 = GenerateColorMap("circular4", new List<Color>() { Color.blue, Color.green, Color.yellow, Color.red, Color.blue });
+
 
             colormapDict.Add(c1.name, c1);
             colormapDict.Add(c2.name, c2);
@@ -90,6 +97,15 @@ namespace Data
             colormapDict.Add(c11.name, c11);
             colormapDict.Add(c12.name, c12);
 
+            colormapDict.Add(circularc2.name, circularc2);
+            colormapDict.Add(circularc3.name, circularc3);
+            colormapDict.Add(circularc4.name, circularc4);
+
+            circularcolormapDict.Add(c9.name, c9);
+            circularcolormapDict.Add(circularc2.name, circularc2);
+            circularcolormapDict.Add(circularc3.name, circularc3);
+            circularcolormapDict.Add(circularc4.name, circularc4);
+            circularcolormapDict.Add(c8.name, c8);
 
         }
 
@@ -107,6 +123,11 @@ namespace Data
         public Dictionary<string,ColorMap>.KeyCollection GetAllColormapNames()
         {
             return colormapDict.Keys;
+        }
+
+        public Dictionary<string, ColorMap>.KeyCollection GetAllCircularColormapNames()
+        {
+            return circularcolormapDict.Keys;
         }
     }
 }

@@ -9,7 +9,7 @@ using Data;
 namespace DesktopInterface
 {
 
-    public class BoxXScaleSlider :SliderScript
+    public class BoxXScaleSlider :ISliderScript
     {
         private float XRange;
 

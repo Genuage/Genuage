@@ -76,9 +76,9 @@ namespace DesktopInterface
             // Open file with filter
             var extensions = new[] 
             {
+                new ExtensionFilter("All Files", "*" ),
                 new ExtensionFilter("3D format", "3d"),
-                new ExtensionFilter("text format", "txt"),
-                new ExtensionFilter("All Files", "*" )
+                new ExtensionFilter("text format", "txt")
             };
             StandaloneFileBrowser.OpenFilePanelAsync("Open File", "", extensions, true, (string[] paths) => { LaunchCloudLoader(paths); });
         }

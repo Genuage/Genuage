@@ -39,7 +39,7 @@ namespace DesktopInterface
 {
 
 
-    public class PointSizeSlider : SliderScript   
+    public class PointSizeSlider : ISliderScript   
     {
         public Transform _text_description;
         

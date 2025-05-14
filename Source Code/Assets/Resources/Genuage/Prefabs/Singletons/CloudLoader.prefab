@@ -46,3 +46,4 @@ MonoBehaviour:
   _cloudPointPrefab: {fileID: 2463286304192725846, guid: 1e280b1bb60870248a22f165451232a8,
     type: 3}
   _sprite_texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+  _material: {fileID: 2100000, guid: dddf7b6cfb9b0c343a90409febe2caaa, type: 2}

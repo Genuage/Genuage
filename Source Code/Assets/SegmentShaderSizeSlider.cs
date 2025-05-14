@@ -6,7 +6,7 @@ using Data;
 namespace DesktopInterface
 {
 
-    public class SegmentShaderSizeSlider : SliderScript
+    public class SegmentShaderSizeSlider : ISliderScript
     {
         private void Awake()
         {

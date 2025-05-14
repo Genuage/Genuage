@@ -55,6 +55,7 @@ Shader "Genuage/UnlitLineShader"
 			#pragma multi_compile _ POINT_HIDDEN
 			//#pragma multi_compile _ TRAJECTORYID
 			#pragma multi_compile _ COLOR_OVERRIDE
+			#pragma multi_compile _ COLORMAP_REVERSED
 
 			//Uses unity specific function(copy paste directly here)
             #include "UnityCG.cginc"
@@ -98,7 +99,7 @@ Shader "Genuage/UnlitLineShader"
 
 			uniform float _UpperTimeLimit;
 			uniform float _LowerTimeLimit;
-			
+			float _Offset;
 
             v2f vert (appdata_full v )
             {
@@ -125,22 +126,28 @@ Shader "Genuage/UnlitLineShader"
 					discard;
 				}
 				#endif
-
-
-
 				
+				
+				float index = v.uv1.x;
+
+				#if defined(COLORMAP_REVERSED)
+					index = 1 - index;
+				#endif
+
 				
 				float4 color; 
 
-				color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
+				color = tex2Dlod(_ColorTex, float4(index, 0.5, 0, 0));
 
 
 				if (v.uv2.x > 0) {
 					color = float4(1, 1, 1, 1);
 				}
 				
+
+
 				#if defined(COLOR_OVERRIDE)
-				color = tex2Dlod(_ColorTex, float4(v.uv1.x, 0.5, 0, 0));
+				color = tex2Dlod(_ColorTex, float4(index, 0.5, 0, 0));
 				#endif
 
 				return color;

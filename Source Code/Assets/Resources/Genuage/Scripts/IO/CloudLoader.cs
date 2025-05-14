@@ -6,7 +6,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
+   notice, this list of conditions and the fol lowing disclaimer.
 2. Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
@@ -55,6 +55,7 @@ namespace IO
         public GameObject _cloudPointPrefab;
         public static CloudLoader instance = null;
         public Texture2D _sprite_texture;
+        public Material _material;
         private CloudSaveableData savedata = null;
 
         private char Separator = '\t';
@@ -236,7 +237,7 @@ namespace IO
             savedata = JsonUtility.FromJson<CloudSaveableData>(json[0]);
 
             //data.pointMetaDataTable = savedata.pointMetaDataTable;
-            data.globalMetaData.displayCollumnsConfiguration = savedata.displayCollumnsConfiguration;
+            //data.globalMetaData.displayCollumnsConfiguration = savedata.displayCollumnsConfiguration;
             data.globalMetaData.colormapName = savedata.colormapName;
             data.globalMetaData.colormapReversed = savedata.colormapReversed;
             data.globalMetaData.current_colormap_variable = savedata.currentColormapVariable;
@@ -760,16 +761,55 @@ namespace IO
             }
             else
             {
-                int[] intarray = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                for (int i = 0; i< columnDataList.Count; i++)
+
+
+                Dictionary<string, int> _CloudDataVariablesDict = new Dictionary<string, int>()
                 {
-                    if(i < intarray.Length)
+                    {"x_position", 0},
+                    {"y_position", 0},
+                    {"z_position", 0},
+                    {"color", 0},
+                    {"time", 0},
+                    {"trajectory_index", 0},
+                    {"phi_angle", 0},
+                    {"theta_angle", 0},
+                    {"wobble_angle", 0},
+                    {"point_size", 0},
+                    {"precision_xy", 0},
+                    {"precision_z", 0}
+
+                };
+
+                string[] strarray = new string[12]
+                {
+                    "x_position",
+                    "y_position",
+                    "z_position",
+                    "color",
+                    "time",
+                    "trajectory_index",
+                    "phi_angle",
+                    "theta_angle",
+                    "wobble_angle",
+                    "point_size",
+                    "precision_xy",
+                    "precision_z"
+                };
+                int cpt = 0;
+                foreach (string s in strarray)
+                {
+                    int v = 0;
+                    if (cpt < columnDataList.Count)
                     {
-                        intarray[i] = i;
+                        v = cpt;
+                        cpt++;
                     }
+                    _CloudDataVariablesDict[s] = v;
                 }
 
-                rootdata.globalMetaData.displayCollumnsConfiguration = intarray;
+                rootdata.globalMetaData.CloudDataVariablesDict = _CloudDataVariablesDict;
+
+
             }
 
             for (int j = 0; j < columnDataList.Count; j++)
@@ -842,8 +882,11 @@ namespace IO
 
             float[] _phi = new float[N];
             float[] _theta = new float[N];
+            float[] _wobble = new float[N];
 
             float[] _size = new float[N];
+            float[] _precisionxy = new float[N];
+            float[] _precisionz = new float[N];
 
             List<Vector2> uv0List = new List<Vector2>();
 
@@ -869,25 +912,25 @@ namespace IO
             float sMax = Mathf.NegativeInfinity;
             float sMin = Mathf.Infinity;
 
-            xMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MaxValue;
-            xMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].MinValue;
-            yMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MaxValue;
-            yMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].MinValue;
-            zMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MaxValue;
-            zMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].MinValue;
-            iMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MaxValue;
-            iMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].MinValue;
-            tMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MaxValue;
-            tMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].MinValue;
+            xMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["x_position"]].MaxValue;
+            xMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["x_position"]].MinValue;
+            yMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["y_position"]].MaxValue;
+            yMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["y_position"]].MinValue;
+            zMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["z_position"]].MaxValue;
+            zMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["z_position"]].MinValue;
+            iMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["color"]].MaxValue;
+            iMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["color"]].MinValue;
+            tMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["time"]].MaxValue;
+            tMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["time"]].MinValue;
 
-            sMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MaxValue;
-            sMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[7]].MinValue;
+            sMax = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["point_size"]].MaxValue;
+            sMin = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["point_size"]].MinValue;
 
-            float xRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[0]].Range;
-            float yRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[1]].Range;
-            float zRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[2]].Range;
-            float iRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[3]].Range;
-            float tRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].Range;
+            float xRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["x_position"]].Range;
+            float yRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["y_position"]].Range;
+            float zRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["z_position"]].Range;
+            float iRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["color"]].Range;
+            float tRange = cloud_data.globalMetaData.columnMetaDataList[cloud_data.globalMetaData.CloudDataVariablesDict["time"]].Range;
 
             float[] rangeList = new float[] { xRange, yRange, zRange };
             float MaxRange = Mathf.Max(rangeList);
@@ -907,7 +950,7 @@ namespace IO
 
 
             float[] TimeArray = new float[N];
-            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]].CopyTo(TimeArray, 0);
+            cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["time"]].CopyTo(TimeArray, 0);
             IEnumerable<float> DistinctTimeArray = TimeArray.Distinct();
             TimeList = DistinctTimeArray.ToList();
 
@@ -923,23 +966,29 @@ namespace IO
             for (int i = 0; i < N; i++)
             {
 
-                _positions[i] = new Vector3(cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[0]][i],
-                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[1]][i],
-                                            cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[2]][i]);
+                _positions[i] = new Vector3(cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["x_position"]][i],
+                                            cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["y_position"]][i],
+                                            cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["z_position"]][i]);
 
-                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[3]][i];
-                _trajectory[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[5]][i];
+                _intensity[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["color"]][i];
+                _trajectory[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["trajectory_index"]][i];
 
-                _time[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[4]][i];
+                _time[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["time"]][i];
 
-                _phi[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[6]][i];
-                _theta[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[7]][i];
+                _phi[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["phi_angle"]][i];
+                _theta[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["theta_angle"]][i];
 
-                _size[i] = cloud_data.columnData[cloud_data.globalMetaData.displayCollumnsConfiguration[8]][i];
+                _wobble[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["wobble_angle"]][i];
+
+                _size[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["point_size"]][i];
+
+                _precisionxy[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["precision_xy"]][i];
+                _precisionz[i] = cloud_data.columnData[cloud_data.globalMetaData.CloudDataVariablesDict["precision_z"]][i];
 
                 _indices[i] = i;
 
                 _normed_positions[i] = ((_positions[i] - offsetVector) / MaxRange);
+                
                 _colors[i] = new Color(((_intensity[i] - iMin) / (iMax - iMin)), ((_intensity[i] - iMin) / iMax - iMin), ((_intensity[i] - iMin) / iMax - iMin), 1);
 
                 cloud_data.pointDataTable[i].position = _positions[i];
@@ -951,11 +1000,15 @@ namespace IO
                 cloud_data.pointDataTable[i].size = (_size[i] - sMin) / (sMax - sMin);
                 cloud_data.pointDataTable[i].phi_angle = _phi[i];
                 cloud_data.pointDataTable[i].theta_angle = _theta[i];
+                cloud_data.pointDataTable[i].wobble_angle = _wobble[i];
+                cloud_data.pointDataTable[i].precision_xy = _precisionxy[i];
+                cloud_data.pointDataTable[i].precision_z = _precisionz[i];
+
                 //cloud_data.pointDataTable[point].color = _colors[point];
-                cloud_data.pointDataTable[i]._color_index = _colors[i].r;
+                cloud_data.pointDataTable[i].color_index = _colors[i].r;
 
                 uv0List.Add(new Vector2(cloud_data.pointDataTable[i].size, 0f));
-                uv1List.Add(new Vector2(cloud_data.pointDataTable[i]._color_index, i));
+                uv1List.Add(new Vector2(cloud_data.pointDataTable[i].color_index, i));
                 //uv3List.Add(new Vector2(cloud_data.pointDataTable[point].trajectory, cloud_data.pointDataTable[point].time));
                 cloud_data.pointDataTable[i].depth = _positions[i].z;
 
@@ -1049,12 +1102,12 @@ namespace IO
 
         private void LoadCloudMesh(CloudData root, Vector3[] vertices, int[] indices, Vector2[] uv0Array, Vector2[] uv1Array, Vector2[] uv2Array, Vector2[] uv3Array)
         {
-            Material material = new Material(Shader.Find("ViSP/Sprite Shader"));
-            material.SetTexture("_SpriteTex", _sprite_texture);
-            material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("autumn").texture);
-            material.SetFloat("UpperTimeLimit", root.globalMetaData.upperframeLimit);
-            material.SetFloat("LowerTimeLimit", root.globalMetaData.lowerframeLimit);
-            root.gameObject.GetComponent<MeshRenderer>().material = material;
+
+            _material.SetTexture("_SpriteTex", _sprite_texture);
+            _material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("autumn").texture);
+            _material.SetFloat("UpperTimeLimit", root.globalMetaData.upperframeLimit);
+            _material.SetFloat("LowerTimeLimit", root.globalMetaData.lowerframeLimit);
+            root.gameObject.GetComponent<MeshRenderer>().material = _material;
             Mesh mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.vertices = vertices;
@@ -1064,10 +1117,116 @@ namespace IO
             //mesh.uv4 = uv3Array; // trajectoryID, frame
             mesh.SetIndices(indices, MeshTopology.Points, 0);
             root.GetComponent<MeshFilter>().mesh = mesh;
+
+            CreateLineMesh(root, vertices, uv0Array, uv1Array, uv2Array, uv3Array); 
+
             UIManager.instance.ChangeStatusText(indices.Length + " points loaded");
             Debug.Log(indices.Length + " points loaded into cloudData");
             Debug.Log(vertices.Length + " vertices");
+            Debug.Log(" number of columns in data structure : " + root.columnData.Count);
             
+        }
+
+        private void CreateLineMesh(CloudData root, Vector3[] point_vertices, Vector2[] uv0Array, Vector2[] uv1Array, Vector2[] uv2Array, Vector2[] uv3Array)
+        {
+            float offsetxy = 0.0001f;
+            float offsetz = 0.0001f;
+
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> indices = new List<int>();
+            List<Vector2> uv0 = new List<Vector2>();
+            List<Vector2> uv1 = new List<Vector2>();
+            List<Vector2> uv2 = new List<Vector2>();
+            List<Vector2> uv3 = new List<Vector2>();
+
+
+            Vector3 OffsetVectorX = new Vector3(offsetxy, 0.0f, 0.0f);
+            Vector3 OffsetVectorY = new Vector3(0.0f, offsetxy, 0.0f);
+            Vector3 OffsetVectorZ = new Vector3(0.0f, 0.0f, offsetz);
+
+            Mesh mesh = new Mesh();
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            
+            int index = 0;
+            int cpt = 0;
+            for (int i = 0; i < root.columnData[0].Length; i++)
+            {
+                Vector3 newVectorX = OffsetVectorX + new Vector3((root.pointDataTable[i].precision_xy) / (root.globalMetaData.xMax - root.globalMetaData.xMin), 0.0f, 0.0f);
+                vertices.Add(point_vertices[i] + newVectorX); // calculate offset here
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+                vertices.Add(point_vertices[i] - newVectorX);
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+
+                Vector3 newVectorY = OffsetVectorY + new Vector3(0.0f, (root.pointDataTable[i].precision_xy) / (root.globalMetaData.yMax - root.globalMetaData.yMin), 0.0f);
+
+                vertices.Add(point_vertices[i] + newVectorY);
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+                vertices.Add(point_vertices[i] - newVectorY);
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+                Vector3 newVectorZ = OffsetVectorZ + new Vector3(0.0f, 0.0f, (root.pointDataTable[i].precision_z) / (root.globalMetaData.zMax - root.globalMetaData.zMin));
+
+                vertices.Add(point_vertices[i] + newVectorZ);
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+                vertices.Add(point_vertices[i] - newVectorZ);
+                indices.Add(index);
+                uv0.Add(uv0Array[cpt]);
+                uv1.Add(uv1Array[cpt]);
+                uv2.Add(uv2Array[cpt]);
+                uv3.Add(uv3Array[cpt]);
+                index++;
+
+                cpt++;
+
+            }
+            mesh.vertices = vertices.ToArray();
+            mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
+            mesh.uv = uv0.ToArray();
+            mesh.uv2 = uv1.ToArray(); // colorID, pointID
+            mesh.uv3 = uv2.ToArray(); // isSelected, isHidden
+
+            GameObject go = new GameObject();
+            MeshFilter mf = go.AddComponent<MeshFilter>();
+            MeshRenderer mr = go.AddComponent<MeshRenderer>();
+            mf.mesh = mesh;
+            Material material = new Material(Shader.Find("Genuage/UnlitLineShader"));
+            material.SetTexture("_ColorTex", ColorMapManager.instance.GetColorMap("autumn").texture);
+            mr.material = material;
+
+            go.transform.SetParent(root.transform, false);
+            go.transform.localPosition = Vector3.zero;
+            root.LineShaderObject = go;
+            go.SetActive(false);
+
         }
     }
 }

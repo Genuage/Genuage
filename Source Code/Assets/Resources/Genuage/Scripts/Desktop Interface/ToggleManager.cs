@@ -55,7 +55,7 @@ namespace DesktopInterface
 
         public Dropdown ThresholdDropdown;
 
-        public int VARIABLENUMBER = 9;
+        public int VARIABLENUMBER = 12;
 
         void Delete(int id =0)
         {
@@ -98,10 +98,13 @@ namespace DesktopInterface
                 headerList = new List<GameObject>();
                 selectionList = new List<int>();
                 collumnnbr = selectedCloud.columnData.Count;
+                //Debug.Log(collumnnbr);
+                string[] KeyList = selectedCloud.globalMetaData.CloudDataVariableKeys;
                 for (int i = 0; i < VARIABLENUMBER; i++)
                 {
                     toggleList.Add(new List<GameObject>());
-                    selectionList.Add(selectedCloud.globalMetaData.displayCollumnsConfiguration[i]);
+                    selectionList.Add(selectedCloud.globalMetaData.CloudDataVariablesDict[KeyList[i]]);
+                    //selectionList.Add(selectedCloud.globalMetaData.displayCollumnsConfiguration[i]);
 
                 }
 
@@ -176,28 +179,24 @@ namespace DesktopInterface
                         toggleList[i].Add(newtoggle);
 
                     }
-                    /**
-                    if (data.globalMetaData.densityCalculated)
-                    {
-                        GameObject newtoggle = Instantiate(togglePrefab) as GameObject;
-                        newtoggle.transform.SetParent(layout);
-                        newtoggle.gameObject.GetComponent<Toggle>().group = layout.GetComponent<ToggleGroup>();
-                        newtoggle.gameObject.GetComponent<Toggle>().isOn = false;
-                        newtoggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { CheckCollumnOnValueChanged(newtoggle.GetComponent<Toggle>()); });
-                        toggleList[i].Add(newtoggle);
-
-
-                    }
-                    **/
+                    
                     i++;
                 }
+
+                float newsize = 25 * collumnnbr;
+                if (newsize < 550f)
+                {
+                    newsize = 550f;
+                }
+                layout.GetComponent<RectTransform>().sizeDelta = new Vector2(newsize, layout.GetComponent<RectTransform>().sizeDelta.y);
+                
             }
             //Transform xLayout = this.transform.GetChild(0).GetChild(1).GetChild(0);
             //Debug.Log(xLayout.GetComponent<RectTransform>().sizeDelta.x);
-            float xsize = 25 * collumnnbr;
-            if(xsize < 485.9f)
+            float xsize = 30 * collumnnbr;
+            if(xsize < 550f)
             {
-                xsize = 485.9f;
+                xsize = 550f;
             }
             this.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(xsize, this.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y);
             InitializeToggles();

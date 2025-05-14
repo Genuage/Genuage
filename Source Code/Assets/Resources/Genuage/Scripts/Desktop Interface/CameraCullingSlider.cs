@@ -9,7 +9,7 @@ namespace DesktopInterface
 {
 
 
-    public class CameraCullingSlider : SliderScript
+    public class CameraCullingSlider : ISliderScript
     {
         private void Awake()
         {

@@ -138,7 +138,7 @@ public unsafe class Prototype_Map_Loader : NativePlugin
             Xvalues.Add(i.Value.normed_position.x);
             Yvalues.Add(i.Value.normed_position.y);
             Zvalues.Add(i.Value.normed_position.z);
-            Cvalues.Add(i.Value._color_index);
+            Cvalues.Add(i.Value.color_index);
             Tvalues.Add(i.Value.time);
             PHvalues.Add(i.Value.phi_angle);
             THvalues.Add(i.Value.theta_angle);

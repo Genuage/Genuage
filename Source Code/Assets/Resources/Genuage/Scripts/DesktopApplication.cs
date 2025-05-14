@@ -108,6 +108,9 @@ public class DesktopApplication : MonoBehaviour
 
     private void InstantiateApplication()
     {
+        Shader.DisableKeyword("POINTSIZE");
+
+
         //XRSettings.enabled = false;
         GameObject target = new GameObject("target");
         EventSystem = Instantiate(EventSystemPrefab) as GameObject;

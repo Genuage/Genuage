@@ -53,6 +53,10 @@ namespace DesktopInterface
 
         public List<GameObject> sectionList = new List<GameObject>();
 
+        public Button PointDistributionHistograpButton;
+        public Button OrientationDistributionHistograpButton;
+        public Button ExportPointsButton;
+
         private void Awake()
         {
             button = GetComponent<Button>();
@@ -73,6 +77,10 @@ namespace DesktopInterface
             ExportButton.onClick.AddListener(delegate { ExportHistogram(); });
 
             CloseButton.onClick.AddListener(delegate { CloseHistogram(); });
+
+            PointDistributionHistograpButton.onClick.AddListener(GeneratePointDistributionHistogram);
+            OrientationDistributionHistograpButton.onClick.AddListener(GenerateOrientationDistributionHistogram);
+            ExportPointsButton.onClick.AddListener(ExportSelectedPoints);
         }
 
 
@@ -411,24 +419,52 @@ namespace DesktopInterface
 
 
                 }
-                VR_Interaction.HistogramPointSelector selector = GetComponent<VR_Interaction.HistogramPointSelector>();
-                List<GameObject> circleList = new List<GameObject>();
-                List<Vector3> circlePositionsList = new List<Vector3>();
 
-                circlePositionsList.Add(cylinderSide1.transform.position);
-                circleList.Add(cylinderSide1);
-                foreach (var go in sectionList)
-                {
-                    circlePositionsList.Add(go.transform.position);
-                    circleList.Add(go);
-                }
-                circlePositionsList.Add(cylinderSide2.transform.position);
-                circleList.Add(cylinderSide2);
-                selector.radius = cylinderSide1.transform.localScale.x;
-                selector.sectionsNumber = BinNumber;
-                selector.FindPointsProto(circleList, circlePositionsList);
+
+
             }
         }
+
+        private void GeneratePointDistributionHistogram()
+        {
+            VR_Interaction.HistogramPointSelector selector = GetComponent<VR_Interaction.HistogramPointSelector>();
+            List<GameObject> circleList = new List<GameObject>();
+            List<Vector3> circlePositionsList = new List<Vector3>();
+
+            circlePositionsList.Add(cylinderSide1.transform.position);
+            circleList.Add(cylinderSide1);
+            foreach (var go in sectionList)
+            {
+                circlePositionsList.Add(go.transform.position);
+                circleList.Add(go);
+            }
+            circlePositionsList.Add(cylinderSide2.transform.position);
+            circleList.Add(cylinderSide2);
+            selector.radius = cylinderSide1.transform.localScale.x;
+            selector.sectionsNumber = BinNumber;
+            selector.FindPointsProto(circleList, circlePositionsList);
+        }
+
+        private void GenerateOrientationDistributionHistogram()
+        {
+            VR_Interaction.HistogramPointSelector selector = GetComponent<VR_Interaction.HistogramPointSelector>();
+            List<GameObject> circleList = new List<GameObject>();
+            List<Vector3> circlePositionsList = new List<Vector3>();
+
+            circlePositionsList.Add(cylinderSide1.transform.position);
+            circleList.Add(cylinderSide1);
+            foreach (var go in sectionList)
+            {
+                circlePositionsList.Add(go.transform.position);
+                circleList.Add(go);
+            }
+            circlePositionsList.Add(cylinderSide2.transform.position);
+            circleList.Add(cylinderSide2);
+            selector.radius = cylinderSide1.transform.localScale.x;
+            selector.sectionsNumber = BinNumber;
+            selector.GenerateOrientationHistogram(circleList, circlePositionsList);
+        }
+
         private void ExportHistogram()
         {
             VR_Interaction.HistogramPointSelector selector = GetComponent<VR_Interaction.HistogramPointSelector>();
@@ -443,6 +479,13 @@ namespace DesktopInterface
             var extensions = new[] {
                 new ExtensionFilter("JSON", ".JSON")};
             StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "", extensions, (string path) => { SaveJSON(path, hsave); });
+        }
+
+        private void ExportSelectedPoints()
+        {
+            //VR_Interaction.HistogramPointSelector selector = GetComponent<VR_Interaction.HistogramPointSelector>();
+            //selector.selectedPoints;
+            //TODO : Export points
         }
 
         public void SaveJSON(string path, HistogramSaveable histogramData)

@@ -350,7 +350,7 @@ Shader "ViSP/Sprite Shader"
 
 				float4 color;
 				color = tex2Dlod(_ColorTex, float4(index, 0.5, 0, 0));
-
+				//color.a = 0.5;
 
 
 

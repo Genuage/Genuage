@@ -49,7 +49,7 @@ namespace DesktopInterface
         }
         public override void Execute()
         {
-            CloudUpdater.instance.CalculateMeanOrientation();
+            CloudUpdater.instance.CalculateMeanOrientation(true);
         }
     }
 }

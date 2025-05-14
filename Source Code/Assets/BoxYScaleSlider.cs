@@ -6,7 +6,7 @@ using Data;
 namespace DesktopInterface
 {
 
-    public class BoxYScaleSlider : SliderScript
+    public class BoxYScaleSlider : ISliderScript
     {
         private float YRange;
 

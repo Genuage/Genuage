@@ -160,266 +160,286 @@ public class CloudBox : MonoBehaviour
 
         float graduationlength = ApplicationOptions.instance.GetGraduationLength();
         Vector3 point1 = new Vector3(-0.5f, -0.5f, -0.5f);
-        Vector3 point2 = new Vector3(0.5f, 0.5f, -0.5f);
+        Vector3 point2 = new Vector3(-0.5f, 0.5f, -0.5f);
         Vector3 point3 = new Vector3(-0.5f, 0.5f, 0.5f);
-        Vector3 point4 = new Vector3(0.5f, -0.5f, 0.5f);
-        Vector3[] pointArray = new Vector3[] { point1,point2,point3,point4 }; //,point2,point3,point4};
+        Vector3 point4 = new Vector3(-0.5f, -0.5f, 0.5f);
+        Vector3 point5 = new Vector3(-0.5f, 0.5f, -0.5f);
+        Vector3 point6 = new Vector3(-0.5f, 0.5f, 0.5f);
+        Vector3 point7 = new Vector3(0.5f, -0.5f, -0.5f);
+        Vector3 point8 = new Vector3(0.5f, 0.5f, -0.5f);
 
-        foreach(Vector3 v in pointArray)
+        //Vector3[] pointArray = new Vector3[] { point1,point2,point3,point4 }; //,point2,point3,point4};
+        Vector3[] pointArray = new Vector3[] { point1, point2, point4, point5, point6 , point7, point8 }; //,point2,point3,point4};
+
+
+        foreach (Vector3 v in pointArray)
         {
             float TotalValue = 0;
             //X
-            while (TotalValue < Xrange)
-            //for (int i = 0; i <= graduationnumberX; i++)
-            {
-                
-                //Debug.Log(_box.transform.localScale);
-                Vector3 displacementVector = new Vector3((float)(TotalValue / Xrange), 0f, 0f);
-                //Debug.Log(displacementVector);
-
-                Vector3 newpointVector;
-                //x rows
-                if (v.x < 0)
-                {
-                    newpointVector = v + displacementVector;
-                }
-                else
-                {
-                    newpointVector = v - displacementVector;
-                }
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-                Vector3 endvector;
-                if (v.z < 0)
-                {
-                    endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
-                }
-
-                //Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength );
-
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-
-                //new line
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-                if (v.y < 0)
-                {
-                    endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
-                }
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-
-                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
-                {
-
-                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
-                    {
-                        //GameObject container = new GameObject();
-                        //container.transform.SetParent(_box.transform);
-                        GameObject text_object = new GameObject("Text");
-                        //text_object.transform.position = endvector;
-
-                        text_object.transform.localScale = Vector3.one * 0.015f;
-                        text_object.transform.SetParent(_box.transform, true);
-                        text_object.transform.localPosition = new Vector3(newpointVector.x,
-                                                                     -0.55f,
-                                                                     -0.5f);
-                        text_object.AddComponent<MeshRenderer>();
-                        text_object.AddComponent<TextMesh>();
-                        float mark = TotalValue;
-                        float roundedmark = Mathf.Round(mark);
-                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                        text_object.GetComponent<TextMesh>().color = Color.white;
-
-                        text_object.AddComponent<StaringLabel>();
-                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
-
-                        TextList.Add(text_object);
-                    }
-
-                }
-                TotalValue += GraduationDistanceX;
-
-            }
-
-            TotalValue = 0;
-            //y
-            while (TotalValue < Yrange)
-            //for (int i = 0; i <= graduationnumberX; i++)
+            if (v == point1 || v==point4 || v == point5 || v == point6)
             {
 
-                //Debug.Log(_box.transform.localScale);
-                Vector3 displacementVector = new Vector3(0f, (float)(TotalValue / Yrange), 0f);
 
-//y rows
-                Vector3 newpointVector;
-
-                
-                if (v.y < 0)
+                while (TotalValue < Xrange)
+                //for (int i = 0; i <= graduationnumberX; i++)
                 {
+
+                    //Debug.Log(_box.transform.localScale);
+                    Vector3 displacementVector = new Vector3((float)(TotalValue / Xrange), 0f, 0f);
+                    //Debug.Log(displacementVector);
+
+                    Vector3 newpointVector;
+                    //x rows
+                    //if (v.x < 0)
+                    //{
                     newpointVector = v + displacementVector;
-                }
-                else
-                {
-                    newpointVector = v - displacementVector;
-                }
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-
-                Vector3 endvector;
-
-                //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
-                if (v.x < 0)
-                {
-                    endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
-                }
-                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
-                {
-                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                    //}
+                    //else
+                    //{
+                    //  newpointVector = v - displacementVector;
+                    //}
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
+                    Vector3 endvector;
+                    if (v.z < 0)
                     {
-                        //GameObject container = new GameObject();
-                        //container.transform.SetParent(_box.transform);
-                        GameObject text_object = new GameObject("Text");
-                        //text_object.transform.position = endvector;
-                        text_object.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
-                        text_object.transform.SetParent(_box.transform, true);
-                        text_object.transform.localPosition = new Vector3(-0.55f,
-                                                                     newpointVector.y,
-                                                                     -0.5f);
-                        text_object.AddComponent<MeshRenderer>();
-                        text_object.AddComponent<TextMesh>();
-                        float mark = TotalValue;
-                        float roundedmark = Mathf.Round(mark);
-                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                        text_object.GetComponent<TextMesh>().color = Color.white;
-
-                        text_object.AddComponent<StaringLabel>();
-                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
-                        TextList.Add(text_object);
+                        endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                    }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
                     }
 
+                    //Vector3 endvector = newpointVector + new Vector3(0f,0f, graduationlength );
+
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+
+                    //new line
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
+                    if (v.y < 0)
+                    {
+                        endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                    }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                    }
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+
+                    if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
+                    {
+
+                        if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                        {
+                            //GameObject container = new GameObject();
+                            //container.transform.SetParent(_box.transform);
+                            GameObject text_object = new GameObject("Text");
+                            //text_object.transform.position = endvector;
+
+                            text_object.transform.localScale = Vector3.one * 0.015f;
+                            text_object.transform.SetParent(_box.transform, true);
+                            text_object.transform.localPosition = new Vector3(newpointVector.x,
+                                                                         -0.55f,
+                                                                         -0.5f);
+                            text_object.AddComponent<MeshRenderer>();
+                            text_object.AddComponent<TextMesh>();
+                            float mark = TotalValue;
+                            float roundedmark = Mathf.Round(mark);
+                            text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                            text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                            text_object.GetComponent<TextMesh>().color = Color.white;
+
+                            text_object.AddComponent<StaringLabel>();
+                            text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+
+                            TextList.Add(text_object);
+                        }
+
+                    }
+                    TotalValue += GraduationDistanceX;
+
                 }
-
-                //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-
-                //newline
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-                if (v.z < 0)
-                {
-                    endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
-                }
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-
-                TotalValue += GraduationDistanceY;
-
             }
             TotalValue = 0;
             //y
-            while (TotalValue < Zrange)
-            //for (int i = 0; i <= graduationnumberX; i++)
+
+            if (v == point1 || v == point4 || v==point7)
             {
 
-                //Debug.Log(_box.transform.localScale);
-                Vector3 displacementVector = new Vector3(0f, 0f, (float)(TotalValue / Zrange));
-
-                Vector3 newpointVector;
-
-                if (v.z < 0)
+                while (TotalValue < Yrange)
+                //for (int i = 0; i <= graduationnumberX; i++)
                 {
+
+                    //Debug.Log(_box.transform.localScale);
+                    Vector3 displacementVector = new Vector3(0f, (float)(TotalValue / Yrange), 0f);
+
+                    //y rows
+                    Vector3 newpointVector;
+
+
+                    //if (v.y < 0)
+                    //{
                     newpointVector = v + displacementVector;
-                }
-                else
-                {
-                    newpointVector = v - displacementVector;
-                }
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-                Vector3 endvector;
+                    //}
+                    //else
+                    //{
+                    //  newpointVector = v - displacementVector;
+                    //}
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
 
-                if (v.x < 0)
-                {
-                    endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
-                }
+                    Vector3 endvector;
 
-                //if(graduationlength.)
-                //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
-                //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-
-                if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
-                {
-
-                    if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                    //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
+                    if (v.x < 0)
                     {
-                        //GameObject container = new GameObject();
-                        //container.transform.SetParent(_box.transform);
-                        GameObject text_object = new GameObject("Text");
-                        //text_object.transform.position = endvector;
-                        text_object.transform.localScale = Vector3.one * 0.015f;
-                        text_object.transform.SetParent(_box.transform, true);
-                        text_object.transform.localPosition = new Vector3(-0.55f,
-                                                 -0.5f,
-                                                 newpointVector.z);
-
-                        text_object.AddComponent<MeshRenderer>();
-                        text_object.AddComponent<TextMesh>();
-                        float mark = TotalValue;
-                        float roundedmark = Mathf.Round(mark);
-                        text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
-                        text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-                        text_object.GetComponent<TextMesh>().color = Color.white;
-
-                        text_object.AddComponent<StaringLabel>();
-
-                        text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
-                        TextList.Add(text_object);
+                        endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
                     }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                    }
+                    if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
+                    {
+                        if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                        {
+                            //GameObject container = new GameObject();
+                            //container.transform.SetParent(_box.transform);
+                            GameObject text_object = new GameObject("Text");
+                            //text_object.transform.position = endvector;
+                            text_object.transform.localScale = new Vector3(0.015f, 0.015f, 0.015f);
+                            text_object.transform.SetParent(_box.transform, true);
+                            text_object.transform.localPosition = new Vector3(-0.55f,
+                                                                         newpointVector.y,
+                                                                         -0.5f);
+                            text_object.AddComponent<MeshRenderer>();
+                            text_object.AddComponent<TextMesh>();
+                            float mark = TotalValue;
+                            float roundedmark = Mathf.Round(mark);
+                            text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                            text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                            text_object.GetComponent<TextMesh>().color = Color.white;
+
+                            text_object.AddComponent<StaringLabel>();
+                            text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                            TextList.Add(text_object);
+                        }
+
+                    }
+
+                    //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+
+                    //newline
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
+                    if (v.z < 0)
+                    {
+                        endvector = newpointVector + new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                    }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(0f, 0f, graduationlength / _box.transform.localScale.z);
+                    }
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+
+                    TotalValue += GraduationDistanceY;
+
+                }
+            }
+            TotalValue = 0;
+            //z
+            if(v == point1 || v ==point2 || v==point8 || v == point7)
+            {
+                while (TotalValue < Zrange)
+                //for (int i = 0; i <= graduationnumberX; i++)
+                {
+
+                    //Debug.Log(_box.transform.localScale);
+                    Vector3 displacementVector = new Vector3(0f, 0f, (float)(TotalValue / Zrange));
+
+                    Vector3 newpointVector;
+
+                    //if (v.z < 0)
+                    //{
+                    newpointVector = v + displacementVector;
+                    //}
+                    //else
+                    //{
+                    //  newpointVector = v - displacementVector;
+                    //}
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
+                    Vector3 endvector;
+
+                    if (v.x < 0)
+                    {
+                        endvector = newpointVector + new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                    }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(graduationlength / _box.transform.localScale.x, 0f, 0f);
+                    }
+
+                    //if(graduationlength.)
+                    //endvector = newpointVector + new Vector3(graduationlength * _box.transform.localScale.x, 0f, 0f);
+                    //endvector = newpointVector + new Vector3(graduationlength , 0f, 0f);
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+
+                    if (ApplicationOptions.instance.GetGraduationNumbersActivated() == true)
+                    {
+
+                        if (v == new Vector3(-0.5f, -0.5f, -0.5f))
+                        {
+                            //GameObject container = new GameObject();
+                            //container.transform.SetParent(_box.transform);
+                            GameObject text_object = new GameObject("Text");
+                            //text_object.transform.position = endvector;
+                            text_object.transform.localScale = Vector3.one * 0.015f;
+                            text_object.transform.SetParent(_box.transform, true);
+                            text_object.transform.localPosition = new Vector3(-0.55f,
+                                                     -0.5f,
+                                                     newpointVector.z);
+
+                            text_object.AddComponent<MeshRenderer>();
+                            text_object.AddComponent<TextMesh>();
+                            float mark = TotalValue;
+                            float roundedmark = Mathf.Round(mark);
+                            text_object.GetComponent<TextMesh>().text = roundedmark.ToString();
+                            text_object.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
+                            text_object.GetComponent<TextMesh>().color = Color.white;
+
+                            text_object.AddComponent<StaringLabel>();
+
+                            text_object.transform.localScale = new Vector3(0.015f, 0.03f, 0.015f);
+                            TextList.Add(text_object);
+                        }
+                    }
+
+                    //newline
+                    verts.Add(newpointVector);
+                    lines.Add(verts.Count - 1);
+                    if (v.y < 0)
+                    {
+                        endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                    }
+                    else
+                    {
+                        endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
+                    }
+                    verts.Add(endvector);
+                    lines.Add(verts.Count - 1);
+                    TotalValue += GraduationDistanceZ;
+
+                    //Debug.Log(i);
                 }
 
-                //newline
-                verts.Add(newpointVector);
-                lines.Add(verts.Count - 1);
-                if (v.y < 0)
-                {
-                    endvector = newpointVector + new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
-                }
-                else
-                {
-                    endvector = newpointVector - new Vector3(0f, graduationlength / _box.transform.localScale.y, 0f);
-                }
-                verts.Add(endvector);
-                lines.Add(verts.Count - 1);
-                TotalValue += GraduationDistanceZ;
-
-                //Debug.Log(i);
             }
         }
     }

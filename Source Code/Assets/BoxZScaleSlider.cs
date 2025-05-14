@@ -7,7 +7,7 @@ using Data;
 namespace DesktopInterface
 {
 
-    public class BoxZScaleSlider : SliderScript
+    public class BoxZScaleSlider : ISliderScript
     {
         private float ZRange;
 

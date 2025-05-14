@@ -38,25 +38,30 @@ using System.Linq;
 namespace Data
 {
 
+
+
     /// <summary>
     /// Class to hold all the Data on one point.
     /// </summary>
     /// 
     public class PointData
     {
-        public int _pointID;
-        public Vector3 _position;
-        public Vector3 _normed_position;
-        public float _intensity;
-        public float _time;
-        public int _frame;
-        public float _trajectory;
-        public float _size;
-        public float _color_index;
-        public float _depth;
-        public float _phi_angle;
-        public float _theta_angle;
-        
+        private int _pointID;
+        private Vector3 _position;
+        private Vector3 _normed_position;
+        private float _intensity;
+        private float _time;
+        private int _frame;
+        private float _trajectory;
+        private float _size;
+        private float _color_index;
+        private float _depth;
+        private float _phi_angle;
+        private float _theta_angle;
+        private float _wobble_angle;
+        private float _precision_xy;
+        private float _precision_z;
+
 
 
         #region Get/Setters
@@ -122,7 +127,13 @@ namespace Data
 
             set { _depth = value; }
         }
-        #endregion
+
+        public float color_index
+        {
+            get { return _color_index; }
+
+            set { _color_index = value; }
+        }
 
         public float theta_angle
         {
@@ -134,6 +145,28 @@ namespace Data
             get { return _phi_angle; }
             set { _phi_angle = value; }
         }
+
+        public float wobble_angle
+        {
+            get { return _wobble_angle; }
+            set { _wobble_angle = value; }
+
+        }
+        public float precision_xy
+        {
+            get { return _precision_xy; }
+            set { _precision_xy = value; }
+
+        }
+        public float precision_z
+        {
+            get { return _precision_z; }
+            set { _precision_z = value; }
+
+        }
+
+        #endregion
+
     }
 
     /// <summary>
@@ -256,6 +289,10 @@ namespace Data
     /// 
     public class CloudMetaData
     {
+        public bool pointspritesEnabled = true;
+        public bool pointbarsEnabled = false;
+
+
         private int _cloud_id;
         private Vector3 _scale;
         private float _point_size;
@@ -341,6 +378,10 @@ namespace Data
 
         private string _colormapName;
         public bool colormapReversed;
+
+        private string _orientationcolormapName = "hsv";
+        private string _wobblecolormapname = "hsv";
+
         //public float cmaxslidervalue;
         //public float cminslidervalue;
         // _current_color_map_variable is used to store the current float list used by the shader to map color. For example depth or intensity
@@ -348,13 +389,65 @@ namespace Data
         // _current_normed_variable holds min and max of the _current_color_map_variable variables in order to map between (0 and 256) the color map.
         private Vector2 _current_normed_variable;
 
+        private bool orientation2D = false;
+        private bool orientation3D = false;
+        private bool wobble2D = false;
+        private bool wobble3D = false;
+
+        private float orientationSegmentSize = 0.5f;
+        private float wobbleConeSize = 0.01f;
+
+
+        private GameObject VolumeRenderingGameobject;
+        private Vector3 VolumeRenderedObjectPixelDimensions;
+        private float VoxelSize;
+        private float VoxelSizeZ;
+
+        public  List<int> KeptPointsIDList;
+
+        public bool HideNaNValues = false;
+
         // serves as blueprint to know which collumn corresponds to what value, by default should be {0,1,2,3,4}
-        public int[] displayCollumnsConfiguration;
+        //public int[] displayCollumnsConfiguration;
+
+        public string[] CloudDataVariableKeys = new string[12]
+        {
+            "x_position",
+            "y_position",
+            "z_position",
+            "color",
+            "time",
+            "trajectory_index",
+            "phi_angle",
+            "theta_angle",
+            "wobble_angle",
+            "point_size", 
+            "precision_xy",
+            "precision_z"
+        };
+
+        public Dictionary<string, int> CloudDataVariablesDict = new Dictionary<string, int>()
+        {
+            {"x_position", 0},
+            {"y_position", 0},
+            {"z_position", 0},
+            {"color", 0},
+            {"time", 0},
+            {"trajectory_index", 0},
+            {"phi_angle", 0},
+            {"theta_angle", 0},
+            {"wobble_angle", 0},
+            {"point_size", 0},
+            {"precision_xy", 0},
+            {"precision_z", 0}
+
+        };
+
 
         #region VR_Interaction_Metadata
 
 
-        public Dictionary<int,GameObject> counterPointsList;
+        public Dictionary<int, GameObject> counterPointsList;
         public Dictionary<int, GameObject> rulerPointsList;
         public Dictionary<int, List<float>> rulerPointsDistanceList;
         public Dictionary<int, GameObject> convexHullsList;
@@ -393,6 +486,18 @@ namespace Data
         {
             get { return _colormapName; }
             set { _colormapName = value; }
+        }
+
+        public string orientationcolormapName
+        {
+            get { return _orientationcolormapName; }
+            set { _orientationcolormapName = value; }
+        }
+
+        public string wobblecolormapname
+        {
+            get { return _wobblecolormapname; }
+            set { _wobblecolormapname = value; }
         }
 
         public float point_size
@@ -618,6 +723,74 @@ namespace Data
             get { return _box_scale; }
             set { _box_scale = value; }
         }
+
+        public bool orientation_2d
+        {
+            get { return orientation2D; }
+            set { orientation2D = value; }
+        }
+
+        public bool orientation_3d
+        {
+            get { return orientation3D; }
+            set { orientation3D = value; }
+        }
+
+        public bool wobble_2d
+        {
+            get { return wobble2D; }
+            set { wobble2D = value; }
+        }
+
+        public bool wobble_3d
+        {
+            get { return wobble3D; }
+            set { wobble3D = value; }
+        }
+
+
+        public float orientation_segment_size
+        {
+            get { return orientationSegmentSize; }
+            set { orientationSegmentSize = value; }
+        }
+
+        public float wobble_cone_size
+        {
+            get { return wobbleConeSize; }
+            set { wobbleConeSize = value; }
+        }
+
+        public GameObject volume_rendered_gameobject
+        {
+            get { return VolumeRenderingGameobject; }
+            set { VolumeRenderingGameobject = value; }
+        }
+
+        public Vector3 volume_rendered_object_pixel_dimensions
+        {
+            get { return VolumeRenderedObjectPixelDimensions; }
+            set { VolumeRenderedObjectPixelDimensions = value; }
+
+        }
+
+        public float voxel_size
+        {
+            get { return VoxelSize; }
+            set { VoxelSize = value; }
+        }
+
+        public float voxel_size_z
+        {
+            get { return VoxelSizeZ; }
+            set { VoxelSizeZ = value; }
+        }
+
+        public List<int> kept_points_id_list
+        {
+            get { return KeptPointsIDList; }
+            set { KeptPointsIDList = value; }
+        }
         #endregion
 
 
@@ -630,15 +803,19 @@ namespace Data
     public class CloudData : MonoBehaviour
     {
 
-
+        
+        
         public List<float[]> columnData;
         public Dictionary<int, PointData> pointDataTable;
         public Dictionary<int, PointMetaData> pointMetaDataTable;
         public CloudMetaData globalMetaData;
         public Dictionary<float, TrajectoryData> pointTrajectoriesTable;
 
+
+        public GameObject LineShaderObject = null;
         public GameObject trajectoryObject = null;
         public GameObject orientationObject = null;
+        public GameObject wobbleObject = null;
 
         private void Awake()
         {
@@ -661,6 +838,7 @@ namespace Data
             globalMetaData.angleMeasurementsList = new Dictionary<int, GameObject>();
             globalMetaData.histogramList = new Dictionary<int, GameObject>();
             globalMetaData.FreeSelectionIDList = new HashSet<int>();
+            globalMetaData.KeptPointsIDList = new List<int>();
         }
 
         public void CreatePointData(int id, Vector3 position, Vector3 normedposition, float intensity,
@@ -676,7 +854,7 @@ namespace Data
                 newdata.time = time;
                 newdata.trajectory = trajectory;
                 newdata.depth = depth;
-;
+                            
 
                 pointDataTable.Add(id, newdata);
 

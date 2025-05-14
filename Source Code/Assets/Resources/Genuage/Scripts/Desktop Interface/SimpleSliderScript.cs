@@ -40,7 +40,7 @@ namespace DesktopInterface
 {
 
 
-    public class SimpleSliderScript : SliderScript
+    public class SimpleSliderScript : ISliderScript
     {
         private void Awake()
         {

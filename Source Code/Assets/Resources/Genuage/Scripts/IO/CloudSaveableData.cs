@@ -51,6 +51,7 @@ namespace IO
         public Vector3 Side1Position;
         public Vector3 Side2Position;
         public float Distance;
+        public List<int> SelectedPointsIDs;
     }
 
     [Serializable]
@@ -156,7 +157,7 @@ namespace IO
             this.pointMetaDataTable = data.pointMetaDataTable;
             **/
 
-            this.displayCollumnsConfiguration = data.globalMetaData.displayCollumnsConfiguration;
+            //this.displayCollumnsConfiguration = data.globalMetaData.displayCollumnsConfiguration;
             this.colormapName = data.globalMetaData.colormapName;
             this.colormapReversed = data.globalMetaData.colormapReversed;
             this.currentColormapVariable = data.globalMetaData.current_colormap_variable;

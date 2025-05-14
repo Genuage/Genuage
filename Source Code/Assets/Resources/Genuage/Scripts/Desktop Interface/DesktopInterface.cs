@@ -54,7 +54,7 @@ namespace DesktopInterface
 
     }
 
-    public class SliderScript : MonoBehaviour
+    public class ISliderScript : MonoBehaviour
     {
         public Slider slider;
         public InputField _field;

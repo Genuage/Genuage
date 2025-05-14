@@ -37,7 +37,7 @@ namespace DesktopInterface
         public void ExportButtonClicked()
         {
             if (runUpdate)
-            {
+            {   //POTENTIALLY CAUSE OF EXPORT BUG, TEST IT
                 Execute();
                 ExportButton.gameObject.SetActive(false);
             }
@@ -129,7 +129,7 @@ namespace DesktopInterface
                     float MaxY = Mathf.Max(LocalVertex2.y, LocalVertex0.y);
                     float MinY = Mathf.Min(LocalVertex2.y, LocalVertex0.y);
 
-                    if (SelectOneTrajectory == true)
+                    if (SelectOneTrajectory == true && data.trajectoryObject)
                     {
                         bool finished = false;
                         foreach (var kvp in data.pointDataTable)

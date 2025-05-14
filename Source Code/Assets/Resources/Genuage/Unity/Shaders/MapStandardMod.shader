@@ -74,7 +74,7 @@ Shader "Genuage/MapSurface"{
                 o.Albedo = col.rgb * facing;
                 o.Metallic = _Metallic * facing;
                 o.Smoothness = _Smoothness * facing;
-                o.Emission = lerp(_CutoffColor, _Emission, facing);
+                //o.Emission = lerp(_CutoffColor, _Emission, facing);
                 o.Alpha = col.a;
 
             }

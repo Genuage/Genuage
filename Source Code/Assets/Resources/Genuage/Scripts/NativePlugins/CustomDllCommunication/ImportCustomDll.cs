@@ -216,7 +216,7 @@ public unsafe class ImportCustomDll : MonoBehaviour
                 Xvalues.Add(i.Value.position.x);
                 Yvalues.Add(i.Value.position.y);
                 Zvalues.Add(i.Value.position.z);
-                Cvalues.Add(i.Value._color_index);
+                Cvalues.Add(i.Value.color_index);
                 Tvalues.Add(i.Value.time);
                 PHvalues.Add(i.Value.phi_angle);
                 THvalues.Add(i.Value.theta_angle);
@@ -236,7 +236,7 @@ public unsafe class ImportCustomDll : MonoBehaviour
                 Xvalues.Add(data.pointDataTable[i].position.x);
                 Yvalues.Add(data.pointDataTable[i].position.y);
                 Zvalues.Add(data.pointDataTable[i].position.z);
-                Cvalues.Add(data.pointDataTable[i]._color_index);
+                Cvalues.Add(data.pointDataTable[i].color_index);
                 Tvalues.Add(data.pointDataTable[i].time);
                 PHvalues.Add(data.pointDataTable[i].phi_angle);
                 THvalues.Add(data.pointDataTable[i].theta_angle);
@@ -475,7 +475,7 @@ public unsafe class ImportCustomDll : MonoBehaviour
                 Xvalues.Add(i.Value.position.x);
                 Yvalues.Add(i.Value.position.y);
                 Zvalues.Add(i.Value.position.z);
-                Cvalues.Add(i.Value._color_index);
+                Cvalues.Add(i.Value.color_index);
                 Tvalues.Add(i.Value.time);
                 PHvalues.Add(i.Value.phi_angle);
                 THvalues.Add(i.Value.theta_angle);
@@ -493,7 +493,7 @@ public unsafe class ImportCustomDll : MonoBehaviour
                 Xvalues.Add(data.pointDataTable[i].position.x);
                 Yvalues.Add(data.pointDataTable[i].position.y);
                 Zvalues.Add(data.pointDataTable[i].position.z);
-                Cvalues.Add(data.pointDataTable[i]._color_index);
+                Cvalues.Add(data.pointDataTable[i].color_index);
                 Tvalues.Add(data.pointDataTable[i].time);
                 PHvalues.Add(data.pointDataTable[i].phi_angle);
                 THvalues.Add(data.pointDataTable[i].theta_angle);

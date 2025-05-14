@@ -44,6 +44,7 @@ namespace DesktopInterface
         public GameObject colormapButtonPrefab;
         public GameObject ColormapDisplay;
         public bool ActivateButtons = true;
+        public bool CircularColormapsOnly = false;
         private void Awake()
         {
             GenerateButtons();        
@@ -51,8 +52,16 @@ namespace DesktopInterface
 
         public void GenerateButtons()
         {
+            Dictionary<string, ColorMap>.KeyCollection keys;
             //Debug.Log("check");
-            var keys = ColorMapManager.instance.GetAllColormapNames();
+            if (CircularColormapsOnly == true)
+            {
+                keys = ColorMapManager.instance.GetAllCircularColormapNames();
+            }
+            else
+            {
+                keys = ColorMapManager.instance.GetAllColormapNames();
+            }
             //Debug.Log("check");
             foreach (string key in keys)
             {

@@ -42,7 +42,7 @@ namespace DesktopInterface
 {
 
 
-    public class ColormapSaturationSlider : SliderScript
+    public class ColormapSaturationSlider : ISliderScript
     {
         private float min;
         private float max;

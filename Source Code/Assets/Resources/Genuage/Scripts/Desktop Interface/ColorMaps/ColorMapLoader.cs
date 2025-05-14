@@ -51,8 +51,10 @@ namespace DesktopInterface
         public string _current_colormap_name = "autumn";
         public GameObject _colormap_selector;
         public bool _colormap_reversed;
-
+        public bool _show_circular_colormap = false;
         public bool pointColor = true;
+        public bool circular_jet_override = false;
+
         //public CloudStatus _cloud_status;
 
 
@@ -90,7 +92,24 @@ namespace DesktopInterface
         public void ChangeColorMap(string name)
         {
             //GetComponent<RawImage>().texture = Resources.Load(UILocation._large_color_rotated + name) as Texture;
-            Texture2D newtex = ColorMapManager.instance.colormapDict[name].texture;
+            Texture2D newtex;
+            if (_show_circular_colormap == true)
+            {
+                if(circular_jet_override == true && name == "jet")
+                {
+                    newtex = ColorMapManager.instance.colormapDict[name].texture;
+
+                }
+                else
+                {
+                    newtex = ColorMapManager.instance.colormapDict[name].circletexture;
+                }
+            }
+            else
+            {
+                newtex = ColorMapManager.instance.colormapDict[name].texture;
+
+            }
             GetComponent<RawImage>().texture = newtex;
            _current_colormap_name = name;
             if (OnTextureChange != null)

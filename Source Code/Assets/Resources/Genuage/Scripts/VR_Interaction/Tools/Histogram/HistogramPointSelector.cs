@@ -58,11 +58,14 @@ namespace VR_Interaction
         public List<int> yValues;
 
 
-        List<int> selectedPoints = new List<int>();
+        public List<int> selectedPoints = new List<int>();
         List<Color> selectedPointsColors = new List<Color>();
 
-        private Queue<HistogramPointSelectionThreadHandler> SelectionThreadQueue;
+        private Queue<HistogramPointDistributionThreadHandler> SelectionThreadQueue;
         bool pointSelectionJobON = false;
+
+        private Queue<HistogramOrientationDistributionThreadHandler> SelectionOrientationThreadQueue;
+        bool pointOrientationSelectionJobON = false;
 
         public void Awake()
         {
@@ -79,8 +82,8 @@ namespace VR_Interaction
             colorList.Add(Color.yellow);
             colorList.Add(Color.cyan);
 
-            SelectionThreadQueue = new Queue<HistogramPointSelectionThreadHandler>();
-
+            SelectionThreadQueue = new Queue<HistogramPointDistributionThreadHandler>();
+            SelectionOrientationThreadQueue = new Queue<HistogramOrientationDistributionThreadHandler>();
         }
 
 
@@ -95,7 +98,7 @@ namespace VR_Interaction
                 CircleLocalPositionsList.Add(currcloud.transform.worldToLocalMatrix.MultiplyPoint3x4(v));
             }
 
-            HistogramPointSelectionThreadHandler ThreadHandle = new HistogramPointSelectionThreadHandler();
+            HistogramPointDistributionThreadHandler ThreadHandle = new HistogramPointDistributionThreadHandler();
             ThreadHandle.circlePositionsList = circlePositionsList;
             ThreadHandle.circleLocalPositionsList = CircleLocalPositionsList;
             ThreadHandle.radius = radius;
@@ -116,7 +119,31 @@ namespace VR_Interaction
             **/
         }
 
-        public void CreateCanvas(List<int> yValues)
+        public void GenerateOrientationHistogram(List<GameObject> circleList, List<Vector3> circlePositionsList)
+        {
+            currcloud = CloudUpdater.instance.LoadCurrentStatus();
+
+            List<Vector3> CircleLocalPositionsList = new List<Vector3>();
+            foreach (var v in circlePositionsList)
+            {
+                CircleLocalPositionsList.Add(currcloud.transform.worldToLocalMatrix.MultiplyPoint3x4(v));
+            }
+
+            HistogramOrientationDistributionThreadHandler ThreadHandle = new HistogramOrientationDistributionThreadHandler();
+            ThreadHandle.circlePositionsList = circlePositionsList;
+            ThreadHandle.circleLocalPositionsList = CircleLocalPositionsList;
+            ThreadHandle.radius = radius;
+            ThreadHandle.colorList = colorList;
+            ThreadHandle.currcloud = currcloud;
+            ThreadHandle.StartThread();
+            SelectionOrientationThreadQueue.Enqueue(ThreadHandle);
+            pointOrientationSelectionJobON = true;
+
+            this.circleList = circleList;
+            this.circlePositionsList = circlePositionsList;
+        }
+
+        public void CreateCanvas(List<float> xValues, List<int> yValues)
         {
             int j = 0;
 
@@ -218,7 +245,7 @@ namespace VR_Interaction
                     rtct.Rotate(new Vector3(0f, 0f, 90f));
                     text.GetComponent<Text>().alignment = TextAnchor.UpperCenter;
                     text.GetComponent<Text>().color = Color.white;
-                    text.GetComponent<Text>().text = pointCountsbySections[i].ToString();
+                    text.GetComponent<Text>().text = yValues[i].ToString();
                     text.GetComponent<Text>().font = DesktopApplication.instance.defaultFont;
                     histogramBarsList.Add(bar);
 
@@ -284,7 +311,7 @@ namespace VR_Interaction
             {
                 if(SelectionThreadQueue.Count != 0)
                 {
-                    HistogramPointSelectionThreadHandler ThreadHandle = SelectionThreadQueue.Peek();
+                    HistogramPointDistributionThreadHandler ThreadHandle = SelectionThreadQueue.Peek();
                     if (ThreadHandle.isRunning == false)
                     {
                         ThreadHandle = SelectionThreadQueue.Dequeue();
@@ -297,7 +324,7 @@ namespace VR_Interaction
                         selectedPoints = ThreadHandle.SelectedPointsList;
                         selectedPointsColors = ThreadHandle.SelectedPointsColorList;
                         ThreadHandle.StopThread();
-                        CreateCanvas(pointCountsbySections);
+                        CreateCanvas(xValues, pointCountsbySections);
 
                     }
 
@@ -308,11 +335,118 @@ namespace VR_Interaction
 
                 }
             }
+
+            if (pointOrientationSelectionJobON)
+            {
+                if (SelectionOrientationThreadQueue.Count != 0)
+                {
+                    HistogramOrientationDistributionThreadHandler ThreadHandle = SelectionOrientationThreadQueue.Peek();
+                    if (ThreadHandle.isRunning == false)
+                    {
+                        ThreadHandle = SelectionOrientationThreadQueue.Dequeue();
+                        //Mesh newmesh = currcloud.gameObject.GetComponent<MeshFilter>().mesh;
+                        //newmesh.colors = ThreadHandle.colors;
+                        //currcloud.gameObject.GetComponent<MeshFilter>().mesh = newmesh;
+                        pointCountsbySections = ThreadHandle.yValues;
+                        xValues = ThreadHandle.xValues;
+                        yValues = ThreadHandle.yValues; 
+                        selectedPoints = ThreadHandle.SelectedPointsList;
+                        selectedPointsColors = ThreadHandle.SelectedPointsColorList;
+                        ThreadHandle.StopThread();
+                        CreateCanvas(xValues, pointCountsbySections);
+
+                    }
+
+                }
+                else
+                {
+                    pointOrientationSelectionJobON = false;
+
+                }
+            }
+
         }
 
     }
 
-    public class HistogramPointSelectionThreadHandler : RunnableThread
+
+    public class HistogramOrientationDistributionThreadHandler : RunnableThread
+    {
+        public List<Vector3> circlePositionsList;
+        public List<Vector3> circleLocalPositionsList;
+
+        public float radius;
+        public List<Color> colorList;
+        public CloudData currcloud;
+
+        public List<int> pointCountsbySections;
+        public List<float> xValues;
+        public List<int> yValues;
+        public Color[] colors;
+
+        public List<int> SelectedPointsList;
+        public List<Color> SelectedPointsColorList;
+
+        protected override void Run()
+        {
+            Debug.Log("positionLIst : " + circlePositionsList.Count);
+            Debug.Log("circleLocalPositionsList : " + circleLocalPositionsList.Count);
+
+
+            SelectedPointsList = new List<int>();
+            xValues = new List<float>();
+            yValues = new List<int>();
+
+            for(int i = 0; i < 181;i++)
+            {
+                xValues.Add(i);
+                yValues.Add(0);
+            }
+
+            Vector3 circle1LocalPosition = circleLocalPositionsList[0];
+            Vector3 circle2LocalPosition = circleLocalPositionsList[circleLocalPositionsList.Count - 1];
+
+            Vector3 middlepoint = (circle1LocalPosition + circle2LocalPosition) / 2;
+            float distance = Vector3.Distance(circlePositionsList[0], middlepoint) * currcloud.globalMetaData.maxRange;
+
+
+            foreach (var kvp in currcloud.pointDataTable)
+            {
+                if (!currcloud.pointMetaDataTable[kvp.Key].isHidden)
+                {
+                    float test1 = Vector3.Dot(kvp.Value.normed_position - circle1LocalPosition, circle2LocalPosition - circle1LocalPosition);
+                    float test2 = Vector3.Dot(kvp.Value.normed_position - circle2LocalPosition, circle2LocalPosition - circle1LocalPosition);
+
+                    if (test1 >= 0 && test2 <= 0) //find if the point is between the two circles
+                    {
+                        float test3 = Vector3.Magnitude(Vector3.Cross(kvp.Value.normed_position - circle1LocalPosition, circle2LocalPosition
+                                              - circle1LocalPosition)) / Vector3.Magnitude(circle2LocalPosition - circle1LocalPosition);
+                        if (test3 <= radius) // find if the point is inside the cylinder
+                        {
+                            SelectedPointsList.Add(kvp.Key);
+                            int anglevalue = Mathf.RoundToInt(kvp.Value.theta_angle);
+                            if(anglevalue <= 180 && anglevalue >= 0)
+                            {
+                                yValues[anglevalue] = yValues[anglevalue] + 1;
+                            }
+                            //TODO - Record the orientation angle for each point in the Cylinder.
+                        }
+
+
+                    }
+
+                }
+
+            }
+        
+            isRunning = false;
+
+        }
+
+    }
+
+
+    public class HistogramPointDistributionThreadHandler : RunnableThread
     {
         public List<Vector3> circlePositionsList;
         public List<Vector3> circleLocalPositionsList;
